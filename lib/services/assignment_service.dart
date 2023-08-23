@@ -54,7 +54,7 @@ class AssignmentService {
 
       return querySnapshot.docs.map((doc) {
         final data = doc.data();
-        return Assignment.fromJson(data as Map<String, dynamic>, doc.id);
+        return Assignment.fromJson(data, doc.id);
       }).toList();
     } catch (e) {
       throw Exception('Failed to fetch assignments by classroom: $e');
@@ -121,11 +121,12 @@ class AssignmentService {
   // 사용 페이지 : classroomDetailPage
   Future<String> addAssignmentToStudents(
       Assignment assignment, String classroomId) async {
-    final studentsSnapshot = await _classroomsCollection
-        .doc(classroomId)
-        .collection('Students')
-        .get();
     try {
+      final studentsSnapshot = await _classroomsCollection
+          .doc(classroomId)
+          .collection('Students')
+          .get();
+
       for (var studentDoc in studentsSnapshot.docs) {
         await studentDoc.reference
             .collection('assignments')
@@ -196,6 +197,35 @@ class AssignmentService {
       await assignmentRef.collection('history').add(history.toJson());
     } catch (e) {
       throw Exception('Failed to add assignment to student: $e');
+    }
+  }
+
+  // after 0821
+
+  // 과제 히스토리 가져오기
+  Future<List<AssignmentHistory>> getAssignmentHistory(
+      String classroomId, String studentId, String assignmentId) async {
+    List<AssignmentHistory> historyList = [];
+    try {
+      final historySnapshot = await _firestore
+          .collection('classrooms')
+          .doc(classroomId)
+          .collection('Students')
+          .doc(studentId)
+          .collection('assignments')
+          .doc(assignmentId)
+          .collection('history')
+          .orderBy('checkDate', descending: true)
+          .get();
+
+      historyList = historySnapshot.docs
+          .map((doc) => AssignmentHistory.fromJson(doc.data(), doc.id))
+          .cast<AssignmentHistory>()
+          .toList();
+
+      return historyList;
+    } catch (e) {
+      throw Exception('Failed to get assignment history: $e');
     }
   }
 }

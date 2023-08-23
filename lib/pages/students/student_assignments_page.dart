@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
+import 'package:teacherhelper/pages/assignments/assignment_detail_page.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
@@ -57,10 +58,22 @@ class StudentAssignmentView extends StatelessWidget {
           itemBuilder: (context, index) {
             final assignment = assignments[index];
             return ListTile(
-              title: Text(assignment.name),
-              subtitle: Text(assignment.point.toString()),
-              // Display other assignment details
-            );
+                title: Text(assignment.name),
+                subtitle: Text(assignment.point.toString()),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AssignmentDetailPage(
+                        studentId: studentId!,
+                        classroomId: classroomId,
+                        assignmentId: assignment.id!,
+                      ),
+                    ),
+                  );
+                }
+                // Display other assignment details
+                );
           },
         );
       },

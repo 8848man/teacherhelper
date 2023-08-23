@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/assignments/assignment_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_delete_page.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_detail_page_bottom_sheet.dart';
+import 'package:teacherhelper/pages/classes/subpage/classroom_violation_page_bottom_sheet.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
 import 'package:teacherhelper/pages/students/student_register_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
@@ -44,7 +44,6 @@ class _ClassroomClassesPageState extends State<ClassroomClassesPage> {
             SizedBox(height: 16.0),
             Text("선생님: ${classroom.teacher}"),
             SizedBox(height: 16.0),
-            Text("학생들:"),
             //반에 등록된 학생 리스트
             FutureBuilder<List<Student>>(
               future: Provider.of<StudentProvider>(context)
@@ -63,47 +62,34 @@ class _ClassroomClassesPageState extends State<ClassroomClassesPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("학생들:"),
-                      Flexible(
-                        child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 10, // 가로로 2개씩 배치
-                            mainAxisSpacing: 10, // 세로 간격 설정
-                            crossAxisSpacing: 10, // 가로 간격 설정
-                          ),
-                          itemCount: students.length,
-                          itemBuilder: (context, index) {
-                            final student = students[index];
-                            return GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return StudentAssignmentBottomSheet(
-                                      classroomId: widget.classroomId,
-                                      studentId: student.id,
-                                    );
-                                  },
-                                );
-                              },
-                              onLongPress: () {
-                                _navigateToStudentAssignments(
-                                    context, student.id);
-                              },
-                              child: Container(
-                                height: 100, // 각 아이템의 높이를 지정
-                                color: Colors.blue, // 각 아이템의 배경색
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(student.name),
-                                    Text("학번: ${student.id}"),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: students.length,
+                        itemBuilder: (context, index) {
+                          final student = students[index];
+                          return ListTile(
+                            title: Text(student.name),
+                            subtitle: Text("학번: ${student.id}"),
+                            onTap: () {
+                              // _showBottomSheet(
+                              //     context, widget.classroomId, student.id);
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return StudentAssignmentBottomSheet(
+                                    classroomId: widget.classroomId,
+                                    studentId: student.id,
+                                  );
+                                },
+                              );
+                            },
+                            // 학생 누르고있을 경우 학생 과제 페이지에 진입
+                            onLongPress: () {
+                              _navigateToStudentAssignments(
+                                  context, student.id);
+                            },
+                          );
+                        },
                       ),
                     ],
                   );

@@ -5,8 +5,8 @@ import 'package:teacherhelper/pages/assignments/assignment_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_delete_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_regist_page.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_classes_page.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_detail_page_bottom_sheet.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_life_page.dart';
+import 'package:teacherhelper/pages/classes/subpage/classroom_violation_page_bottom_sheet.dart';
+import 'package:teacherhelper/pages/classes/subpage/classroom_daily_page.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_violation_page.dart';
 import 'package:teacherhelper/pages/students/student_register_page.dart';
 import 'package:teacherhelper/pages/students/studetnt_detail_page.dart';
@@ -34,7 +34,7 @@ class _BottomNaviState extends State<BottomNavi> {
           appBar: AppBar(title: Text("반 상세 정보")),
           body: TabBarView(
             children: [
-              ClassroomLifePage(
+              ClassroomDailyPage(
                 classroomId: widget.classroomId,
               ),
               ClassroomViolationPage(

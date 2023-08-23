@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/assignments/assignment_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_delete_page.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_detail_page_bottom_sheet.dart';
+import 'package:teacherhelper/pages/classes/subpage/classroom_violation_page_bottom_sheet.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
 import 'package:teacherhelper/pages/students/student_register_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
@@ -62,17 +62,47 @@ class _ClassroomViolationPageState extends State<ClassroomViolationPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("학생들:"),
-                      ListView.builder(
+                      // ListView.builder(
+                      //   shrinkWrap: true,
+                      //   itemCount: students.length,
+                      //   itemBuilder: (context, index) {
+                      //     final student = students[index];
+                      //     return ListTile(
+                      //       title: Text(student.name),
+                      //       subtitle: Text("학번: ${student.id}"),
+                      //       onTap: () {
+                      //         // _showBottomSheet(
+                      //         //     context, widget.classroomId, student.id);
+                      //         showModalBottomSheet(
+                      //           context: context,
+                      //           builder: (BuildContext context) {
+                      //             return StudentAssignmentBottomSheet(
+                      //               classroomId: widget.classroomId,
+                      //               studentId: student.id,
+                      //             );
+                      //           },
+                      //         );
+                      //       },
+                      //       // 학생 누르고있을 경우 학생 과제 페이지에 진입
+                      //       onLongPress: () {
+                      //         _navigateToStudentAssignments(
+                      //             context, student.id);
+                      //       },
+                      //     );
+                      //   },
+                      // ),
+                      GridView.builder(
                         shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 10, // 그리드 열의 수
+                          crossAxisSpacing: 3, // 열 간 간격
+                          mainAxisSpacing: 3, // 행 간 간격
+                        ),
                         itemCount: students.length,
                         itemBuilder: (context, index) {
                           final student = students[index];
-                          return ListTile(
-                            title: Text(student.name),
-                            subtitle: Text("학번: ${student.id}"),
+                          return GestureDetector(
                             onTap: () {
-                              // _showBottomSheet(
-                              //     context, widget.classroomId, student.id);
                               showModalBottomSheet(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -83,11 +113,19 @@ class _ClassroomViolationPageState extends State<ClassroomViolationPage> {
                                 },
                               );
                             },
-                            // 학생 누르고있을 경우 학생 과제 페이지에 진입
                             onLongPress: () {
                               _navigateToStudentAssignments(
                                   context, student.id);
                             },
+                            child: Card(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(student.name),
+                                  // Text("학번: ${student.id}"),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/assignment.dart';
+import 'package:teacherhelper/datamodels/assignmentHistory.dart';
 import 'package:teacherhelper/services/assignment_service.dart';
 import 'package:teacherhelper/services/classroom_service.dart';
 import 'package:teacherhelper/services/student_service.dart';
@@ -135,5 +136,13 @@ class AssignmentProvider with ChangeNotifier {
     } catch (e) {
       throw Exception('Failed to add assignment to student: $e');
     }
+  }
+
+  // after 0821
+  // 과제 히스토리 가져오기
+  Future<List<AssignmentHistory>> getAssignmentHistory(
+      String classroomId, String studentId, String assignmentId) async {
+    return _assignmentService.getAssignmentHistory(
+        classroomId, studentId, assignmentId);
   }
 }

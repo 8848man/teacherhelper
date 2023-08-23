@@ -2,24 +2,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/student.dart';
-import 'package:teacherhelper/pages/assignments/assignment_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_delete_page.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_detail_page_bottom_sheet.dart';
+import 'package:teacherhelper/pages/classes/subpage/classroom_violation_page_bottom_sheet.dart';
+import 'package:teacherhelper/pages/daily/daily_create_page.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
 import 'package:teacherhelper/pages/students/student_register_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
-class ClassroomLifePage extends StatefulWidget {
+class ClassroomDailyPage extends StatefulWidget {
   final String classroomId;
 
-  const ClassroomLifePage({required this.classroomId});
+  const ClassroomDailyPage({required this.classroomId});
 
   @override
-  State<ClassroomLifePage> createState() => _ClassroomLifePageState();
+  State<ClassroomDailyPage> createState() => _ClassroomDailyPagePageState();
 }
 
-class _ClassroomLifePageState extends State<ClassroomLifePage> {
+class _ClassroomDailyPagePageState extends State<ClassroomDailyPage> {
   @override
   void initState() {
     super.initState();
@@ -61,18 +61,18 @@ class _ClassroomLifePageState extends State<ClassroomLifePage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("학생들:"),
-                      ListView.builder(
+                      GridView.builder(
                         shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 10, // 그리드 열의 수
+                          crossAxisSpacing: 3, // 열 간 간격
+                          mainAxisSpacing: 3, // 행 간 간격
+                        ),
                         itemCount: students.length,
                         itemBuilder: (context, index) {
                           final student = students[index];
-                          return ListTile(
-                            title: Text(student.name),
-                            subtitle: Text("학번: ${student.id}"),
+                          return GestureDetector(
                             onTap: () {
-                              // _showBottomSheet(
-                              //     context, widget.classroomId, student.id);
                               showModalBottomSheet(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -83,11 +83,19 @@ class _ClassroomLifePageState extends State<ClassroomLifePage> {
                                 },
                               );
                             },
-                            // 학생 누르고있을 경우 학생 과제 페이지에 진입
                             onLongPress: () {
                               _navigateToStudentAssignments(
                                   context, student.id);
                             },
+                            child: Card(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(student.name),
+                                  // Text("학번: ${student.id}"),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -130,7 +138,7 @@ class _ClassroomLifePageState extends State<ClassroomLifePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AssignmentCreatePage(
+                    builder: (context) => DailyCreatePage(
                       classroomId: widget.classroomId,
                     ),
                   ),
