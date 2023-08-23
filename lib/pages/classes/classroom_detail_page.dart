@@ -5,9 +5,11 @@ import 'package:teacherhelper/pages/assignments/assignment_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_delete_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_regist_page.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_classes_page.dart';
+import 'package:teacherhelper/pages/classes/subpage/classroom_sub_page.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_violation_page_bottom_sheet.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_daily_page.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_violation_page.dart';
+import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/pages/students/student_register_page.dart';
 import 'package:teacherhelper/pages/students/studetnt_detail_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
@@ -28,9 +30,11 @@ class _BottomNaviState extends State<BottomNavi> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
+          drawer: NavBar(),
           appBar: AppBar(title: Text("반 상세 정보")),
           body: TabBarView(
             children: [

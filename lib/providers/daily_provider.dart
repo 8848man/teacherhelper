@@ -9,9 +9,9 @@ class DailyProvider with ChangeNotifier {
 
   DailyProvider() : _dailyService = DailyService();
 
-  Future<String> getDaily() {
-    return '';
-  }
+  // Future<String> getDaily() {
+  //   return '';
+  // }
 
   Future<void> addDaily(Daily daily, String classroomId) async {
     try {
