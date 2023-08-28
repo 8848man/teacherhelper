@@ -44,7 +44,7 @@ class _BottomNaviState extends State<BottomNavi> {
               ClassroomViolationPage(
                 classroomId: widget.classroomId,
               ),
-              ClassroomClassesPage(
+              ClassroomDailyPage(
                 classroomId: widget.classroomId,
               ),
             ],

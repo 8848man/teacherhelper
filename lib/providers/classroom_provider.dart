@@ -14,8 +14,14 @@ class ClassroomProvider with ChangeNotifier {
   List<Classroom> _classrooms = [];
   List<Classroom> get classrooms => _classrooms;
 
-  Classroom _classroomId = '' as Classroom;
-  Classroom get classroomId => _classroomId;
+  String? _classroomId;
+
+  String? get classroomId => _classroomId;
+
+  void setClassroomId(String id) {
+    _classroomId = id;
+    notifyListeners();
+  }
 
   Future<QuerySnapshot> read(String? uid) async {
     return _classroomService.read(uid!);

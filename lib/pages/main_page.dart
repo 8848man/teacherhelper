@@ -39,18 +39,6 @@ class MainPage extends HookWidget {
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.app_registration),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CreateClassroomPage(teacherUid: user!.uid),
-                        ),
-                      );
-                    },
-                  ),
-                  IconButton(
                     icon: Icon(Icons.logout),
                     onPressed: () {
                       authService.signOut;
@@ -75,6 +63,8 @@ class MainPage extends HookWidget {
                     subtitle:
                         Text("학년: ${classroom.grade}, id : ${classroom.uid}"),
                     onTap: () {
+                      Provider.of<ClassroomProvider>(context, listen: false)
+                          .setClassroomId(classroom.uid!);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -87,6 +77,32 @@ class MainPage extends HookWidget {
                 },
               );
             },
+          ),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  // Handle first button's action
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          CreateClassroomPage(teacherUid: user!.uid),
+                    ),
+                  );
+                },
+                child: Icon(Icons.add),
+                tooltip: '반 추가하기', // Tooltip에 표시할 텍스트
+              ),
+              SizedBox(height: 16),
+              FloatingActionButton(
+                onPressed: () {
+                  // Handle second button's action
+                },
+                child: Icon(Icons.delete),
+              ),
+            ],
           ),
         );
       },

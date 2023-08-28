@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:teacherhelper/pages/classes/subpage/classroom_sub_page.dart';
+import 'package:teacherhelper/pages/navigations/floating_action_button_daily.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 
 class ClassroomDailyPage1 extends StatefulWidget {
@@ -19,18 +21,18 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage1> {
         length: 3,
         child: Scaffold(
           drawer: NavBar(),
-          appBar: AppBar(title: Text("반 상세 정보")),
+          appBar: AppBar(title: Text("생활 탭")),
           body: TabBarView(
             children: [
-              // ClassroomDailyPage(
-              //   classroomId: widget.classroomId,
-              // ),
-              // ClassroomViolationPage(
-              //   classroomId: widget.classroomId,
-              // ),
-              // ClassroomClassesPage(
-              //   classroomId: widget.classroomId,
-              // ),
+              ClassroomDailyPage(
+                classroomId: widget.classroomId,
+              ),
+              ClassroomDailyPage(
+                classroomId: widget.classroomId,
+              ),
+              ClassroomDailyPage(
+                classroomId: widget.classroomId,
+              ),
             ],
           ),
           extendBodyBehindAppBar: true, // add this line
@@ -75,6 +77,9 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage1> {
                 ],
               ),
             ),
+          ),
+          floatingActionButton: FloatingActionButtonDaily(
+            classroomId: widget.classroomId,
           ),
         ),
       ),
