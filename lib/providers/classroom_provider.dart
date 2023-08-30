@@ -2,14 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
+import 'package:teacherhelper/services/assignment_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 import 'package:teacherhelper/services/classroom_service.dart';
+import 'package:teacherhelper/services/daily_service.dart';
 
 class ClassroomProvider with ChangeNotifier {
   final ClassroomService _classroomService;
+  final DailyService _dailyService;
+  final AssignmentService _assignmentService;
   final currentUserUid = AuthService().currentUser()?.uid;
 
-  ClassroomProvider() : _classroomService = ClassroomService();
+  ClassroomProvider()
+      : _classroomService = ClassroomService(),
+        _dailyService = DailyService(),
+        _assignmentService = AssignmentService();
 
   List<Classroom> _classrooms = [];
   List<Classroom> get classrooms => _classrooms;
@@ -31,6 +38,8 @@ class ClassroomProvider with ChangeNotifier {
   Future<void> createClassroom(Classroom classroom) async {
     try {
       await _classroomService.createClassroom(classroom);
+      await _dailyService.addDefaultDaily(classroom.id);
+      await _assignmentService.addDefaultAssignment(classroom.id);
     } catch (e) {
       throw Exception('Failed to create classroom: $e');
     }

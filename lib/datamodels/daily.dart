@@ -1,20 +1,20 @@
 class Daily {
   String? id;
   String name;
-  bool isComplete;
-  DateTime startDate;
+  bool? isComplete;
+  DateTime? startDate;
   DateTime? dueDate;
   DateTime? checkDate;
-  int? seqNumber;
+  int? order;
 
   Daily({
     this.id,
     required this.name,
-    required this.isComplete,
-    required this.startDate,
+    this.isComplete,
+    this.startDate,
     this.dueDate,
     this.checkDate,
-    this.seqNumber,
+    this.order,
   });
 
   Map<String, dynamic> toJson() {
@@ -25,7 +25,7 @@ class Daily {
       'startDate': startDate,
       'dueDate': dueDate,
       'checkDate': checkDate,
-      'seqNumber': seqNumber,
+      'order': order,
     };
   }
 
@@ -34,10 +34,10 @@ class Daily {
       id: id,
       name: json['name'],
       isComplete: json['isComplete'],
-      startDate: json['startDate'].toDate(),
-      dueDate: json['dueDate'].toDate(),
-      checkDate: json['checkDate'].toDate(),
-      seqNumber: json['seqNumber'],
+      startDate: json['startDate'] == null ? null : json['startDate'].toDate(),
+      dueDate: json['dueDate'] == null ? null : json['dueDate'].toDate(),
+      checkDate: json['checkDate'] == null ? null : json['checkDate'].toDate(),
+      order: json['order'],
     );
   }
 }

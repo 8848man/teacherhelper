@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
+import 'package:teacherhelper/providers/daily_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
@@ -21,6 +22,7 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   final TextEditingController _nameController = TextEditingController();
   final StudentProvider _studentProvider = StudentProvider();
   final AssignmentProvider _assignmentProvider = AssignmentProvider();
+  final DailyProvider _dailyProvider = DailyProvider();
 
   // 성별 버튼을 위한 변수 및 성별 버튼 값
   static List<String> _genders = <String>['남자', '여자'];
@@ -102,19 +104,30 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
     String? studentId;
     try {
       studentId = await _studentProvider.create(student, widget.classroomId);
+      // 반에 등록되어있던 과제들 가져오기
+      final assignments = await _assignmentProvider
+          .getAssignmentsByClassroom(widget.classroomId);
+
+      // 가져온 과제들을 학생의 assignment 컬렉션에 추가
+      for (final assignment in assignments) {
+        await _assignmentProvider.addAssignmentToStudent(
+            widget.classroomId, studentId!, assignment);
+      }
+
+      print('test002');
+      // 반에 등록되어있던 생활 과제들 가져오기
+      final dailys =
+          await _dailyProvider.getDailysByClassroom(widget.classroomId);
+      for (final daily in dailys) {
+        print('test001');
+        print(daily);
+        await _dailyProvider.addDailysToStudent(
+            widget.classroomId, studentId!, daily);
+      }
     } catch (e) {
       // 학생 생성 실패 처리
+      print(e);
       print('학생실패');
-    }
-
-    // 반에 등록되어있던 과제들 가져오기
-    final assignments =
-        await _assignmentProvider.getAssignmentsByClassroom(widget.classroomId);
-
-    // 가져온 과제들을 학생의 assignment 컬렉션에 추가
-    for (final assignment in assignments) {
-      await _assignmentProvider.addAssignmentToStudent(
-          widget.classroomId, studentId!, assignment);
     }
 
     Navigator.of(context).pop();
@@ -225,7 +238,9 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
             SizedBox(height: 16.0),
 
             ElevatedButton(
-              onPressed: _registerStudent,
+              onPressed: () {
+                _registerStudent();
+              },
               child: Text('등록'),
             ),
           ],

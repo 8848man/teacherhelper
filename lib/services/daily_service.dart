@@ -22,14 +22,75 @@ class DailyService {
     }
   }
 
+  // 반 생성시 기본 Daily를 추가.
+  Future<void> addDefaultDaily(String? classroomId) async {
+    try {
+      print('test001');
+      List<Daily> dailyList = [];
+      Daily attendanceDaily = Daily(
+        name: '출석',
+        order: 1,
+      );
+      dailyList.add(attendanceDaily);
+      Daily noticeDaily = Daily(name: '가정통신문', order: 2);
+      dailyList.add(noticeDaily);
+
+      for (var daily in dailyList) {
+        _classroomsCollection
+            .doc(classroomId)
+            .collection('Daily')
+            .add(daily.toJson());
+      }
+    } catch (e) {}
+  }
+
   Future<void> addDailyToClassroom(Daily daily, String classroomId) async {
     try {
+      // daily를 정렬하기 위한 숫자를 가져오는 쿼리 추후 데일리 추가 기능 구현시 필요
+      // Future<QuerySnapshot<Map<String, dynamic>>> dailyOrder =
+      //     _classroomsCollection
+      //         .doc(classroomId)
+      //         .collection('Daily')
+      //         .orderBy('order', descending: true)
+      //         .limit(1)
+      //         .get();
+
       _classroomsCollection
           .doc(classroomId)
           .collection('Daily')
           .add(daily.toJson());
     } catch (e) {
       throw Exception('Failed to add assignment to classroom: $e');
+    }
+  }
+
+  Future<List<Daily>> getDailysByClassroom(String classroomId) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('classrooms')
+          .doc(classroomId)
+          .collection('Daily')
+          .get();
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return Daily.fromJson(data, doc.id);
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch assignments by classroom: $e');
+    }
+  }
+
+  // 학생 등록시 일상도 등록하게 만드는 메소드
+  Future<void> addDailysToStudent(
+      String classroomId, String studentId, Daily daily) async {
+    try {
+      final studentRef = _classroomsCollection
+          .doc(classroomId)
+          .collection('Students')
+          .doc(studentId);
+      await studentRef.collection('daily').add(daily.toJson());
+    } catch (e) {
+      throw Exception('Failed to add assignment to student: $e');
     }
   }
 }

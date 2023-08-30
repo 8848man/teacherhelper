@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_detail_page.dart';
 import 'package:teacherhelper/pages/classes/create_classroom_page.dart';
 import 'package:teacherhelper/pages/login_page.dart';
@@ -60,16 +61,15 @@ class MainPage extends HookWidget {
                   final classroom = classrooms[index];
                   return ListTile(
                     title: Text(classroom.name),
-                    subtitle:
-                        Text("학년: ${classroom.grade}, id : ${classroom.uid}"),
+                    subtitle: Text("학년: ${classroom.grade}"),
                     onTap: () {
                       Provider.of<ClassroomProvider>(context, listen: false)
                           .setClassroomId(classroom.uid!);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              BottomNavi(classroomId: classroom.uid!),
+                          builder: (context) => ClassroomDailyPageTapBar(
+                              classroomId: classroom.uid!),
                         ),
                       );
                     },

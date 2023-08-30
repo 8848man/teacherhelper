@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_sub_page.dart';
-import 'package:teacherhelper/pages/navigations/floating_action_button_daily.dart';
+import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/floating_action_button_daily.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 
-class ClassroomDailyPage1 extends StatefulWidget {
+class ClassroomDailyPageTapBar extends StatefulWidget {
   final String classroomId; // classroomId 변수 추가
 
-  ClassroomDailyPage1({required this.classroomId});
+  ClassroomDailyPageTapBar({required this.classroomId});
 
   @override
-  _ClassroomDailyPageState createState() => _ClassroomDailyPageState();
+  _ClassroomDailyPageTapBarState createState() =>
+      _ClassroomDailyPageTapBarState();
 }
 
-class _ClassroomDailyPageState extends State<ClassroomDailyPage1> {
+class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -228,4 +228,8 @@ class AssignmentService {
       throw Exception('Failed to get assignment history: $e');
     }
   }
+
+  Future<void> addDefaultAssignment(String? classroomId) async {
+    try {} catch (e) {}
+  }
 }

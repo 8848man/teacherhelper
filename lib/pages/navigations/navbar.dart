@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_attitude_page.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_classes_page.dart';
-import 'package:teacherhelper/pages/classes/subpage/classroom_daily_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_attitude.dart/classroom_attitude_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_classes_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_classes_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 import 'package:teacherhelper/pages/main_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 
@@ -47,7 +48,7 @@ class NavBar extends StatelessWidget {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (context) => ClassroomDailyPage1(
+                      builder: (context) => ClassroomDailyPageTapBar(
                             classroomId:
                                 classroomProvider.classroomId.toString(),
                           )),

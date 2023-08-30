@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_sub_page.dart';
-import 'package:teacherhelper/pages/navigations/floating_action_button_daily.dart';
+import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/floating_action_button_daily.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 
 class ClassroomClassesPage extends StatefulWidget {
@@ -25,13 +25,13 @@ class _ClassroomClassesPageState extends State<ClassroomClassesPage> {
           body: TabBarView(
             children: [
               // 추후
-              ClassroomDailyPage(
+              ClassroomClassesPage(
                 classroomId: widget.classroomId,
               ),
-              ClassroomDailyPage(
+              ClassroomClassesPage(
                 classroomId: widget.classroomId,
               ),
-              ClassroomDailyPage(
+              ClassroomClassesPage(
                 classroomId: widget.classroomId,
               ),
             ],
