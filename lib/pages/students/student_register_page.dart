@@ -20,6 +20,8 @@ class StudentRegistrationPage extends StatefulWidget {
 
 class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _studentNumberController =
+      TextEditingController();
   final StudentProvider _studentProvider = StudentProvider();
   final AssignmentProvider _assignmentProvider = AssignmentProvider();
   final DailyProvider _dailyProvider = DailyProvider();
@@ -29,26 +31,26 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   String? _selectedGender;
 
   // 년 월 일을 담을 리스트 선언
-  List<String> _years = [];
-  List<String> _months = [];
-  List<String> _days = [];
+  // List<String> _years = [];
+  // List<String> _months = [];
+  // List<String> _days = [];
 
   // 실제 년 월 일을 담는 함수
   void _initializeDates() {
     final DateTime now = DateTime.now();
     final int currentYear = now.year;
 
-    _years =
-        List<String>.generate(10, (index) => (currentYear - index).toString());
-    _months = List<String>.generate(
-        12, (index) => (index + 1).toString().padLeft(2, '0'));
+    // _years =
+    //     List<String>.generate(10, (index) => (currentYear - index).toString());
+    // _months = List<String>.generate(
+    //     12, (index) => (index + 1).toString().padLeft(2, '0'));
 
-    final int selectedYear = int.parse(_selectedYear ?? currentYear.toString());
-    final int selectedMonth = int.parse(_selectedMonth ?? '1');
+    // final int selectedYear = int.parse(_selectedYear ?? currentYear.toString());
+    // final int selectedMonth = int.parse(_selectedMonth ?? '1');
 
-    final int daysInMonth = DateTime(selectedYear, selectedMonth + 1, 0).day;
-    _days = List<String>.generate(
-        daysInMonth, (index) => (index + 1).toString().padLeft(2, '0'));
+    // final int daysInMonth = DateTime(selectedYear, selectedMonth + 1, 0).day;
+    // _days = List<String>.generate(
+    //     daysInMonth, (index) => (index + 1).toString().padLeft(2, '0'));
   }
 
   // 드롭다운 선택된 버튼을 담을 String을 선언
@@ -72,35 +74,31 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   void _registerStudent() async {
     final name = _nameController.text;
     final gender = _selectedGender;
-    final birthdate = '$_selectedYear-$_selectedMonth-$_selectedDay';
+    final studentNumber = _studentNumberController.text;
+    // final birthdate = '$_selectedYear-$_selectedMonth-$_selectedDay';
 
     // 이름, 성별, 생년월일 값 체크
     if (name == null || name == '') {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("이름을 입력해주세요.")));
       return;
-    } else if (birthdate.contains('null')) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("생년월일을 정확히 입력해주세요.")));
-      return;
     } else if (gender == null || gender == '') {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("성별을 입력해주세요.")));
       return;
+    } else if (studentNumber == null || studentNumber == '') {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("학번을 입력해주세요.")));
+      return;
     }
+    // else if (birthdate.contains('null')) {
+    //   ScaffoldMessenger.of(context)
+    //       .showSnackBar(SnackBar(content: Text("생년월일을 정확히 입력해주세요.")));
+    //   return;
+    // }
 
-    Student student = Student(
-        name: name,
-        gender: gender,
-        birthdate: birthdate,
-        teacherUid: currentUserUid);
-    // 학생 등록
-    // _studentProvider.create(student, widget.classroomId);
-
-    // 학생 등록 후 assignment 컬렉션에 해당 반의 과제들 추가
-    // late Future<String?> studentId =
-    //     _studentProvider.create(student, widget.classroomId);
-
+    Student student =
+        Student(name: name, gender: gender, teacherUid: currentUserUid);
     String? studentId;
     try {
       studentId = await _studentProvider.create(student, widget.classroomId);
@@ -114,13 +112,10 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
             widget.classroomId, studentId!, assignment);
       }
 
-      print('test002');
       // 반에 등록되어있던 생활 과제들 가져오기
       final dailys =
           await _dailyProvider.getDailysByClassroom(widget.classroomId);
       for (final daily in dailys) {
-        print('test001');
-        print(daily);
         await _dailyProvider.addDailysToStudent(
             widget.classroomId, studentId!, daily);
       }
@@ -153,70 +148,76 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
             ),
             SizedBox(height: 16.0),
 
-            // 생년월일 입력 드롭다운버튼 묶음
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedYear,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedYear = newValue;
-                      });
-                    },
-                    items: _years.map((year) {
-                      return DropdownMenuItem<String>(
-                        value: year,
-                        child: Text(year),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      labelText: '년',
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.0),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedMonth,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedMonth = newValue;
-                      });
-                    },
-                    items: _months.map((month) {
-                      return DropdownMenuItem<String>(
-                        value: month,
-                        child: Text(month),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      labelText: '월',
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.0),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedDay,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedDay = newValue;
-                      });
-                    },
-                    items: _days.map((day) {
-                      return DropdownMenuItem<String>(
-                        value: day,
-                        child: Text(day),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      labelText: '일',
-                    ),
-                  ),
-                ),
-              ],
+            TextFormField(
+              controller: _studentNumberController,
+              decoration: InputDecoration(
+                labelText: '학번',
+              ),
             ),
+            // 생년월일 입력 드롭다운버튼 묶음
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: DropdownButtonFormField<String>(
+            //         value: _selectedYear,
+            //         onChanged: (newValue) {
+            //           setState(() {
+            //             _selectedYear = newValue;
+            //           });
+            //         },
+            //         items: _years.map((year) {
+            //           return DropdownMenuItem<String>(
+            //             value: year,
+            //             child: Text(year),
+            //           );
+            //         }).toList(),
+            //         decoration: InputDecoration(
+            //           labelText: '년',
+            //         ),
+            //       ),
+            //     ),
+            //     SizedBox(width: 8.0),
+            //     Expanded(
+            //       child: DropdownButtonFormField<String>(
+            //         value: _selectedMonth,
+            //         onChanged: (newValue) {
+            //           setState(() {
+            //             _selectedMonth = newValue;
+            //           });
+            //         },
+            //         items: _months.map((month) {
+            //           return DropdownMenuItem<String>(
+            //             value: month,
+            //             child: Text(month),
+            //           );
+            //         }).toList(),
+            //         decoration: InputDecoration(
+            //           labelText: '월',
+            //         ),
+            //       ),
+            //     ),
+            //     SizedBox(width: 8.0),
+            //     Expanded(
+            //       child: DropdownButtonFormField<String>(
+            //         value: _selectedDay,
+            //         onChanged: (newValue) {
+            //           setState(() {
+            //             _selectedDay = newValue;
+            //           });
+            //         },
+            //         items: _days.map((day) {
+            //           return DropdownMenuItem<String>(
+            //             value: day,
+            //             child: Text(day),
+            //           );
+            //         }).toList(),
+            //         decoration: InputDecoration(
+            //           labelText: '일',
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
 
             DropdownButtonFormField<String>(
               value: _selectedGender,

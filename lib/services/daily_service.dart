@@ -6,6 +6,17 @@ class DailyService {
   final CollectionReference _classroomsCollection =
       FirebaseFirestore.instance.collection('classrooms');
 
+  Future<List<Daily>> fetchDailysByClassroomId(String classroomId) async {
+    final querySnapshot =
+        await _classroomsCollection.doc(classroomId).collection('Daily').get();
+
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      return Daily(name: data['name'], order: data['order']);
+    }).toList()
+      ..sort((a, b) => a.order!.compareTo(b.order!));
+  }
+
   // 일상을 학생에 추가
   Future<void> addDailyToStudents(Daily daily, String classroomId) async {
     try {
@@ -25,7 +36,6 @@ class DailyService {
   // 반 생성시 기본 Daily를 추가.
   Future<void> addDefaultDaily(String? classroomId) async {
     try {
-      print('test001');
       List<Daily> dailyList = [];
       Daily attendanceDaily = Daily(
         name: '출석',
@@ -41,7 +51,9 @@ class DailyService {
             .collection('Daily')
             .add(daily.toJson());
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> addDailyToClassroom(Daily daily, String classroomId) async {

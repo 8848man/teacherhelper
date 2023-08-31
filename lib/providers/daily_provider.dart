@@ -9,9 +9,17 @@ class DailyProvider with ChangeNotifier {
 
   DailyProvider() : _dailyService = DailyService();
 
-  // Future<String> getDaily() {
-  //   return '';
-  // }
+  List<Daily> _dailys = [];
+  List<Daily> get dailys => _dailys;
+
+  Future<List<Daily>> fetchDailysByClassroomId(String classroomId) async {
+    try {
+      _dailys = await _dailyService.fetchDailysByClassroomId(classroomId);
+      return _dailys;
+    } catch (e) {
+      throw Exception('Failed to get daily to dailys : $e');
+    }
+  }
 
   Future<void> addDaily(Daily daily, String classroomId) async {
     try {

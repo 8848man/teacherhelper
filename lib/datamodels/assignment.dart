@@ -1,23 +1,25 @@
 class Assignment {
   String? id;
   String name;
-  bool isComplete;
-  DateTime startDate;
-  DateTime deadline;
+  bool? isComplete;
+  DateTime? startDate;
+  DateTime? deadline;
   DateTime? completeDate;
   String? assignmentFile;
   String? point;
   String? checkDate;
+  int? order;
 
   Assignment({
     this.id,
     required this.name,
-    required this.isComplete,
-    required this.startDate,
-    required this.deadline,
+    this.isComplete,
+    this.startDate,
+    this.deadline,
     this.completeDate,
     this.assignmentFile,
     this.point,
+    this.order,
   });
 
   Map<String, dynamic> toJson() {
@@ -29,6 +31,7 @@ class Assignment {
       'completeDate': completeDate,
       'assignmentFile': assignmentFile,
       'point': point ?? '0',
+      'order': order ?? '0',
     };
   }
 
@@ -44,6 +47,7 @@ class Assignment {
           : null,
       assignmentFile: json['assignmentFile'],
       point: json['point'] ?? '0',
+      order: json['order'],
     );
   }
 }

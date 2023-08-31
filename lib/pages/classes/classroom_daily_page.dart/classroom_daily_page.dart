@@ -7,14 +7,16 @@ import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomDailyPage extends StatefulWidget {
   final String classroomId;
+  final int? order;
+  final DateTime? now;
 
-  const ClassroomDailyPage({required this.classroomId});
+  const ClassroomDailyPage({required this.classroomId, this.order, this.now});
 
   @override
-  State<ClassroomDailyPage> createState() => _ClassroomDailyPagePageState();
+  State<ClassroomDailyPage> createState() => _ClassroomDailyPageState();
 }
 
-class _ClassroomDailyPagePageState extends State<ClassroomDailyPage> {
+class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
   @override
   void initState() {
     super.initState();
@@ -50,11 +52,15 @@ class _ClassroomDailyPagePageState extends State<ClassroomDailyPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GridView.builder(
+                      padding: EdgeInsets.all(100.0),
                       shrinkWrap: true,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 10, // 그리드 열의 수
-                        crossAxisSpacing: 3, // 열 간 간격
-                        mainAxisSpacing: 3, // 행 간 간격
+                        crossAxisCount:
+                            students.length >= 20 ? 10 : 5, // 그리드 열의 수
+                        crossAxisSpacing:
+                            students.length >= 20 ? 3 : 100, // 열 간 간격
+                        mainAxisSpacing:
+                            students.length >= 20 ? 3 : 100, // 행 간 간격
                       ),
                       itemCount: students.length,
                       itemBuilder: (context, index) {
@@ -73,7 +79,7 @@ class _ClassroomDailyPagePageState extends State<ClassroomDailyPage> {
                                 ? Colors.red
                                 : Colors.grey, // 상태에 따라 색상 조정
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.0),
+                              borderRadius: BorderRadius.circular(10000.0),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,

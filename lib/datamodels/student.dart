@@ -2,8 +2,9 @@ class Student {
   final String? id;
   final String name;
   final String gender;
-  final String birthdate;
+  final String? birthdate;
   final String? teacherUid;
+  final String? studentNumber;
   final List? classroomUids;
   final List? assignments;
   final List? dailyToken;
@@ -13,12 +14,13 @@ class Student {
     this.id,
     required this.name,
     required this.gender,
-    required this.birthdate,
+    this.birthdate,
     this.teacherUid,
     this.classroomUids,
     this.assignments,
     this.dailyToken,
     this.classesToken,
+    this.studentNumber,
   });
 
   Map<String, dynamic> toJson() {
@@ -30,6 +32,7 @@ class Student {
       'classroomUids': classroomUids,
       'dailyToken': dailyToken,
       'classesToken': classesToken,
+      'studentNumber': studentNumber,
     };
   }
 
@@ -43,6 +46,7 @@ class Student {
       classroomUids: List<String>.from(json['classroomUids'] ?? []),
       dailyToken: json['dailyToken'],
       classesToken: json['classesToken'],
+      studentNumber: json['studentNumber'],
     );
   }
 }

@@ -229,7 +229,29 @@ class AssignmentService {
     }
   }
 
+  // 반 생성시 기본 Evaluations를 추가
   Future<void> addDefaultAssignment(String? classroomId) async {
-    try {} catch (e) {}
+    try {
+      List<Assignment> assignmentList = [];
+      Assignment noiseAssignment = Assignment(
+        name: '떠듦',
+        order: 1,
+      );
+      assignmentList.add(noiseAssignment);
+      Assignment badAttitudeAssignment = Assignment(
+        name: '태도 불량',
+        order: 2,
+      );
+      assignmentList.add(badAttitudeAssignment);
+
+      for (var assignment in assignmentList) {
+        _classroomsCollection
+            .doc(classroomId)
+            .collection('Evaluations')
+            .add(assignment.toJson());
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
