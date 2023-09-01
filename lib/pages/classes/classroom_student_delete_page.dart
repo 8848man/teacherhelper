@@ -34,11 +34,12 @@ class ClassroomStudentDeletePage extends StatelessWidget {
                   return ListTile(
                     title: Text(student.name),
                     subtitle: Text("학번: ${student.id}"),
-                    onTap: () {
-                      studentProvider.unregisterStudentFromClassroom(
+                    onTap: () async {
+                      await studentProvider.unregisterStudentFromClassroom(
                         student.id.toString(),
                         classroomId,
                       );
+                      Navigator.pop(context);
                     },
                   );
                 },

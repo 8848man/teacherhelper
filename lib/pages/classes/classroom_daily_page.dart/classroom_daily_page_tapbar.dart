@@ -32,78 +32,88 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
         return FutureBuilder<List<Daily>>(
             future: _dailyProvider.fetchDailysByClassroomId(widget.classroomId),
             builder: (context, snapshot) {
-              List<Daily> dailyList = snapshot.data!;
-              // 오늘 날짜를 위한 변수 할당
-              DateTime now = DateTime.now();
-              int year = now.year;
-              int month = now.month;
-              int day = now.day;
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator(); // 데이터 로딩 중에 표시할 위젯
+              } else if (snapshot.hasError) {
+                return Text(
+                    'Error: ${snapshot.error}'); // 데이터 로딩 중 에러 발생 시 표시할 위젯
+              } else if (snapshot.hasData) {
+                List<Daily> dailyList = snapshot.data!;
+                // 오늘 날짜를 위한 변수 할당
+                DateTime now = DateTime.now();
+                int year = now.year;
+                int month = now.month;
+                int day = now.day;
 
-              List<int?> orderList =
-                  dailyList.map((daily) => daily.order).toList();
-              return DefaultTabController(
-                length: dailyList.length,
-                child: Scaffold(
-                  drawer: NavBar(),
-                  appBar: AppBar(
-                    // backgroundColor: Colors.white,
-                    title: Row(
-                      children: [
-                        Text("생활 탭"),
-                        Spacer(),
-                        Center(
-                          child: Text(
-                            "$year년 $month월 $day일",
+                List<int?> orderList =
+                    dailyList.map((daily) => daily.order).toList();
+                return DefaultTabController(
+                  length: dailyList.length,
+                  child: Scaffold(
+                    drawer: NavBar(),
+                    appBar: AppBar(
+                      // backgroundColor: Colors.white,
+                      title: Row(
+                        children: [
+                          Text("생활 탭"),
+                          Spacer(),
+                          Center(
+                            child: Text(
+                              "$year년 $month월 $day일",
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  body: TabBarView(
-                    children: List.generate(orderList.length, (index) {
-                      return ClassroomDailyPage(
-                        classroomId: widget.classroomId,
-                        order: orderList[index],
-                        now: now,
-                      );
-                    }),
-                  ),
-                  extendBodyBehindAppBar: true, // add this line
-
-                  bottomNavigationBar: Container(
-                    color: Colors.white, //색상
-                    child: Container(
-                      height: 70,
-                      padding: EdgeInsets.only(bottom: 10, top: 5),
-                      child: TabBar(
-                        //tab 하단 indicator size -> .label = label의 길이
-                        //tab 하단 indicator size -> .tab = tab의 길이
-                        indicatorSize: TabBarIndicatorSize.label,
-                        //tab 하단 indicator color
-                        indicatorColor: Colors.red,
-                        //tab 하단 indicator weight
-                        indicatorWeight: 2,
-                        //label color
-                        labelColor: Colors.red,
-                        //unselected label color
-                        unselectedLabelColor: Colors.black38,
-                        labelStyle: TextStyle(
-                          fontSize: 13,
-                        ),
-                        tabs: dailyList.map((daily) {
-                          return Tab(
-                            icon: Icon(Icons.music_note),
-                            text: daily.name,
-                          );
-                        }).toList(),
+                        ],
                       ),
                     ),
+                    body: TabBarView(
+                      children: List.generate(orderList.length, (index) {
+                        return ClassroomDailyPage(
+                          classroomId: widget.classroomId,
+                          order: orderList[index],
+                          dailyId: dailyList[index].id,
+                          now: now,
+                        );
+                      }),
+                    ),
+                    extendBodyBehindAppBar: true, // add this line
+
+                    bottomNavigationBar: Container(
+                      color: Colors.white, //색상
+                      child: Container(
+                        height: 70,
+                        padding: EdgeInsets.only(bottom: 10, top: 5),
+                        child: TabBar(
+                          //tab 하단 indicator size -> .label = label의 길이
+                          //tab 하단 indicator size -> .tab = tab의 길이
+                          indicatorSize: TabBarIndicatorSize.label,
+                          //tab 하단 indicator color
+                          indicatorColor: Colors.red,
+                          //tab 하단 indicator weight
+                          indicatorWeight: 2,
+                          //label color
+                          labelColor: Colors.red,
+                          //unselected label color
+                          unselectedLabelColor: Colors.black38,
+                          labelStyle: TextStyle(
+                            fontSize: 13,
+                          ),
+                          tabs: dailyList.map((daily) {
+                            return Tab(
+                              icon: Icon(Icons.music_note),
+                              text: daily.name,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                    floatingActionButton: FloatingActionButtonDaily(
+                      classroomId: widget.classroomId,
+                    ),
                   ),
-                  floatingActionButton: FloatingActionButtonDaily(
-                    classroomId: widget.classroomId,
-                  ),
-                ),
-              );
+                );
+              } else {
+                return Text('No data available'); // 데이터가 없을 때 표시할 위젯
+              }
             });
       }),
     );

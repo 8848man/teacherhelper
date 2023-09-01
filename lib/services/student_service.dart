@@ -6,12 +6,13 @@ import 'package:teacherhelper/services/auth_service.dart';
 class StudentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // 학생 컬랙션
-  final CollectionReference _studentsCollection =
-      FirebaseFirestore.instance.collection('students');
   // 반 컬랙션
   final CollectionReference _classroomCollection =
       FirebaseFirestore.instance.collection('classrooms');
+
+  // 학생 컬랙션
+  final CollectionReference _studentsCollection =
+      FirebaseFirestore.instance.collection('students');
 
   // 현재 사용자의 uid 가져오기
   final String? currentUserUid = AuthService().currentUser()?.uid.toString();
@@ -73,7 +74,9 @@ class StudentService {
       final querySnapshot = await _classroomCollection
           .doc(classroomId)
           .collection('Students')
+          .orderBy('studentNumber')
           .get();
+
       return querySnapshot.docs.map((doc) {
         final data = doc.data();
         return Student(
@@ -81,6 +84,7 @@ class StudentService {
           name: data['name'],
           gender: data['gender'],
           birthdate: data['birthdate'],
+          studentNumber: data['studentNumber'],
           // Additional student fields
         );
       }).toList();
@@ -111,118 +115,23 @@ class StudentService {
     }
   }
 
-  // 학생 추가
-  // void create(Student student, String? classroom) async {
-  //   // 반 ID 얻기
-  //   String? classroomId;
-  //   if (classroom != null) {
-  //     classroomId = await getClassroomIdByName(classroom);
-  //   }
-  //   await _studentsCollection.add({
-  //     'name': student.name,
-  //     'gender': student.gender,
-  //     'birthdate': student.birthdate,
-  //     'teacherUid': currentUserUid,
-  //   }).then(
-  //     (docRef) {
-  //       if (classroom != null && classroom != '') {
-  //         // 학생 컬랙션에 반 등록
-  //         _studentsCollection.doc(docRef.id).update({
-  //           'classrooms': FieldValue.arrayUnion([classroomId])
-  //         });
-  //         // 반 컬랙션에 학생 등록
-  //         FirebaseFirestore.instance
-  //             .collection('classrooms')
-  //             .doc(classroomId)
-  //             .update({
-  //           'students': FieldValue.arrayUnion([docRef.id])
-  //         });
-  //       }
-  //     },
-  //   );
-  // }
-
-  // Future<String?> create(Student student, String classroomId) async {
-  //   String studentId;
-  //   //await _classroomCollection.where('teacherUid', isEqualTo: currentUserUid)
-  //   await _classroomCollection
-  //       .doc(classroomId)
-  //       .get()
-  //       .then((documentSnapshot) async {
-  //     // 검색된 문서를 가져옵니다.
-  //     if (documentSnapshot.exists) {
-  //       // "Students" 서브컬렉션 참조를 얻습니다.
-  //       CollectionReference studentsCollection =
-  //           documentSnapshot.reference.collection('Students');
-
-  //       CollectionReference assignmentCollection = documentSnapshot.reference
-  //           .collection('classrooms')
-  //           .doc(classroomId)
-  //           .collection('Assignments');
-  //       final assignmentsSnapshot = await assignmentCollection
-  //           .doc(classroomId)
-  //           .collection('Students')
-  //           .get();
-
-  //       // "student" 문서를 "Students" 서브컬렉션에 추가합니다.
-  //       studentId =
-  //           studentsCollection.add(student.toJson()).then((documentRef) async {
-  //         // newDocumentRef.collection('assignments').add();
-
-  //         // try {
-  //         //   for (var studentDoc in assignmentsSnapshot.docs) {
-  //         //     await studentDoc.reference
-  //         //         .collection('assignments')
-  //         //         .add(assignment.toJson());
-  //         //   }
-  //         //   return documentRef.id;
-  //         // } catch (e) {
-  //         //   throw Exception('Failed to add assignment: $e');
-  //         // }
-
-  //         print('Student document added successfully!');
-
-  //         return documentRef.id;
-  //       }).catchError((error) {
-  //         print('Error adding student document: $error');
-  //         return null;
-  //       }).toString();
-  //     } else {
-  //       print('Document with ID $classroomId not found.');
-  //       return null;
-  //     }
-  //   }).catchError((error) {
-  //     print('Error searching document: $error');
-  //     return null;
-  //   });
-  //   return 'test0606';
-  // }
-
+  // 학생 등록
   Future<String?> create(Student student, String classroomId) async {
     String? studentId;
 
     try {
-      final documentSnapshot =
-          await _classroomCollection.doc(classroomId).get();
-      if (documentSnapshot.exists) {
-        final studentsCollection =
-            documentSnapshot.reference.collection('Students');
+      CollectionReference studentsCollection =
+          _classroomCollection.doc(classroomId).collection('Students');
 
-        final assignmentCollection =
-            documentSnapshot.reference.collection('Assignments');
-        final assignmentsSnapshot = await assignmentCollection.get();
+      QuerySnapshot existingStudent = await studentsCollection
+          .where('studentNumber', isEqualTo: student.studentNumber)
+          .get();
 
+      if (existingStudent.docs.isEmpty) {
         final documentRef = await studentsCollection.add(student.toJson());
         studentId = documentRef.id;
-
-        // 다음부터는 과제 컬렉션에 과제 추가 등의 로직을 수행할 수 있습니다.
-        for (var studentDoc in assignmentsSnapshot.docs) {
-          // studentDoc.reference.collection('assignments').add(assignment.toJson());
-        }
-
-        print('Student document added successfully with ID: $studentId');
       } else {
-        print('Document with ID $classroomId not found.');
+        return null;
       }
     } catch (error) {
       print('Error: $error');
@@ -325,10 +234,11 @@ class StudentService {
   Future<void> unregisterStudentFromClassroom(
       String studentId, String classroomId) async {
     try {
-      final studentDoc = _studentsCollection.doc(studentId);
-      await studentDoc.update({
-        'classrooms': FieldValue.arrayRemove([classroomId])
-      });
+      _classroomCollection
+          .doc(classroomId)
+          .collection('Students')
+          .doc(studentId)
+          .delete();
     } catch (e) {
       throw Exception('Failed to unregister student from classroom: $e');
     }

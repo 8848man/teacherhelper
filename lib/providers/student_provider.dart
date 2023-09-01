@@ -59,7 +59,8 @@ class StudentProvider with ChangeNotifier {
       String studentId, String classroomId) async {
     await _studentService.unregisterStudentFromClassroom(
         studentId, classroomId);
-    await fetchStudentsByClassroom(classroomId);
+    ChangeNotifier();
+    // await fetchStudentsByClassroom(classroomId);
   }
 
   // 학생 추가

@@ -9,6 +9,7 @@ import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 import './services/auth_service.dart';
+import 'providers/daily_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // main 함수에서 async 사용하기 위함
@@ -20,6 +21,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => StudentProvider()),
         ChangeNotifierProvider(create: (context) => ClassroomProvider()),
         ChangeNotifierProvider(create: (context) => AssignmentProvider()),
+        ChangeNotifierProvider(create: (context) => DailyProvider()),
       ],
       child: const MyApp(),
     ),

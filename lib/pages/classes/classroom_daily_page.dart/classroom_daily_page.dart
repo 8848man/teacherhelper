@@ -3,14 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
+import 'package:teacherhelper/providers/daily_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomDailyPage extends StatefulWidget {
   final String classroomId;
   final int? order;
   final DateTime? now;
+  final String? dailyId;
 
-  const ClassroomDailyPage({required this.classroomId, this.order, this.now});
+  const ClassroomDailyPage(
+      {required this.classroomId, this.order, this.now, this.dailyId});
 
   @override
   State<ClassroomDailyPage> createState() => _ClassroomDailyPageState();
@@ -64,10 +67,18 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                       ),
                       itemCount: students.length,
                       itemBuilder: (context, index) {
+                        final dailyProvider =
+                            Provider.of<DailyProvider>(context, listen: false);
                         final student = students[index];
                         return GestureDetector(
                           onTap: () {
                             setState(() {
+                              print('test001');
+                              print(widget.classroomId);
+                              print(student.id);
+                              print(widget.dailyId);
+                              dailyProvider.checkDaily(widget.classroomId,
+                                  student.id!, widget.dailyId!);
                               cardStates[index] = !cardStates[index];
                             });
                           },

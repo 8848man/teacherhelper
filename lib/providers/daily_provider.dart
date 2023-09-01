@@ -44,8 +44,10 @@ class DailyProvider with ChangeNotifier {
   Future<void> addDailysToStudent(
       String classroomId, String studentId, Daily daily) async {
     try {
+      print('test002');
       if (studentId != null && studentId != '') {
         _dailyService.addDailysToStudent(classroomId, studentId, daily);
+        print('test003');
       } else
         () {
           print('studentId exeption');
@@ -53,5 +55,11 @@ class DailyProvider with ChangeNotifier {
     } catch (e) {
       throw Exception('Failed to add assignment to student: $e');
     }
+  }
+
+  // 데일리 체크 메소드
+  Future<void> checkDaily(
+      String classroomId, String studentId, String dailyId) async {
+    _dailyService.checkDaily(classroomId, studentId, dailyId);
   }
 }
