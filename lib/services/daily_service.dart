@@ -12,7 +12,9 @@ class DailyService {
 
     return querySnapshot.docs.map((doc) {
       final data = doc.data();
-      return Daily(name: data['name'], order: data['order']);
+      final id = doc.id; // 문서의 ID를 가져옵니다.
+
+      return Daily(name: data['name'], order: data['order'], id: id);
     }).toList()
       ..sort((a, b) => a.order!.compareTo(b.order!));
   }
@@ -66,6 +68,18 @@ class DailyService {
       //         .orderBy('order', descending: true)
       //         .limit(1)
       //         .get();
+
+      // 마지막 order를 저장하기 위한 변수
+      final querySnapshot = await _classroomsCollection
+          .doc(classroomId)
+          .collection('Daily')
+          .orderBy('order', descending: true)
+          .limit(1)
+          .get();
+
+      int lastOrder = querySnapshot.docs.first.data()['order'] + 1;
+
+      daily.order = lastOrder;
 
       _classroomsCollection
           .doc(classroomId)

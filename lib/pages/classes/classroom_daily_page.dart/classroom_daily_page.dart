@@ -73,10 +73,6 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                         return GestureDetector(
                           onTap: () {
                             setState(() {
-                              print('test001');
-                              print(widget.classroomId);
-                              print(student.id);
-                              print(widget.dailyId);
                               dailyProvider.checkDaily(widget.classroomId,
                                   student.id!, widget.dailyId!);
                               cardStates[index] = !cardStates[index];

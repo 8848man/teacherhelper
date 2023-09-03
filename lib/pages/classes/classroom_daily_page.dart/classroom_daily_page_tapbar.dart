@@ -47,6 +47,8 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
 
                 List<int?> orderList =
                     dailyList.map((daily) => daily.order).toList();
+                List<String?> dailyIdList =
+                    dailyList.map((daily) => daily.id).toList();
                 return DefaultTabController(
                   length: dailyList.length,
                   child: Scaffold(

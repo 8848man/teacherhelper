@@ -31,7 +31,7 @@ class Daily {
 
   factory Daily.fromJson(Map<String, dynamic> json, String? id) {
     return Daily(
-      id: id,
+      id: json['id'],
       name: json['name'],
       isComplete: json['isComplete'],
       startDate: json['startDate'] == null ? null : json['startDate'].toDate(),
