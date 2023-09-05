@@ -8,11 +8,8 @@ import 'package:teacherhelper/services/student_service.dart';
 class StudentProvider with ChangeNotifier {
   final StudentService _studentService = StudentService();
   final currentUserUid = AuthService().currentUser()?.uid;
-  List<Student> _students = [];
 
-  bool setCount = false;
-  // 학생 리스트 가져오기
-  List<Student> get students => [..._students];
+  List<Student> students = [];
 
   // 학생 불러오기
   Future<QuerySnapshot> read(String uid) {
@@ -37,13 +34,15 @@ class StudentProvider with ChangeNotifier {
   }
 
   // classroomId로 학생 가져오기
-  Future<List<Student>> fetchStudentsByClassroom(String classroomId) async {
-    if (currentUserUid != null) {
-      _students = await _studentService.getStudentsByTeacher(currentUserUid!);
+  Future<void> fetchStudentsByClassroom(String classroomId) async {
+    try {
+      print('test002');
+      final List<Student> fetchedStudents =
+          await _studentService.fetchStudentsByClassroom(classroomId);
+      students = fetchedStudents;
       notifyListeners();
-      return _students;
-    } else {
-      throw Exception("Failed to fetch students: User not authenticated");
+    } catch (e) {
+      throw Exception('Failed to fetch students: $e');
     }
   }
 
@@ -51,7 +50,6 @@ class StudentProvider with ChangeNotifier {
   Future<void> registerStudentToClassroom(
       String studentId, String classroomId) async {
     await _studentService.registerStudentToClassroom(studentId, classroomId);
-    // await fetchStudentsByClassroom(classroomId);
   }
 
   // 학생을 반에서 삭제하기
@@ -60,7 +58,6 @@ class StudentProvider with ChangeNotifier {
     await _studentService.unregisterStudentFromClassroom(
         studentId, classroomId);
     ChangeNotifier();
-    // await fetchStudentsByClassroom(classroomId);
   }
 
   // 학생 추가
@@ -84,21 +81,8 @@ class StudentProvider with ChangeNotifier {
   }
 
   // 학생 리스트 저장
-  void setStudents(List<Student> students) {
-    _students = students;
-    notifyListeners();
-  }
-
-  // 학생 불러오기
-  // Future<void> fetchStudents(String classroomUid) async {
-  //   print('test002');
-  //   if (setCount) {
-  //     print('test001');
-  //     _students = (await _studentService.fetchStudentsByClassroom(classroomUid))
-  //         .cast<Student>();
-  //     print(_students);
-  //     setCount = !setCount;
-  //   }
+  // void setStudents(List<Student> students) {
+  //   _students = students;
   //   notifyListeners();
   // }
 

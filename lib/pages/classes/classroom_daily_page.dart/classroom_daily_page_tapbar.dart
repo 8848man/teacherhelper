@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page.dart';
 import 'package:teacherhelper/pages/classes/subpage/classroom_sub_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/floating_action_button_daily.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
+import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomDailyPageTapBar extends StatefulWidget {
   final String classroomId; // classroomId 변수 추가
@@ -47,8 +49,6 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
 
                 List<int?> orderList =
                     dailyList.map((daily) => daily.order).toList();
-                List<String?> dailyIdList =
-                    dailyList.map((daily) => daily.id).toList();
                 return DefaultTabController(
                   length: dailyList.length,
                   child: Scaffold(
@@ -72,7 +72,7 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                         return ClassroomDailyPage(
                           classroomId: widget.classroomId,
                           order: orderList[index],
-                          dailyId: dailyList[index].id,
+                          dailyName: dailyList[index].name,
                           now: now,
                         );
                       }),

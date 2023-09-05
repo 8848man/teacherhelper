@@ -46,6 +46,30 @@ class StudentService {
     }
   }
 
+  Future<List<Student>> fetchStudentsByClassroom(String classroomId) async {
+    try {
+      final querySnapshot = await _classroomCollection
+          .doc(classroomId)
+          .collection('Students')
+          .orderBy('studentNumber')
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return Student(
+          id: doc.id,
+          name: data['name'],
+          gender: data['gender'],
+          birthdate: data['birthdate'],
+          studentNumber: data['studentNumber'],
+          // Additional student fields
+        );
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch students: $e');
+    }
+  }
+
   // ClassroomId로 학생 목록 가져오기
   // Future<List<Student>> getStudentsByClassroom(String classroomId) async {
   //   try {
@@ -259,31 +283,4 @@ class StudentService {
       return null; // 해당 이름의 반을 찾지 못한 경우
     }
   }
-
-  // 반 Id로 학생들을 조회
-  // Future<List<Map<String, dynamic>>> fetchStudentsByClassroom(
-  //     String targetId) async {
-  //   List<Map<String, dynamic>> dataList = [];
-
-  //   try {
-  //     DocumentSnapshot documentSnapshot =
-  //         await _firestore.collection('classrooms').doc(targetId).get();
-
-  //     if (documentSnapshot.exists) {
-  //       CollectionReference studentsCollection =
-  //           documentSnapshot.reference.collection('Students');
-
-  //       QuerySnapshot querySnapshot = await studentsCollection.get();
-
-  //       dataList = querySnapshot.docs
-  //           .map((doc) => doc.data())
-  //           .cast<Map<String, dynamic>>()
-  //           .toList();
-  //     }
-  //   } catch (error) {
-  //     print('Error fetching data: $error');
-  //   }
-
-  //   return dataList;
-  // }
 }

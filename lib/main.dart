@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/pages/login_page.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
+import 'package:teacherhelper/providers/daily_history_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 import './services/auth_service.dart';
@@ -22,6 +23,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ClassroomProvider()),
         ChangeNotifierProvider(create: (context) => AssignmentProvider()),
         ChangeNotifierProvider(create: (context) => DailyProvider()),
+        ChangeNotifierProvider(create: (context) => DailyHistoryProvider()),
       ],
       child: const MyApp(),
     ),
