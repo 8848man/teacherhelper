@@ -71,10 +71,32 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
             //반에 등록된 학생 리스트
             Consumer2<StudentProvider, DailyHistoryProvider>(
               builder: (context, studentProvider, dailyHistoryProvider, child) {
+                // 학생 저장 변수
                 final List<Student> students = studentProvider.students;
-                final List<DailyHistory> dailyHistorys =
-                    dailyHistoryProvider.dailyHistorys;
-                print(dailyHistorys);
+
+                // 출석체크등 완료여부를 알기 위한 토큰.
+                final List<DailyHistory> latestDailyHistorys =
+                    dailyHistoryProvider.latestDailyHistorys;
+
+                // List<DailyHistory> latestDailyHistory;
+
+                int maxStudentNumber = students.length; // students 리스트의 최대 길이
+
+                List<DailyHistory?> latestDailyHistory =
+                    List<DailyHistory?>.filled(maxStudentNumber, null);
+
+                // for (int i = 0; i < maxStudentNumber; i++) {
+                //   final studentNumber =
+                //       latestDailyHistorys[i].studentNumber!.toInt();
+
+                //   if (studentNumber >= 1 && studentNumber <= maxStudentNumber) {
+                //     latestDailyHistory[studentNumber - 1] =
+                //         latestDailyHistorys[i];
+                //   }
+                // }
+                // print('test001');
+                // print(latestDailyHistory[4]);
+                // print(latestDailyHistorys);
                 if (students.isEmpty) {
                   return CircularProgressIndicator(); // 데이터 로딩 중
                 } else {
@@ -96,9 +118,6 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                         ),
                         itemCount: students.length,
                         itemBuilder: (context, index) {
-                          final dailyHistoryProvider =
-                              Provider.of<DailyHistoryProvider>(context,
-                                  listen: false);
                           final student = students[index];
                           // final dailyHistory = dailyHistorys[index];
                           return GestureDetector(

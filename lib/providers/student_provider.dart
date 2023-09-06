@@ -36,7 +36,6 @@ class StudentProvider with ChangeNotifier {
   // classroomId로 학생 가져오기
   Future<void> fetchStudentsByClassroom(String classroomId) async {
     try {
-      print('test002');
       final List<Student> fetchedStudents =
           await _studentService.fetchStudentsByClassroom(classroomId);
       students = fetchedStudents;

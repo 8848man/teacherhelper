@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:teacherhelper/datamodels/daily_history.dart';
 
 class DailyHistoryService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -56,22 +57,17 @@ class DailyHistoryService {
           .where('checkDate', isGreaterThanOrEqualTo: todayTimestamp)
           .where('checkDate',
               isLessThan: Timestamp(todayTimestamp.seconds + 86400, 0))
-          // .orderBy('studentNumber') // 학생 번호로 정렬
-          // .limit(1)
+          // .orderBy('checkDate', descending: true)
           .get();
-
       print('test001');
-      print(order);
-      querySnapshot.docs.forEach((doc) {
-        final data = doc.data();
-        print(data); // 해당 문서의 모든 데이터 출력
-      });
       if (querySnapshot.docs.isNotEmpty) {
-        print('test002');
         return querySnapshot.docs;
       } else {
         return null; // 결과가 없을 경우 null 반환
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+      return null; // 에러 발생 시 null 반환 또는 예외 처리
+    }
   }
 }
