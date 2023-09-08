@@ -36,12 +36,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AuthService>().currentUser();
+    // final user = context.read<AuthService>().currentUser();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: user == null ? LoginPage() : HomePage(),
-      home: LoginPage1(),
+      home: CoverPage(),
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:teacherhelper/pages/login_page.dart';
+import 'package:teacherhelper/pages/register_page.dart';
 
 class CoverPage extends StatelessWidget {
   @override
@@ -14,9 +16,12 @@ class CoverPage extends StatelessWidget {
             Container(
               height: MediaQuery.of(context).size.height * 0.9,
               width: MediaQuery.of(context).size.width * 0.43,
-              color: Colors.blue,
+              // color: Colors.blue,
               child: Column(
                 children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.07,
+                  ),
                   Text(
                     'SCHOOL CHECK',
                     style: TextStyle(
@@ -31,14 +36,48 @@ class CoverPage extends StatelessWidget {
                   ),
                   Spacer(),
                   Row(
-                    children: [],
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.02,
+                      ),
+                      GestureDetector(
+                        child: Image.asset('assets/buttons/login_button.jpg',
+                            height: MediaQuery.of(context).size.height * 0.06),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                        child: Image.asset('assets/buttons/login_button.jpg',
+                            height: MediaQuery.of(context).size.height * 0.06),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterPage()),
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                    ],
                   ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
+                  )
                 ],
               ),
             ),
-            SvgPicture.asset(
-              'assets/images/cover_page.svg',
-              height: MediaQuery.of(context).size.height * 0.9,
+            Image.asset(
+              'assets/images/cover_image.jpg',
+              // height: MediaQuery.of(context).size.height * 0.9,
               width: MediaQuery.of(context).size.width * 0.43,
             ),
           ],
