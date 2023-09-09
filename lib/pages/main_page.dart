@@ -8,7 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_detail_page.dart';
-import 'package:teacherhelper/pages/classes/create_classroom_page.dart';
+// import 'package:teacherhelper/pages/classes/create_classroom_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_create_page.dart';
 import 'package:teacherhelper/pages/login_page.dart';
 import 'package:teacherhelper/pages/register_page.dart';
 import 'package:teacherhelper/pages/students/student_list_page.dart';
@@ -89,7 +90,7 @@ class MainPage extends HookWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          CreateClassroomPage(teacherUid: user!.uid),
+                          ClassroomRegistPage(teacherUid: user!.uid),
                     ),
                   );
                 },
@@ -178,62 +179,95 @@ class MainPage_reform extends HookWidget {
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10,
                         ),
-                        itemCount: classrooms.length,
+                        itemCount: classrooms.length + 1,
                         itemBuilder: ((context, index) {
                           final classroom = classrooms[index];
-                          return GestureDetector(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(70)),
-                                color:
-                                    Colors.white, // 색상 코드를 Color 클래스로 변환하여 사용
-                                boxShadow: [
-                                  BoxShadow(
-                                    color:
-                                        Colors.grey.withOpacity(0.5), // 그림자 색상
-                                    spreadRadius: 1, // 그림자 확산 정도
-                                    blurRadius: 7, // 그림자 흐림 정도
-                                    offset: Offset(0, 3), // 그림자 위치 (수평, 수직)
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    classroom.name,
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.03,
-                                      fontWeight: FontWeight.w700,
-                                      height: 4.0, // 라인 높이 조절
+                          if (index <= classrooms.length) {
+                            return GestureDetector(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(70)),
+                                  color:
+                                      Colors.white, // 색상 코드를 Color 클래스로 변환하여 사용
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey
+                                          .withOpacity(0.5), // 그림자 색상
+                                      spreadRadius: 1, // 그림자 확산 정도
+                                      blurRadius: 7, // 그림자 흐림 정도
+                                      offset: Offset(0, 3), // 그림자 위치 (수평, 수직)
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.08,
-                                  ),
-                                  GestureDetector(
-                                    child: Image.asset(
-                                        'assets/buttons/modify_button.jpg'),
-                                    onTap: () {},
-                                  )
-                                ],
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ClassroomDailyPageTapBar(
-                                          classroomId: classroom.uid!),
+                                  ],
                                 ),
-                              );
-                            },
-                          );
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      classroom.name,
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize:
+                                            MediaQuery.of(context).size.height *
+                                                0.03,
+                                        fontWeight: FontWeight.w700,
+                                        height: 4.0, // 라인 높이 조절
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.08,
+                                    ),
+                                    GestureDetector(
+                                      child: Image.asset(
+                                          'assets/buttons/modify_button.jpg'),
+                                      onTap: () {},
+                                    )
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ClassroomDailyPageTapBar(
+                                            classroomId: classroom.uid!),
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            GestureDetector(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(70)),
+                                  color:
+                                      Colors.white, // 색상 코드를 Color 클래스로 변환하여 사용
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey
+                                          .withOpacity(0.5), // 그림자 색상
+                                      spreadRadius: 1, // 그림자 확산 정도
+                                      blurRadius: 7, // 그림자 흐림 정도
+                                      offset: Offset(0, 3), // 그림자 위치 (수평, 수직)
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ClassroomDailyPageTapBar(
+                                            classroomId: classroom.uid!),
+                                  ),
+                                );
+                              },
+                            );
+                          }
                         }),
                       ),
                     ),
@@ -252,7 +286,7 @@ class MainPage_reform extends HookWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          CreateClassroomPage(teacherUid: user!.uid),
+                          ClassroomRegistPage_reform(teacherUid: user!.uid),
                     ),
                   );
                 },
