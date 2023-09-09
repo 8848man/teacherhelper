@@ -181,8 +181,44 @@ class MainPage_reform extends HookWidget {
                         ),
                         itemCount: classrooms.length + 1,
                         itemBuilder: ((context, index) {
-                          final classroom = classrooms[index];
-                          if (index <= classrooms.length) {
+                          // 인덱스 에러 방지 삼항연산자
+                          final classroom = index == classrooms.length
+                              ? classrooms[index - 1]
+                              : classrooms[index];
+
+                          if (index == classrooms.length) {
+                            return GestureDetector(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(70)),
+                                  color:
+                                      Colors.white, // 색상 코드를 Color 클래스로 변환하여 사용
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey
+                                          .withOpacity(0.5), // 그림자 색상
+                                      spreadRadius: 1, // 그림자 확산 정도
+                                      blurRadius: 7, // 그림자 흐림 정도
+                                      offset: Offset(0, 3), // 그림자 위치 (수평, 수직)
+                                    ),
+                                  ],
+                                ),
+                                child: Image.asset(
+                                    'assets/buttons/class_plus_button.jpg'),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ClassroomRegistPage_reform(
+                                            teacherUid: user!.uid),
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
                             return GestureDetector(
                               child: Container(
                                 decoration: BoxDecoration(
@@ -237,37 +273,8 @@ class MainPage_reform extends HookWidget {
                                 );
                               },
                             );
-                          } else {
-                            GestureDetector(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(70)),
-                                  color:
-                                      Colors.white, // 색상 코드를 Color 클래스로 변환하여 사용
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey
-                                          .withOpacity(0.5), // 그림자 색상
-                                      spreadRadius: 1, // 그림자 확산 정도
-                                      blurRadius: 7, // 그림자 흐림 정도
-                                      offset: Offset(0, 3), // 그림자 위치 (수평, 수직)
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ClassroomDailyPageTapBar(
-                                            classroomId: classroom.uid!),
-                                  ),
-                                );
-                              },
-                            );
                           }
+                          ;
                         }),
                       ),
                     ),
@@ -276,32 +283,32 @@ class MainPage_reform extends HookWidget {
               );
             },
           ),
-          floatingActionButton: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                onPressed: () {
-                  // Handle first button's action
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ClassroomRegistPage_reform(teacherUid: user!.uid),
-                    ),
-                  );
-                },
-                child: Icon(Icons.add),
-                tooltip: '반 추가하기', // Tooltip에 표시할 텍스트
-              ),
-              SizedBox(height: 16),
-              FloatingActionButton(
-                onPressed: () {
-                  // Handle second button's action
-                },
-                child: Icon(Icons.delete),
-              ),
-            ],
-          ),
+          // floatingActionButton: Column(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: [
+          //     FloatingActionButton(
+          //       onPressed: () {
+          //         // Handle first button's action
+          //         Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //             builder: (context) =>
+          //                 ClassroomRegistPage_reform(teacherUid: user!.uid),
+          //           ),
+          //         );
+          //       },
+          //       child: Icon(Icons.add),
+          //       tooltip: '반 추가하기', // Tooltip에 표시할 텍스트
+          //     ),
+          //     SizedBox(height: 16),
+          //     FloatingActionButton(
+          //       onPressed: () {
+          //         // Handle second button's action
+          //       },
+          //       child: Icon(Icons.delete),
+          //     ),
+          //   ],
+          // ),
         );
       },
     );
