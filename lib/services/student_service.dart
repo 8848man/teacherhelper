@@ -283,4 +283,13 @@ class StudentService {
       return null; // 해당 이름의 반을 찾지 못한 경우
     }
   }
+
+  Future<void> updateOrRegistStudents(
+      List<Student> checkedStudents, String classroomId) async {
+    _classroomCollection
+        .doc(classroomId)
+        .collection('students')
+        .doc()
+        .set(checkedStudents as Map<String, dynamic>);
+  }
 }

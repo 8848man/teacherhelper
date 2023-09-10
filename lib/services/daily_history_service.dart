@@ -59,7 +59,6 @@ class DailyHistoryService {
               isLessThan: Timestamp(todayTimestamp.seconds + 86400, 0))
           // .orderBy('checkDate', descending: true)
           .get();
-      print('test001');
       if (querySnapshot.docs.isNotEmpty) {
         return querySnapshot.docs;
       } else {

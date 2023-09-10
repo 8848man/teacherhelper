@@ -45,12 +45,6 @@ class StudentProvider with ChangeNotifier {
     }
   }
 
-  // 학생을 반에 등록하기.
-  Future<void> registerStudentToClassroom(
-      String studentId, String classroomId) async {
-    await _studentService.registerStudentToClassroom(studentId, classroomId);
-  }
-
   // 학생을 반에서 삭제하기
   Future<void> unregisterStudentFromClassroom(
       String studentId, String classroomId) async {
@@ -77,6 +71,14 @@ class StudentProvider with ChangeNotifier {
   void update(Student student) {
     _studentService.update(student);
     notifyListeners();
+  }
+
+  // 반 등록 / 수정 페이지에서 학생을 등록하거나 수정하는 함수
+  Future<void> updateOrRegistStudents(
+      List<Student> students, String classroomId) async {
+    List<Student> checkedStudents =
+        students.where((student) => student.isChecked!).toList();
+    await _studentService.updateOrRegistStudents(checkedStudents, classroomId);
   }
 
   // 학생 리스트 저장

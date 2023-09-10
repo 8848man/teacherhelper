@@ -9,6 +9,7 @@ class Student {
   final List? assignments;
   final List? dailyToken;
   final List? classesToken;
+  final bool? isChecked;
 
   Student({
     this.id,
@@ -21,6 +22,7 @@ class Student {
     this.dailyToken,
     this.classesToken,
     this.studentNumber,
+    this.isChecked,
   });
 
   Map<String, dynamic> toJson() {
@@ -33,6 +35,7 @@ class Student {
       'dailyToken': dailyToken,
       'classesToken': classesToken,
       'studentNumber': studentNumber,
+      'isChecked': isChecked,
     };
   }
 
@@ -47,6 +50,7 @@ class Student {
       dailyToken: json['dailyToken'],
       classesToken: json['classesToken'],
       studentNumber: json['studentNumber'],
+      isChecked: json['isChecked'],
     );
   }
 }

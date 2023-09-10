@@ -78,10 +78,33 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                 final List<DailyHistory> latestDailyHistorys =
                     dailyHistoryProvider.latestDailyHistorys;
 
-                final studentNumbers = latestDailyHistorys
-                    .map((history) => history.studentNumber)
-                    .toSet();
+                // final studentNumbers = latestDailyHistorys
+                //     .map((history) => history.studentNumber)
+                //     .toSet();
 
+                // 0910 student sort 기능 구현중
+                List<int> studentNumbers = students
+                    .map((student) => int.parse(student.studentNumber!))
+                    .toList()
+                  ..sort(
+                    (a, b) => a.compareTo(b),
+                  );
+                List<DailyHistory> filteredHistorys = latestDailyHistorys
+                    .where((history) =>
+                        studentNumbers.contains(history.studentNumber))
+                    .toList()
+                  ..sort(
+                      (a, b) => a.studentNumber!.compareTo(b.studentNumber!));
+                ;
+
+                for (int i = 0; i < students.length; i++) {
+                  for (int j = 0; j < latestDailyHistorys.length; j++) {
+                    if (studentNumbers[i] == latestDailyHistorys[j]) {}
+                  }
+                }
+                print('test001');
+                print(filteredHistorys);
+                print('test002');
 // // 최대 인덱스 값 계산
 //                 final maxIndex = studentNumbers.isEmpty
 //                     ? 0
@@ -101,43 +124,43 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
 //                   print(i);
 //                 }
 
-                int maxStudentNumber = students.length;
-                int latestDailyHistoryLength = maxStudentNumber + 1;
+//                 int maxStudentNumber = students.length;
+//                 int latestDailyHistoryLength = maxStudentNumber + 1;
 
-                List<DailyHistory?> latestDailyHistory = List.generate(
-                  latestDailyHistoryLength,
-                  (index) {
-                    if (index < maxStudentNumber) {
-                      int studentNumber = index + 1;
-                      DailyHistory? matchingHistory =
-                          latestDailyHistorys.firstWhere(
-                        (history) => history.studentNumber == studentNumber,
-                        orElse: () => DailyHistory(
-                          // 기본값으로 DailyHistory 객체 생성
-                          dailyName: "",
-                          checkDate: null, // 또는 다른 기본값으로 설정
-                          isChecked: false, // 또는 다른 기본값으로 설정
-                          order: 0, // 또는 다른 기본값으로 설정
-                          studentName: "",
-                          studentNumber: studentNumber,
-                        ),
-                      );
+//                 List<DailyHistory?> latestDailyHistory = List.generate(
+//                   latestDailyHistoryLength,
+//                   (index) {
+//                     if (index < maxStudentNumber) {
+//                       int studentNumber = index + 1;
+//                       DailyHistory? matchingHistory =
+//                           latestDailyHistorys.firstWhere(
+//                         (history) => history.studentNumber == studentNumber,
+//                         orElse: () => DailyHistory(
+//                           // 기본값으로 DailyHistory 객체 생성
+//                           dailyName: "",
+//                           checkDate: null, // 또는 다른 기본값으로 설정
+//                           isChecked: false, // 또는 다른 기본값으로 설정
+//                           order: 0, // 또는 다른 기본값으로 설정
+//                           studentName: "",
+//                           studentNumber: studentNumber,
+//                         ),
+//                       );
 
-                      return matchingHistory;
-                    } else {
-                      return null;
-                    }
-                  },
-                );
+//                       return matchingHistory;
+//                     } else {
+//                       return null;
+//                     }
+//                   },
+//                 );
 
-// latestDailyHistory 리스트를 출력
-                for (final history in latestDailyHistory) {
-                  if (history != null) {
-                    print(history.toString());
-                  } else {
-                    print("null");
-                  }
-                }
+// // latestDailyHistory 리스트를 출력
+//                 for (final history in latestDailyHistory) {
+//                   if (history != null) {
+//                     print(history.toString());
+//                   } else {
+//                     print("null");
+//                   }
+//                 }
 
                 if (students.isEmpty) {
                   return CircularProgressIndicator(); // 데이터 로딩 중

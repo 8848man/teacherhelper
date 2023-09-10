@@ -213,7 +213,9 @@ class MainPage_reform extends HookWidget {
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         ClassroomRegistPage_reform(
-                                            teacherUid: user!.uid),
+                                      teacherUid: user!.uid,
+                                      isModify: false,
+                                    ),
                                   ),
                                 );
                               },
@@ -257,7 +259,19 @@ class MainPage_reform extends HookWidget {
                                     GestureDetector(
                                       child: Image.asset(
                                           'assets/buttons/modify_button.jpg'),
-                                      onTap: () {},
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ClassroomRegistPage_reform(
+                                              teacherUid: user!.uid,
+                                              isModify: true,
+                                              classroomId: classroom.uid,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     )
                                   ],
                                 ),
@@ -290,6 +304,7 @@ class MainPage_reform extends HookWidget {
           //       onPressed: () {
           //         // Handle first button's action
           //         Navigator.push(
+
           //           context,
           //           MaterialPageRoute(
           //             builder: (context) =>

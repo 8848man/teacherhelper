@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
+import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
+import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/classroom_service.dart';
 
 class ClassroomRegistPage extends StatefulWidget {
   final String teacherUid;
 
-  ClassroomRegistPage({required this.teacherUid});
+  ClassroomRegistPage({
+    required this.teacherUid,
+  });
 
   @override
   _ClassroomRegistPageState createState() => _ClassroomRegistPageState();
@@ -18,7 +22,13 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _gradeController = TextEditingController();
+  final studentsProvider = StudentProvider();
   bool _isLoading = false;
+
+  @override
+  initState() {
+    super.initState();
+  }
 
   Future<void> _createClassroom(ClassroomProvider classroomProvider) async {
     setState(() {
@@ -105,8 +115,11 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
 
 class ClassroomRegistPage_reform extends StatefulWidget {
   final String teacherUid;
+  final String? classroomId;
+  final bool isModify;
 
-  ClassroomRegistPage_reform({required this.teacherUid});
+  ClassroomRegistPage_reform(
+      {required this.teacherUid, this.classroomId, required this.isModify});
 
   @override
   _ClassroomRegistPage_reformState createState() =>
@@ -118,6 +131,15 @@ class _ClassroomRegistPage_reformState
   final _formKey = GlobalKey<FormState>();
   final _classNameController = TextEditingController();
   final _gradeController = TextEditingController();
+  final studentProvider = StudentProvider();
+
+  @override
+  initState() {
+    super.initState();
+    if (widget.classroomId != null) {
+      studentProvider.fetchStudentsByClassroom(widget.classroomId!);
+    }
+  }
 
   MyTextField() {
     // 글자 수 제한을 10으로 설정
@@ -166,12 +188,11 @@ class _ClassroomRegistPage_reformState
 
   @override
   Widget build(BuildContext context) {
-    final classroomProvider = Provider.of<ClassroomProvider>(context);
-
     return Scaffold(
-      body: Consumer<ClassroomProvider>(
-        builder: (context, classroomProvider, child) {
+      body: Consumer2<ClassroomProvider, StudentProvider>(
+        builder: (context, classroomProvider, studentProvider, child) {
           final List<Classroom> classrooms = classroomProvider.classrooms;
+          final List<Student> students = studentProvider.students;
           return Column(
             children: [
               Container(
@@ -183,7 +204,7 @@ class _ClassroomRegistPage_reformState
                 // 상단의 텍스트 컨테이너
                 child: Container(
                   child: Text(
-                    '학반 등록',
+                    widget.isModify == true ? '학반 수정' : '학반 등록',
                     style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 48.0,
@@ -330,111 +351,133 @@ class _ClassroomRegistPage_reformState
                                       ],
                                     ),
                                   ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.05,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Color(
-                                              0xFFEAECF0), // 바닥 border의 색상 설정
-                                          width: 2.0, // 바닥 border의 두께 설정
+                                  // 등록되어있는 학생들
+                                  SingleChildScrollView(
+                                    child: Column(children: [
+                                      Column(
+                                        children: List.generate(
+                                          students.length,
+                                          (index) {
+                                            final student = students[index];
+                                            return Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.05,
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color: Color(
+                                                        0xFFEAECF0), // 바닥 border의 색상 설정
+                                                    width:
+                                                        2.0, // 바닥 border의 두께 설정
+                                                  ),
+                                                ),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.05,
+                                                    child: Image.asset(
+                                                      'assets/buttons/default_checkbox_button.jpg',
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.15,
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          student
+                                                              .studentNumber!,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.2,
+                                                    child: Text(student.name),
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.35,
+                                                    child: Text(student.gender),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05,
-                                          child: Image.asset(
-                                            'assets/buttons/default_checkbox_button.jpg',
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              color: Color(
+                                                  0xFFEAECF0), // 바닥 border의 색상 설정
+                                              width: 2.0, // 바닥 border의 두께 설정
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15,
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                '학생번호',
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.05,
+                                              child: Image.asset(
+                                                'assets/buttons/default_checkbox_button.jpg',
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.2,
-                                          child: Text('학생이름'),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.35,
-                                          child: Text('학생성별'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.05,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Color(
-                                              0xFFEAECF0), // 바닥 border의 색상 설정
-                                          width: 2.0, // 바닥 border의 두께 설정
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    '추가학생번호',
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.2,
+                                              child: Text('추가학생이름'),
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.35,
+                                              child: Text('추가학생성별'),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05,
-                                          child: Image.asset(
-                                            'assets/buttons/default_checkbox_button.jpg',
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.15,
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                '추가학생번호',
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.2,
-                                          child: Text('추가학생이름'),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.35,
-                                          child: Text('추가학생성별'),
-                                        ),
-                                      ],
-                                    ),
+                                    ]),
                                   ),
                                 ],
                               ),
