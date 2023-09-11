@@ -46,6 +46,7 @@ class StudentService {
     }
   }
 
+  // Classroom에서 학생 가져오기
   Future<List<Student>> fetchStudentsByClassroom(String classroomId) async {
     try {
       final querySnapshot = await _classroomCollection
@@ -54,17 +55,36 @@ class StudentService {
           .orderBy('studentNumber')
           .get();
 
-      return querySnapshot.docs.map((doc) {
+      // studentNumber가 String으로 들어가있는데 다른 코드들이 String으로 작성되어있어 Int를 기준으로 정렬. 추후 수정 필요
+      final studentList = querySnapshot.docs.map((doc) {
         final data = doc.data();
+        final studentNumber =
+            int.parse(data['studentNumber']); // String을 Int로 변환
+        return {
+          'id': doc.id,
+          'name': data['name'],
+          'gender': data['gender'],
+          'birthdate': data['birthdate'],
+          'studentNumber': studentNumber, // Int로 변환한 값 사용
+        };
+      }).toList();
+
+      studentList.sort(
+          (a, b) => a['studentNumber'].compareTo(b['studentNumber'])); // 정렬
+
+      final sortedStudentList = studentList.map((studentData) {
+        // studentNumber를 다시 String으로 변환
         return Student(
-          id: doc.id,
-          name: data['name'],
-          gender: data['gender'],
-          birthdate: data['birthdate'],
-          studentNumber: data['studentNumber'],
+          id: studentData['id'],
+          name: studentData['name'],
+          gender: studentData['gender'],
+          birthdate: studentData['birthdate'],
+          studentNumber: studentData['studentNumber'].toString(),
           // Additional student fields
         );
       }).toList();
+
+      return sortedStudentList;
     } catch (e) {
       throw Exception('Failed to fetch students: $e');
     }

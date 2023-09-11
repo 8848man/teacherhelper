@@ -9,7 +9,12 @@ class StudentProvider with ChangeNotifier {
   final StudentService _studentService = StudentService();
   final currentUserUid = AuthService().currentUser()?.uid;
 
-  List<Student> students = [];
+  List<Student> _students = [];
+  List<Student> get students => _students;
+  set students(List<Student> students) {
+    _students = students;
+    notifyListeners();
+  }
 
   // 학생 불러오기
   Future<QuerySnapshot> read(String uid) {
@@ -36,9 +41,12 @@ class StudentProvider with ChangeNotifier {
   // classroomId로 학생 가져오기
   Future<void> fetchStudentsByClassroom(String classroomId) async {
     try {
-      final List<Student> fetchedStudents =
-          await _studentService.fetchStudentsByClassroom(classroomId);
-      students = fetchedStudents;
+      // final List<Student> fetchedStudents =
+      //     await _studentService.fetchStudentsByClassroom(classroomId);
+      // students = fetchedStudents;
+      print('fetch');
+      _students = [];
+      _students = await _studentService.fetchStudentsByClassroom(classroomId);
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to fetch students: $e');
@@ -97,5 +105,10 @@ class StudentProvider with ChangeNotifier {
     } catch (e) {
       throw Exception('Failed to fetch students: $e');
     }
+  }
+
+  void resetStudents() {
+    _students = [];
+    notifyListeners();
   }
 }

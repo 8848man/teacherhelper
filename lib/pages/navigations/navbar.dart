@@ -37,7 +37,7 @@ class NavBar extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => MainPage()),
+                  MaterialPageRoute(builder: (context) => MainPage_reform()),
                 );
               },
             ),

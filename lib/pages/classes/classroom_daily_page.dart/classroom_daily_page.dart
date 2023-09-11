@@ -78,11 +78,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                 final List<DailyHistory> latestDailyHistorys =
                     dailyHistoryProvider.latestDailyHistorys;
 
-                // final studentNumbers = latestDailyHistorys
-                //     .map((history) => history.studentNumber)
-                //     .toSet();
-
-                // 0910 student sort 기능 구현중
+                // 0910 student sort기능.
                 List<int> studentNumbers = students
                     .map((student) => int.parse(student.studentNumber!))
                     .toList()
@@ -95,72 +91,25 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                     .toList()
                   ..sort(
                       (a, b) => a.studentNumber!.compareTo(b.studentNumber!));
-                ;
+
+                // 학생 과제 달성 여부 토큰
+                List<int?> studentNumberList = [];
 
                 for (int i = 0; i < students.length; i++) {
+                  bool isAdded = false;
                   for (int j = 0; j < latestDailyHistorys.length; j++) {
-                    if (studentNumbers[i] == latestDailyHistorys[j]) {}
+                    if (studentNumbers[i] ==
+                        filteredHistorys[j].studentNumber) {
+                      studentNumberList.add(studentNumbers[i]);
+                      isAdded = true;
+                    }
+                  }
+                  if (isAdded == false) {
+                    studentNumberList.add(null);
                   }
                 }
-                print('test001');
-                print(filteredHistorys);
-                print('test002');
-// // 최대 인덱스 값 계산
-//                 final maxIndex = studentNumbers.isEmpty
-//                     ? 0
-//                     : studentNumbers.reduce((a, b) => a! > b! ? a : b);
 
-// // latestDailyHistory 초기화
-//                 final latestDailyHistory =
-//                     List<DailyHistory?>.filled(maxIndex!, null);
-
-// // latestDailyHistorys를 순회하면서 해당 studentNumber에 맞는 인덱스에 데이터 할당
-//                 for (final history in latestDailyHistorys) {
-//                   final index = history.studentNumber! - 1;
-//                   latestDailyHistory[index] = history;
-//                 }
-
-//                 for (final i in latestDailyHistory) {
-//                   print(i);
-//                 }
-
-//                 int maxStudentNumber = students.length;
-//                 int latestDailyHistoryLength = maxStudentNumber + 1;
-
-//                 List<DailyHistory?> latestDailyHistory = List.generate(
-//                   latestDailyHistoryLength,
-//                   (index) {
-//                     if (index < maxStudentNumber) {
-//                       int studentNumber = index + 1;
-//                       DailyHistory? matchingHistory =
-//                           latestDailyHistorys.firstWhere(
-//                         (history) => history.studentNumber == studentNumber,
-//                         orElse: () => DailyHistory(
-//                           // 기본값으로 DailyHistory 객체 생성
-//                           dailyName: "",
-//                           checkDate: null, // 또는 다른 기본값으로 설정
-//                           isChecked: false, // 또는 다른 기본값으로 설정
-//                           order: 0, // 또는 다른 기본값으로 설정
-//                           studentName: "",
-//                           studentNumber: studentNumber,
-//                         ),
-//                       );
-
-//                       return matchingHistory;
-//                     } else {
-//                       return null;
-//                     }
-//                   },
-//                 );
-
-// // latestDailyHistory 리스트를 출력
-//                 for (final history in latestDailyHistory) {
-//                   if (history != null) {
-//                     print(history.toString());
-//                   } else {
-//                     print("null");
-//                   }
-//                 }
+                print(studentNumberList);
 
                 if (students.isEmpty) {
                   return CircularProgressIndicator(); // 데이터 로딩 중
@@ -204,18 +153,20 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                   context, student.id);
                             },
                             child: Card(
-                              color:
-                                  cardStates[index] ? Colors.red : Colors.grey,
+                              // color:
+                              //     cardStates[index] ? Colors.red : Colors.grey,
+                              color: studentNumberList[index] != null ||
+                                      cardStates[index]
+                                  ? Colors.red
+                                  : Colors.grey,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10000.0),
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(student.name),
                                   Text(student.studentNumber!),
-                                  // Text(dailyHistory.name),
-                                  // Text("학번: ${student.id}"),
+                                  Text(student.name),
                                 ],
                               ),
                             ),

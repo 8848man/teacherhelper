@@ -131,14 +131,29 @@ class _ClassroomRegistPage_reformState
   final _formKey = GlobalKey<FormState>();
   final _classNameController = TextEditingController();
   final _gradeController = TextEditingController();
-  final studentProvider = StudentProvider();
+
+  bool _dataFetched = false;
 
   @override
   initState() {
     super.initState();
-    if (widget.classroomId != null) {
-      studentProvider.fetchStudentsByClassroom(widget.classroomId!);
+
+    if (!_dataFetched) {
+      fetchData();
     }
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final studentProvider =
+          Provider.of<StudentProvider>(context, listen: false);
+
+      studentProvider.resetStudents();
+      if (widget.classroomId != null) {
+        await studentProvider.fetchStudentsByClassroom(widget.classroomId!);
+      }
+      _dataFetched = true;
+    } catch (e) {}
   }
 
   MyTextField() {
@@ -271,6 +286,7 @@ class _ClassroomRegistPage_reformState
                                 Container(
                                   child: Row(
                                     children: [
+                                      // delete 버튼, 엑셀 가져오기 버튼, 등록하기 버튼
                                       Image.asset(
                                           'assets/buttons/class_delete_button.jpg'),
                                       Image.asset(

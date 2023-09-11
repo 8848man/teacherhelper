@@ -348,7 +348,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MainPage()),
+                                      builder: (context) => MainPage_reform()),
                                 );
                               },
                               onError: (err) {

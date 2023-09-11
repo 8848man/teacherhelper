@@ -12,6 +12,12 @@ class DailyHistoryProvider extends ChangeNotifier {
   List<DailyHistory> get dailyHistorys => _dailyHistorys;
   List<DailyHistory> _latestDailyHistorys = [];
   List<DailyHistory> get latestDailyHistorys => _latestDailyHistorys;
+
+  //
+  // List<List<DailyHistory>> _latestDailyHsitroysWithOrder = [];
+  // List<List<DailyHistory>> get _latestDailyHistorysWithOrder =>
+  //     _latestDailyHsitroysWithOrder;
+
   // 데일리 체크 메소드
   Future<void> checkDaily(
     String classroomId,
@@ -23,6 +29,8 @@ class DailyHistoryProvider extends ChangeNotifier {
   ) async {
     _dailyHistoryService.checkDaily(
         classroomId, studentNumber, dailyName, studentName, order, checkDate);
+
+    notifyListeners();
   }
 
   // fetchDailysByClassroomIdAndDailyOrder(String classroomId, int? order) async {
@@ -63,6 +71,8 @@ class DailyHistoryProvider extends ChangeNotifier {
       List<QueryDocumentSnapshot<Map<String, dynamic>>>? snapshot =
           await _dailyHistoryService.fetchDailysByClassroomIdAndDailyOrder(
               classroomId, order);
+
+      _latestDailyHistorys = [];
 
       if (snapshot != null) {
         // DailyHistory 객체를 만들어서 필요한 필드로 초기화합니다.
