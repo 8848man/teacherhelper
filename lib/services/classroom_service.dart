@@ -13,13 +13,17 @@ class ClassroomService {
   }
 
   // 반 생성
-  Future<void> createClassroom(Classroom classroom) async {
+  Future<String?> createClassroom(Classroom classroom) async {
+    final documentRef = _firestore.collection('classrooms').doc();
+    classroom.id = documentRef.id;
+
     try {
-      final documentRef = _firestore.collection('classrooms').doc();
-      classroom.id = documentRef.id;
       await documentRef.set(classroom.toJson());
-    } catch (e) {
-      throw Exception('Failed to create classroom: $e');
+      print('Document ID: ${documentRef.id}');
+      return documentRef.id;
+    } catch (error) {
+      print('Error adding document: $error');
+      return null;
     }
   }
 

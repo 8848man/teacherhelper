@@ -41,10 +41,6 @@ class StudentProvider with ChangeNotifier {
   // classroomId로 학생 가져오기
   Future<void> fetchStudentsByClassroom(String classroomId) async {
     try {
-      // final List<Student> fetchedStudents =
-      //     await _studentService.fetchStudentsByClassroom(classroomId);
-      // students = fetchedStudents;
-      print('fetch');
       _students = [];
       _students = await _studentService.fetchStudentsByClassroom(classroomId);
       notifyListeners();
@@ -109,6 +105,27 @@ class StudentProvider with ChangeNotifier {
 
   void resetStudents() {
     _students = [];
+    notifyListeners();
+  }
+
+  void alignStudents() {}
+
+  // classroom regist / modify 페이지에서 provider students에 학생 추가
+  void addStudent(int studentNumber, String studentName, String studentGender) {
+    print('test001');
+    for (Student student in students) {
+      print('test002');
+      if (student.studentNumber == studentNumber) {
+        return null;
+      }
+    }
+    print('test003');
+    _students.add(
+      Student(
+          name: studentName,
+          studentNumber: studentNumber.toString(),
+          gender: studentGender),
+    );
     notifyListeners();
   }
 }

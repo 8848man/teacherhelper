@@ -37,7 +37,9 @@ class ClassroomProvider with ChangeNotifier {
   // 반 등록
   Future<void> createClassroom(Classroom classroom) async {
     try {
-      await _classroomService.createClassroom(classroom);
+      String? classroomId = await _classroomService.createClassroom(classroom);
+
+      // 기본적으로 등록되어야 하는 일상 및 과제 등록
       await _dailyService.addDefaultDaily(classroom.id);
       await _assignmentService.addDefaultAssignment(classroom.id);
     } catch (e) {
@@ -75,6 +77,8 @@ class ClassroomProvider with ChangeNotifier {
   }
 
   getAssignmentsForStudent(String classroomId, String? studentId) {}
+
+  modifyClassroom(Classroom classroom) {}
 
   // 학생 관련 함수 모음
 
