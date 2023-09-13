@@ -144,6 +144,11 @@ class _ClassroomRegistPage_reformState
   bool numberHintVisible = true;
   String gender = '남자';
 
+  // 번호, 이름, 성별별 정렬을 위한 변수
+  bool isNumberAscending = false;
+  bool isNameAscending = false;
+  bool isGenderAscending = false;
+
   @override
   initState() {
     super.initState();
@@ -254,8 +259,6 @@ class _ClassroomRegistPage_reformState
           builder: (context, classroomProvider, studentProvider, child) {
             final List<Classroom> classrooms = classroomProvider.classrooms;
             final List<Student> students = studentProvider.students;
-            print('test001');
-            print(students.length);
             if (_gotIsChecked == false) {
               isChecked =
                   List<bool>.generate(students.length, (index) => false);
@@ -269,6 +272,7 @@ class _ClassroomRegistPage_reformState
                     MediaQuery.of(context).size.height * 0.05,
                   ),
                   height: MediaQuery.of(context).size.height * 0.2,
+
                   // 상단의 텍스트 컨테이너
                   child: Container(
                     child: Text(
@@ -284,6 +288,7 @@ class _ClassroomRegistPage_reformState
                     ),
                   ),
                 ),
+
                 // 카드 컨테이너를 위한 패딩
                 Padding(
                   padding: EdgeInsets.fromLTRB(
@@ -406,256 +411,377 @@ class _ClassroomRegistPage_reformState
                                                     .size
                                                     .width *
                                                 0.15,
+
+                                            // 번호 및 정렬버튼
                                             child: Row(
                                               children: [
                                                 Text(
                                                   '번호',
                                                 ),
+                                                GestureDetector(
+                                                  child: isNumberAscending
+                                                      ? Image.asset(
+                                                          'assets/buttons/arrow_up.png')
+                                                      : Image.asset(
+                                                          'assets/buttons/arrow_down.png'),
+                                                  onTap: () {
+                                                    studentProvider
+                                                        .sortStudentsByNumber(
+                                                            isNumberAscending);
+                                                    isNumberAscending =
+                                                        !isNumberAscending;
+                                                  },
+                                                ),
                                               ],
                                             ),
                                           ),
+
+                                          // 이름 및 정렬버튼
                                           SizedBox(
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
                                                 0.2,
-                                            child: Text('이름'),
+                                            child: Row(
+                                              children: [
+                                                Text('이름'),
+                                                GestureDetector(
+                                                  child: isNameAscending
+                                                      ? Image.asset(
+                                                          'assets/buttons/arrow_up.png')
+                                                      : Image.asset(
+                                                          'assets/buttons/arrow_down.png'),
+                                                  onTap: () {
+                                                    studentProvider
+                                                        .sortStudentsByName(
+                                                            isNameAscending);
+                                                    isNameAscending =
+                                                        !isNameAscending;
+                                                  },
+                                                ),
+                                              ],
+                                            ),
                                           ),
+
+                                          // 성별 및 정렬버튼
                                           SizedBox(
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
                                                 0.35,
-                                            child: Text('성별'),
+                                            child: Row(
+                                              children: [
+                                                Text('성별'),
+                                                GestureDetector(
+                                                  child: Image.asset(
+                                                      'assets/buttons/arrow_down.png'),
+                                                  onTap: () {
+                                                    studentProvider
+                                                        .sortStudentsByGender(
+                                                            isGenderAscending);
+                                                    isGenderAscending =
+                                                        !isGenderAscending;
+                                                  },
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     // 등록되어있는 학생들
-                                    SingleChildScrollView(
-                                      child: Column(children: [
-                                        Column(
-                                          children: List.generate(
-                                            students.length,
-                                            (index) {
-                                              final student = students[index];
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        child: Column(children: [
+                                          Column(
+                                            children: List.generate(
+                                              students.length,
+                                              (index) {
+                                                final student = students[index];
 
-                                              print('test004');
-                                              // 학생들의 isChecked를 저장하는 기능. _gotIsChecked는 화면이 다시 그려질 때 초기화하지 않기 위함.
-                                              if (!_gotIsChecked) {
-                                                print('test002');
-                                                isChecked = students
-                                                    .map((student) =>
-                                                        student.isChecked ??
-                                                        false)
-                                                    .toList();
-                                                _gotIsChecked = true;
-                                                print('test003');
-                                              }
+                                                // 학생들의 isChecked를 저장하는 기능. _gotIsChecked는 화면이 다시 그려질 때 초기화하지 않기 위함.
+                                                if (!_gotIsChecked) {
+                                                  isChecked = students
+                                                      .map((student) =>
+                                                          student.isChecked ??
+                                                          false)
+                                                      .toList();
+                                                  _gotIsChecked = true;
+                                                }
 
-                                              return Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.05,
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    bottom: BorderSide(
-                                                      color: Color(
-                                                          0xFFEAECF0), // 바닥 border의 색상 설정
-                                                      width:
-                                                          2.0, // 바닥 border의 두께 설정
+                                                // 학생들 리스트를 표시하기 위한 공간
+                                                return Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.05,
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                      bottom: BorderSide(
+                                                        color: Color(
+                                                            0xFFEAECF0), // 바닥 border의 색상 설정
+                                                        width:
+                                                            2.0, // 바닥 border의 두께 설정
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.05,
-                                                      child: GestureDetector(
-                                                        child: isChecked[
-                                                                    index] ==
-                                                                true
-                                                            ? Image.asset(
-                                                                'assets/buttons/class_checked_button.png')
-                                                            : Image.asset(
-                                                                'assets/buttons/default_checkbox_button.jpg'),
-                                                        onTap: () {
-                                                          setState(() {
-                                                            // 학생 체크 토글
-                                                            isChecked[index] =
-                                                                !isChecked[
-                                                                    index];
-                                                          });
-                                                        },
+                                                  child: Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.05,
+                                                        child: GestureDetector(
+                                                          child: isChecked[
+                                                                      index] ==
+                                                                  true
+                                                              ? Image.asset(
+                                                                  'assets/buttons/class_checked_button.png')
+                                                              : Image.asset(
+                                                                  'assets/buttons/default_checkbox_button.jpg'),
+                                                          onTap: () {
+                                                            setState(() {
+                                                              // 학생 체크 토글
+                                                              isChecked[index] =
+                                                                  !isChecked[
+                                                                      index];
+                                                            });
+                                                          },
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.15,
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            student
-                                                                .studentNumber!,
-                                                          ),
-                                                        ],
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.15,
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              student
+                                                                  .studentNumber!,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.2,
-                                                      child: Text(student.name),
-                                                    ),
-                                                    SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.35,
-                                                      child: Container(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: student.gender ==
-                                                                '남자'
-                                                            ? Image.asset(
-                                                                'assets/buttons/gender_badge_base_male.png')
-                                                            : Image.asset(
-                                                                'assets/buttons/gender_badge_base_female.png'),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.2,
+                                                        child:
+                                                            Text(student.name),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.05,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: Color(
-                                                    0xFFEAECF0), // 바닥 border의 색상 설정
-                                                width: 2.0, // 바닥 border의 두께 설정
-                                              ),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.35,
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: student
+                                                                      .gender ==
+                                                                  '남자'
+                                                              ? Image.asset(
+                                                                  'assets/buttons/gender_badge_base_male.png')
+                                                              : Image.asset(
+                                                                  'assets/buttons/gender_badge_base_female.png'),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ),
-                                          child: Row(
-                                            children: [
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.05,
-                                                child: GestureDetector(
-                                                  child: Image.asset(
-                                                    'assets/buttons/default_checkbox_button.jpg',
-                                                  ),
-                                                  onTap: () {
-                                                    studentProvider.addStudent(
-                                                        int.parse(
-                                                            _studentNumberController
-                                                                .text),
-                                                        _studentNameController
-                                                            .text,
-                                                        gender);
-                                                  },
+                                          Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.05,
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: Color(
+                                                      0xFFEAECF0), // 바닥 border의 색상 설정
+                                                  width:
+                                                      2.0, // 바닥 border의 두께 설정
                                                 ),
                                               ),
-                                              SizedBox(
+                                            ),
+                                            // 학생 추가 라인
+                                            child: Row(
+                                              children: [
+                                                SizedBox(
                                                   width: MediaQuery.of(context)
                                                           .size
                                                           .width *
-                                                      0.15,
-                                                  child: TextField(
-                                                    controller:
-                                                        _studentNumberController,
-                                                    decoration: InputDecoration(
-                                                        border:
-                                                            InputBorder.none,
-                                                        hintText:
-                                                            numberHintVisible
-                                                                ? '추가 학생 번호'
-                                                                : '',
-                                                        hintStyle: TextStyle(
-                                                            color: Colors
-                                                                .blue[300])),
-                                                    inputFormatters: [
-                                                      FilteringTextInputFormatter
-                                                          .digitsOnly,
-                                                      LengthLimitingTextInputFormatter(
-                                                          3), // 여기서 5는 입력 가능한 최대 길이
-                                                    ],
-                                                    // 다른 속성 및 기타 설정
-                                                  )),
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.2,
-                                                child: TextField(
-                                                  controller:
-                                                      _studentNameController,
-                                                  decoration: InputDecoration(
-                                                      border: InputBorder.none,
-                                                      hintText: nameHintVisible
-                                                          ? '추가학생이름'
-                                                          : '',
-                                                      hintStyle: TextStyle(
-                                                          color: Colors
-                                                              .blue[300])),
-                                                  onChanged: (text) {
-                                                    setState(() {
-                                                      nameHintVisible =
-                                                          text.isEmpty;
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.35,
-                                                child: Container(
-                                                  alignment:
-                                                      Alignment.centerLeft,
+                                                      0.05,
+                                                  //학생 추가 버튼
                                                   child: GestureDetector(
-                                                    child: gender == '남자'
-                                                        ? Image.asset(
-                                                            'assets/buttons/gender_badge_base_male.png')
-                                                        : Image.asset(
-                                                            'assets/buttons/gender_badge_base_female.png'),
+                                                    child: Image.asset(
+                                                      'assets/buttons/default_checkbox_button.jpg',
+                                                    ),
                                                     onTap: () {
-                                                      setState(() {
-                                                        if (gender == '남자') {
-                                                          gender = '여자';
-                                                        } else {
-                                                          gender = '남자';
-                                                        }
-                                                      });
+                                                      _gotIsChecked = false;
+
+                                                      studentProvider
+                                                          .addStudent(
+                                                        studentNumber: int.parse(
+                                                            _studentNumberController
+                                                                .text),
+                                                        studentName:
+                                                            _studentNameController
+                                                                .text,
+                                                        studentGender: gender,
+                                                        onSuccess: (message) {
+                                                          // 학생 등록 성공
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                                  SnackBar(
+                                                            content:
+                                                                Text(message),
+                                                          ));
+                                                        },
+                                                        onError: (err) {
+                                                          // 에러 발생
+                                                          showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    '학생 중복'),
+                                                                content:
+                                                                    Text(err),
+                                                                actions: <Widget>[
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      studentProvider.setStudent(
+                                                                          _studentNumberController
+                                                                              .text,
+                                                                          _studentNameController
+                                                                              .text,
+                                                                          gender);
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop(); // 다이얼로그 닫기
+                                                                    },
+                                                                    child:
+                                                                        GestureDetector(
+                                                                      child: Text(
+                                                                          '예'),
+                                                                      onTap:
+                                                                          () {
+                                                                        print(
+                                                                            'test001');
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                      );
+                                                      // _studentNameController
+                                                      //     .text = '';
+                                                      // _studentNumberController
+                                                      //     .text = '';
                                                     },
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                // 학생 번호 입력 칸
+                                                SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.15,
+                                                    child: TextField(
+                                                      controller:
+                                                          _studentNumberController,
+                                                      decoration: InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText:
+                                                              numberHintVisible
+                                                                  ? '추가 학생 번호'
+                                                                  : '',
+                                                          hintStyle: TextStyle(
+                                                              color: Colors
+                                                                  .blue[300])),
+                                                      inputFormatters: [
+                                                        FilteringTextInputFormatter
+                                                            .digitsOnly,
+                                                        LengthLimitingTextInputFormatter(
+                                                            3), // 여기서 5는 입력 가능한 최대 길이
+                                                      ],
+                                                    )),
+                                                // 학생 이름 입력 칸
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.2,
+                                                  child: TextField(
+                                                    controller:
+                                                        _studentNameController,
+                                                    decoration: InputDecoration(
+                                                        border:
+                                                            InputBorder.none,
+                                                        hintText: '추가학생이름',
+                                                        hintStyle: TextStyle(
+                                                            color: Colors
+                                                                .blue[300])),
+                                                    // onChanged: (text) {
+                                                    //   setState(() {
+                                                    //     nameHintVisible =
+                                                    //         text.isEmpty;
+                                                    //   });
+                                                    // },
+                                                  ),
+                                                ),
+                                                // 학생 성별 입력 칸
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.35,
+                                                  child: Container(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: GestureDetector(
+                                                      child: gender == '남자'
+                                                          ? Image.asset(
+                                                              'assets/buttons/gender_badge_base_male.png')
+                                                          : Image.asset(
+                                                              'assets/buttons/gender_badge_base_female.png'),
+                                                      onTap: () {
+                                                        setState(() {
+                                                          if (gender == '남자') {
+                                                            gender = '여자';
+                                                          } else {
+                                                            gender = '남자';
+                                                          }
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ]),
+                                        ]),
+                                      ),
                                     ),
                                   ],
                                 ),

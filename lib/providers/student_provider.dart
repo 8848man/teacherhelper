@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:teacherhelper/datamodels/assignment.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 import 'package:teacherhelper/services/student_service.dart';
@@ -111,21 +110,93 @@ class StudentProvider with ChangeNotifier {
   void alignStudents() {}
 
   // classroom regist / modify 페이지에서 provider students에 학생 추가
-  void addStudent(int studentNumber, String studentName, String studentGender) {
-    print('test001');
-    for (Student student in students) {
-      print('test002');
-      if (student.studentNumber == studentNumber) {
+  void addStudent({
+    required int studentNumber,
+    required String studentName,
+    required String studentGender,
+    required Function(String message) onSuccess, // 로그인 성공시 호출되는 함수
+    required Function(String err) onError, // 에러 발생시 호출되는 함수
+  }) {
+    try {
+      // 학생 이름이 빈 값일 경우 바로 리턴.
+      if (studentName != '') {
+        for (Student student in students) {
+          if (student.studentNumber == studentNumber.toString()) {
+            onError('학번이 중복되었습니다. 이전 학생을 삭제하고 등록하시겠습니까?');
+            return null;
+          }
+        }
+
+        _students.add(
+          Student(
+              name: studentName,
+              studentNumber: studentNumber.toString(),
+              gender: studentGender),
+        );
+
+        onSuccess('$studentNumber 학번 $studentName 학생이 추가되었습니다.');
+        notifyListeners();
+      } else {
+        onSuccess('학생 이름을 입력해주세요.');
         return null;
       }
+    } catch (e) {
+      print(e);
     }
-    print('test003');
-    _students.add(
-      Student(
-          name: studentName,
-          studentNumber: studentNumber.toString(),
-          gender: studentGender),
-    );
+  }
+
+  // 학번이 같은 학생 덮어쓰기.
+  void setStudent(
+      String studentNumber, String studentName, String studentGender) {
+    // 학번이 같은 학생을 찾아서 인덱스를 구합니다.
+    int indexToReplace = _students
+        .indexWhere((student) => student.studentNumber == studentNumber);
+
+    if (indexToReplace != -1) {
+      // 학번이 같은 학생을 찾았을 때
+      _students.removeAt(indexToReplace); // 해당 인덱스의 학생 객체 삭제
+    }
+
+    // 새로운 학생 정보를 생성하여 해당 인덱스에 삽입
+    Student newStudent = Student(
+        studentNumber: studentNumber, name: studentName, gender: studentGender);
+    _students.insert(
+        indexToReplace != -1 ? indexToReplace : _students.length, newStudent);
+
     notifyListeners();
   }
+
+  // 학생을 번호로 정렬하는 기능
+  void sortStudentsByNumber(isAscending) {
+    if (isAscending) {
+      _students.sort((a, b) =>
+          int.parse(b.studentNumber!).compareTo(int.parse(a.studentNumber!)));
+    } else {
+      _students.sort((a, b) =>
+          int.parse(a.studentNumber!).compareTo(int.parse(b.studentNumber!)));
+    }
+    notifyListeners();
+  }
+
+  // 학생을 이름으로 정렬하는 기능
+  void sortStudentsByName(isAscending) {
+    if (isAscending) {
+      _students.sort((a, b) => b.name.compareTo(a.name));
+    } else {
+      _students.sort((a, b) => a.name.compareTo(b.name));
+    }
+    notifyListeners();
+  }
+
+  // 학생을 성별로 정렬하는 기능
+  void sortStudentsByGender(isAscending) {
+    if (isAscending) {
+      _students.sort((a, b) => b.gender.compareTo(a.gender));
+    } else {
+      _students.sort((a, b) => a.gender.compareTo(b.gender));
+    }
+    notifyListeners();
+  }
+
+  void checkStudent(String studentNumber) {}
 }
