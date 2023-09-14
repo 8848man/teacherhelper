@@ -76,14 +76,6 @@ class StudentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // 반 등록 / 수정 페이지에서 학생을 등록하거나 수정하는 함수
-  Future<void> updateOrRegistStudents(
-      List<Student> students, String classroomId) async {
-    List<Student> checkedStudents =
-        students.where((student) => student.isChecked!).toList();
-    await _studentService.updateOrRegistStudents(checkedStudents, classroomId);
-  }
-
   // 학생 리스트 저장
   // void setStudents(List<Student> students) {
   //   _students = students;
@@ -198,5 +190,16 @@ class StudentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void checkStudent(String studentNumber) {}
+  void checkStudent(String studentNumber) {
+    Student selectedStudent = _students
+        .firstWhere((student) => student.studentNumber == studentNumber);
+    // isChecked 토큰 반전
+    if (selectedStudent.isChecked != null) {
+      selectedStudent.isChecked = !selectedStudent.isChecked!;
+    } else {
+      selectedStudent.isChecked = true;
+    }
+
+    notifyListeners();
+  }
 }

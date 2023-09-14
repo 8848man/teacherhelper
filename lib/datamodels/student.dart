@@ -9,7 +9,7 @@ class Student {
   final List? assignments;
   final List? dailyToken;
   final List? classesToken;
-  final bool? isChecked;
+  bool? isChecked;
 
   Student({
     this.id,

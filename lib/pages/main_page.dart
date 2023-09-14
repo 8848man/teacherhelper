@@ -112,19 +112,44 @@ class MainPage extends HookWidget {
   }
 }
 
-class MainPage_reform extends HookWidget {
+class MainPage_reform extends StatefulWidget {
+  @override
+  State<MainPage_reform> createState() => _MainPage_reformState();
+}
+
+class _MainPage_reformState extends State<MainPage_reform> {
   User? user = FirebaseAuth.instance.currentUser;
+
+  // 데이터를 가져왔는지에 대한 여부.
+  bool _dataFetched = false;
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+    // 여기에서 초기화 작업 수행
+  }
+
+  final currentUserUid = AuthService().currentUser()?.uid.toString();
+
+  Future<void> fetchData() async {
+    try {
+      final classroomProvider =
+          Provider.of<ClassroomProvider>(context, listen: false);
+
+      classroomProvider.fetchClassrooms(currentUserUid!);
+      _dataFetched = true;
+    } catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
-    final classroomProvider = Provider.of<ClassroomProvider>(context);
+    // final classroomProvider = Provider.of<ClassroomProvider>(context);
 
     // final classrooms = classroomProvider.classrooms;
-    final currentUserUid = AuthService().currentUser()?.uid.toString();
 
-    useEffect(() {
-      classroomProvider.fetchClassrooms(currentUserUid!);
-    }, []);
+    // useEffect(() {
+    //   classroomProvider.fetchClassrooms(currentUserUid!);
+    // }, []);
 
     return Consumer<AuthService>(
       builder: (context, authService, child) {

@@ -304,12 +304,18 @@ class StudentService {
     }
   }
 
-  Future<void> updateOrRegistStudents(
-      List<Student> checkedStudents, String classroomId) async {
-    _classroomCollection
-        .doc(classroomId)
-        .collection('students')
-        .doc()
-        .set(checkedStudents as Map<String, dynamic>);
+  Future<void> registStudents(
+      List<String?> checkedStudents, String classroomId) async {
+    print('test002');
+    print(checkedStudents);
+    try {
+      _classroomCollection
+          .doc(classroomId)
+          .collection('students')
+          .doc()
+          .set(checkedStudents as Map<String, dynamic>);
+    } catch (e) {
+      print(e);
+    }
   }
 }

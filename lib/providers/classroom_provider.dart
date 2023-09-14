@@ -2,21 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
+import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/assignment_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 import 'package:teacherhelper/services/classroom_service.dart';
 import 'package:teacherhelper/services/daily_service.dart';
+import 'package:teacherhelper/services/student_service.dart';
 
 class ClassroomProvider with ChangeNotifier {
   final ClassroomService _classroomService;
   final DailyService _dailyService;
   final AssignmentService _assignmentService;
+  final StudentService _studentService;
+
   final currentUserUid = AuthService().currentUser()?.uid;
 
   ClassroomProvider()
       : _classroomService = ClassroomService(),
         _dailyService = DailyService(),
-        _assignmentService = AssignmentService();
+        _assignmentService = AssignmentService(),
+        _studentService = StudentService();
 
   List<Classroom> _classrooms = [];
   List<Classroom> get classrooms => _classrooms;
@@ -35,13 +40,16 @@ class ClassroomProvider with ChangeNotifier {
   }
 
   // 반 등록
-  Future<void> createClassroom(Classroom classroom) async {
+  Future<void> createClassroom(
+      Classroom classroom, List<String?> checkedStudents) async {
     try {
       String? classroomId = await _classroomService.createClassroom(classroom);
 
+      await _studentService.registStudents(checkedStudents, classroomId!);
       // 기본적으로 등록되어야 하는 일상 및 과제 등록
       await _dailyService.addDefaultDaily(classroom.id);
       await _assignmentService.addDefaultAssignment(classroom.id);
+      notifyListeners();
     } catch (e) {
       throw Exception('Failed to create classroom: $e');
     }

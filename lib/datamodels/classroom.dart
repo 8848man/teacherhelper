@@ -4,13 +4,13 @@ class Classroom {
   String? id;
   String name;
   String teacherUid;
-  int grade;
+  int? grade;
   String? uid;
 
   Classroom({
     required this.name,
     required this.teacherUid,
-    required this.grade,
+    this.grade,
     id,
     this.uid,
   });

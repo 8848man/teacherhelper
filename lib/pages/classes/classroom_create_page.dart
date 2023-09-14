@@ -43,7 +43,7 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
         id: '',
       );
 
-      await classroomProvider.createClassroom(classroom);
+      // await classroomProvider.createClassroom(classroom);
 
       setState(() {
         _isLoading = false;
@@ -136,8 +136,6 @@ class _ClassroomRegistPage_reformState
 
   // 데이터를 가져왔는지에 대한 여부.
   bool _dataFetched = false;
-  bool _gotIsChecked = false;
-  List<bool> isChecked = [];
 
   // 학생 추가 line에 필요한 변수
   bool nameHintVisible = true;
@@ -183,35 +181,34 @@ class _ClassroomRegistPage_reformState
     });
   }
 
-  bool _isLoading = false;
-
   Future<void> _createClassroom() async {
     final classroomProvider =
         Provider.of<ClassroomProvider>(context, listen: false);
-    setState(() {
-      _isLoading = true;
-    });
-
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
     try {
-      final classroom = Classroom(
-        name: _classNameController.text,
-        teacherUid: widget.teacherUid,
-        grade: int.parse(_gradeController.text),
-        id: '',
-      );
+      if (_classNameController.text != '') {
+        final classroom = Classroom(
+          name: _classNameController.text,
+          teacherUid: widget.teacherUid,
+          id: '',
+        );
 
-      await classroomProvider.createClassroom(classroom);
+        List<Student> students = studentProvider.students;
+        List<String?> checkedStudents = students
+            .where((student) => student.isChecked == true)
+            .map((student) => student.studentNumber)
+            .toList();
 
-      setState(() {
-        _isLoading = false;
-      });
-
-      Navigator.pop(context);
+        await classroomProvider.createClassroom(classroom, checkedStudents);
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("반 이름을 입력해주세요")),
+        );
+        return;
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("반 등록에 실패했습니다.")),
       );
@@ -221,30 +218,18 @@ class _ClassroomRegistPage_reformState
   Future<void> _modifyClassroom() async {
     final classroomProvider =
         Provider.of<ClassroomProvider>(context, listen: false);
-    setState(() {
-      _isLoading = true;
-    });
 
     try {
       final classroom = Classroom(
         name: _classNameController.text,
         teacherUid: widget.teacherUid,
-        grade: int.parse(_gradeController.text),
         id: '',
       );
 
       await classroomProvider.modifyClassroom(classroom);
 
-      setState(() {
-        _isLoading = false;
-      });
-
       Navigator.pop(context);
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("반 등록에 실패했습니다.")),
       );
@@ -259,10 +244,6 @@ class _ClassroomRegistPage_reformState
           builder: (context, classroomProvider, studentProvider, child) {
             final List<Classroom> classrooms = classroomProvider.classrooms;
             final List<Student> students = studentProvider.students;
-            if (_gotIsChecked == false) {
-              isChecked =
-                  List<bool>.generate(students.length, (index) => false);
-            }
 
             return Column(
               children: [
@@ -325,6 +306,7 @@ class _ClassroomRegistPage_reformState
                                     width: MediaQuery.of(context).size.width *
                                         0.35,
                                     child: TextField(
+                                      controller: _classNameController,
                                       style: TextStyle(
                                         fontSize:
                                             MediaQuery.of(context).size.height *
@@ -356,10 +338,14 @@ class _ClassroomRegistPage_reformState
                                               'assets/buttons/class_exel_import_button.jpg'),
                                           onTap: () {},
                                         ),
+
+                                        // 등록하기 버튼
                                         GestureDetector(
                                             child: Image.asset(
                                                 'assets/buttons/class_regist_button.jpg'),
-                                            onTap: () {}),
+                                            onTap: () {
+                                              _createClassroom();
+                                            }),
                                       ],
                                     ),
                                   ),
@@ -499,16 +485,6 @@ class _ClassroomRegistPage_reformState
                                               (index) {
                                                 final student = students[index];
 
-                                                // 학생들의 isChecked를 저장하는 기능. _gotIsChecked는 화면이 다시 그려질 때 초기화하지 않기 위함.
-                                                if (!_gotIsChecked) {
-                                                  isChecked = students
-                                                      .map((student) =>
-                                                          student.isChecked ??
-                                                          false)
-                                                      .toList();
-                                                  _gotIsChecked = true;
-                                                }
-
                                                 // 학생들 리스트를 표시하기 위한 공간
                                                 return Container(
                                                   height: MediaQuery.of(context)
@@ -534,8 +510,8 @@ class _ClassroomRegistPage_reformState
                                                                 .width *
                                                             0.05,
                                                         child: GestureDetector(
-                                                          child: isChecked[
-                                                                      index] ==
+                                                          child: student
+                                                                      .isChecked ==
                                                                   true
                                                               ? Image.asset(
                                                                   'assets/buttons/class_checked_button.png')
@@ -543,10 +519,10 @@ class _ClassroomRegistPage_reformState
                                                                   'assets/buttons/default_checkbox_button.jpg'),
                                                           onTap: () {
                                                             setState(() {
-                                                              // 학생 체크 토글
-                                                              isChecked[index] =
-                                                                  !isChecked[
-                                                                      index];
+                                                              studentProvider
+                                                                  .checkStudent(
+                                                                      student
+                                                                          .studentNumber!);
                                                             });
                                                           },
                                                         ),
@@ -628,8 +604,6 @@ class _ClassroomRegistPage_reformState
                                                       'assets/buttons/default_checkbox_button.jpg',
                                                     ),
                                                     onTap: () {
-                                                      _gotIsChecked = false;
-
                                                       studentProvider
                                                           .addStudent(
                                                         studentNumber: int.parse(
@@ -675,16 +649,8 @@ class _ClassroomRegistPage_reformState
                                                                               context)
                                                                           .pop(); // 다이얼로그 닫기
                                                                     },
-                                                                    child:
-                                                                        GestureDetector(
-                                                                      child: Text(
-                                                                          '예'),
-                                                                      onTap:
-                                                                          () {
-                                                                        print(
-                                                                            'test001');
-                                                                      },
-                                                                    ),
+                                                                    child: Text(
+                                                                        '예'),
                                                                   ),
                                                                 ],
                                                               );
