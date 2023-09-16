@@ -9,6 +9,9 @@ class Student {
   final List? assignments;
   final List? dailyToken;
   final List? classesToken;
+  final DateTime? createdDate;
+  final DateTime? updatedDate;
+  final DateTime? deletedDate;
   bool? isChecked;
 
   Student({
@@ -23,6 +26,9 @@ class Student {
     this.classesToken,
     this.studentNumber,
     this.isChecked,
+    this.createdDate,
+    this.deletedDate,
+    this.updatedDate,
   });
 
   Map<String, dynamic> toJson() {
@@ -36,6 +42,9 @@ class Student {
       'classesToken': classesToken,
       'studentNumber': studentNumber,
       'isChecked': isChecked,
+      'createdDate': createdDate,
+      'updatedDate': updatedDate,
+      'deletedDate': deletedDate,
     };
   }
 
@@ -51,6 +60,9 @@ class Student {
       classesToken: json['classesToken'],
       studentNumber: json['studentNumber'],
       isChecked: json['isChecked'],
+      createdDate: json['createdDate'],
+      updatedDate: json['updatedDate'],
+      deletedDate: json['deletedDate'],
     );
   }
 }

@@ -41,14 +41,32 @@ class ClassroomProvider with ChangeNotifier {
 
   // 반 등록
   Future<void> createClassroom(
-      Classroom classroom, List<String?> checkedStudents) async {
+      Classroom classroom, List<Student> checkedStudents) async {
     try {
       String? classroomId = await _classroomService.createClassroom(classroom);
 
+      // 학생 등록
       await _studentService.registStudents(checkedStudents, classroomId!);
       // 기본적으로 등록되어야 하는 일상 및 과제 등록
       await _dailyService.addDefaultDaily(classroom.id);
       await _assignmentService.addDefaultAssignment(classroom.id);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to create classroom: $e');
+    }
+  }
+
+  // 반 수정 로직
+  Future<void> modifyClassroom(
+      Classroom classroom, List<Student> checkedStudents) async {
+    try {
+      String? classroomId = await _classroomService.createClassroom(classroom);
+
+      // checkedStudents 전처리
+
+      // 학생 등록
+      await _studentService.registStudents(checkedStudents, classroomId!);
+
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to create classroom: $e');
@@ -86,7 +104,7 @@ class ClassroomProvider with ChangeNotifier {
 
   getAssignmentsForStudent(String classroomId, String? studentId) {}
 
-  modifyClassroom(Classroom classroom) {}
+  // modifyClassroom(Classroom classroom) {}
 
   // 학생 관련 함수 모음
 

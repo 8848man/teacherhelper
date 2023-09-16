@@ -181,6 +181,7 @@ class _ClassroomRegistPage_reformState
     });
   }
 
+  // 학반 등록 기능
   Future<void> _createClassroom() async {
     final classroomProvider =
         Provider.of<ClassroomProvider>(context, listen: false);
@@ -195,10 +196,8 @@ class _ClassroomRegistPage_reformState
         );
 
         List<Student> students = studentProvider.students;
-        List<String?> checkedStudents = students
-            .where((student) => student.isChecked == true)
-            .map((student) => student.studentNumber)
-            .toList();
+        List<Student> checkedStudents =
+            students.where((student) => student.isChecked == true).toList();
 
         await classroomProvider.createClassroom(classroom, checkedStudents);
         Navigator.pop(context);
@@ -215,9 +214,12 @@ class _ClassroomRegistPage_reformState
     }
   }
 
+  // 학반 수정 기능
   Future<void> _modifyClassroom() async {
     final classroomProvider =
         Provider.of<ClassroomProvider>(context, listen: false);
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
 
     try {
       final classroom = Classroom(
@@ -226,7 +228,11 @@ class _ClassroomRegistPage_reformState
         id: '',
       );
 
-      await classroomProvider.modifyClassroom(classroom);
+      List<Student> students = studentProvider.students;
+      List<Student> checkedStudents =
+          students.where((student) => student.isChecked == true).toList();
+
+      await classroomProvider.modifyClassroom(classroom, checkedStudents);
 
       Navigator.pop(context);
     } catch (e) {
@@ -604,6 +610,18 @@ class _ClassroomRegistPage_reformState
                                                       'assets/buttons/default_checkbox_button.jpg',
                                                     ),
                                                     onTap: () {
+                                                      if (_studentNumberController
+                                                              .text ==
+                                                          '') {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          SnackBar(
+                                                              content: Text(
+                                                                  "학생 번호를 입력해주세요")),
+                                                        );
+                                                        return;
+                                                      }
                                                       studentProvider
                                                           .addStudent(
                                                         studentNumber: int.parse(

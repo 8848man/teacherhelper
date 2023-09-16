@@ -64,7 +64,7 @@ class StudentService {
           'id': doc.id,
           'name': data['name'],
           'gender': data['gender'],
-          'birthdate': data['birthdate'],
+          // 'birthdate': data['birthdate'],
           'studentNumber': studentNumber, // Int로 변환한 값 사용
         };
       }).toList();
@@ -78,7 +78,7 @@ class StudentService {
           id: studentData['id'],
           name: studentData['name'],
           gender: studentData['gender'],
-          birthdate: studentData['birthdate'],
+          // birthdate: studentData['birthdate'],
           studentNumber: studentData['studentNumber'].toString(),
           // Additional student fields
         );
@@ -89,28 +89,6 @@ class StudentService {
       throw Exception('Failed to fetch students: $e');
     }
   }
-
-  // ClassroomId로 학생 목록 가져오기
-  // Future<List<Student>> getStudentsByClassroom(String classroomId) async {
-  //   try {
-  //     final querySnapshot = await _studentsCollection
-  //         .where('classrooms', arrayContains: classroomId)
-  //         .get();
-
-  //     return querySnapshot.docs.map((doc) {
-  //       final data = doc.data() as Map<String, dynamic>;
-  //       return Student(
-  //         id: doc.id,
-  //         name: data['name'],
-  //         gender: data['gender'],
-  //         birthdate: data['birthdate'],
-  //         // Additional student fields
-  //       );
-  //     }).toList();
-  //   } catch (e) {
-  //     throw Exception('Failed to fetch students: $e');
-  //   }
-  // }
 
   // ClassroomId로 학생 목록 가져오기
   Future<List<Student>> getStudentsByClassroom(String classroomId) async {
@@ -129,28 +107,6 @@ class StudentService {
           gender: data['gender'],
           birthdate: data['birthdate'],
           studentNumber: data['studentNumber'],
-          // Additional student fields
-        );
-      }).toList();
-    } catch (e) {
-      throw Exception('Failed to fetch students: $e');
-    }
-  }
-
-  // teacherId로 학생 목록 가져오기
-  Future<List<Student>> getStudentsByTeacher(String teacherUid) async {
-    try {
-      final querySnapshot = await _studentsCollection
-          .where('teacherUid', isEqualTo: teacherUid)
-          .get();
-
-      return querySnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Student(
-          id: doc.id,
-          name: data['name'],
-          gender: data['gender'],
-          birthdate: data['birthdate'],
           // Additional student fields
         );
       }).toList();
@@ -305,17 +261,27 @@ class StudentService {
   }
 
   Future<void> registStudents(
-      List<String?> checkedStudents, String classroomId) async {
-    print('test002');
-    print(checkedStudents);
+      List<Student> checkedStudents, String classroomId) async {
     try {
-      _classroomCollection
-          .doc(classroomId)
-          .collection('students')
-          .doc()
-          .set(checkedStudents as Map<String, dynamic>);
-    } catch (e) {
-      print(e);
-    }
+      final CollectionReference studentsCollection =
+          _classroomCollection.doc(classroomId).collection('Students');
+
+      DateTime nowDate = DateTime.now();
+
+      for (Student student in checkedStudents) {
+        // Student 객체를 Firestore 문서로 변환
+        Map<String, dynamic> studentData = {
+          'name': student.name,
+          'studentNumber': student.studentNumber,
+          'isChecked': student.isChecked,
+          'createDate': nowDate,
+          'gender': student.gender,
+          // 날짜를 저장할 필드를 추가하려면 여기에 추가
+        };
+
+        // Firestore에 문서 추가
+        await studentsCollection.add(studentData);
+      }
+    } catch (e) {}
   }
 }

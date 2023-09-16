@@ -8,8 +8,14 @@ class StudentProvider with ChangeNotifier {
   final StudentService _studentService = StudentService();
   final currentUserUid = AuthService().currentUser()?.uid;
 
+  // 앱에 실제로 사용되는 학생들 데이터를 위한 변수
   List<Student> _students = [];
   List<Student> get students => _students;
+
+  // 학생을 수정할 때 DB에 저장되어있던 학생들을 저장하는 변수.
+  List<Student> _loadedStudents = [];
+  List<Student> get loadedStudent => _loadedStudents;
+
   set students(List<Student> students) {
     _students = students;
     notifyListeners();
@@ -29,8 +35,8 @@ class StudentProvider with ChangeNotifier {
   Future<List<Student>> getStudentsByTeacher() async {
     final currentUserUid = AuthService().currentUser()?.uid;
     try {
-      final List<Student> students =
-          await _studentService.getStudentsByTeacher(currentUserUid!);
+      // final List<Student> students =
+      //     await _studentService.getStudentsByTeacher(currentUserUid!);
       return students;
     } catch (e) {
       throw Exception('Failed to fetch students: $e');
@@ -42,6 +48,7 @@ class StudentProvider with ChangeNotifier {
     try {
       _students = [];
       _students = await _studentService.fetchStudentsByClassroom(classroomId);
+      _loadedStudents = _students;
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to fetch students: $e');
@@ -94,14 +101,13 @@ class StudentProvider with ChangeNotifier {
     }
   }
 
+  // provider에 저장된 학생들 리셋
   void resetStudents() {
     _students = [];
     notifyListeners();
   }
 
-  void alignStudents() {}
-
-  // classroom regist / modify 페이지에서 provider students에 학생 추가
+  // classroom regist / modify 페이지에서 provider students에 학생 추가(DB에 저장 X)
   void addStudent({
     required int studentNumber,
     required String studentName,
@@ -121,9 +127,11 @@ class StudentProvider with ChangeNotifier {
 
         _students.add(
           Student(
-              name: studentName,
-              studentNumber: studentNumber.toString(),
-              gender: studentGender),
+            name: studentName,
+            studentNumber: studentNumber.toString(),
+            gender: studentGender,
+            createdDate: DateTime.now(),
+          ),
         );
 
         onSuccess('$studentNumber 학번 $studentName 학생이 추가되었습니다.');
@@ -190,6 +198,7 @@ class StudentProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // classroom regist / modify 페이지에서의 학생 체크 로직
   void checkStudent(String studentNumber) {
     Student selectedStudent = _students
         .firstWhere((student) => student.studentNumber == studentNumber);

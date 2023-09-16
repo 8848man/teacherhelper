@@ -48,10 +48,10 @@ class NavBar extends StatelessWidget {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (context) => ClassroomDailyPageTapBar(
-                            classroomId:
-                                classroomProvider.classroomId.toString(),
-                          )),
+                    builder: (context) => ClassroomDailyPageTapBar(
+                      classroomId: classroomProvider.classroomId.toString(),
+                    ),
+                  ),
                 );
               },
             ),
@@ -62,10 +62,10 @@ class NavBar extends StatelessWidget {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (context) => ClassroomAttitudePage(
-                            classroomId:
-                                classroomProvider.classroomId.toString(),
-                          )),
+                    builder: (context) => ClassroomAttitudePage(
+                      classroomId: classroomProvider.classroomId.toString(),
+                    ),
+                  ),
                 );
               },
             ),
@@ -76,10 +76,10 @@ class NavBar extends StatelessWidget {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                      builder: (context) => ClassroomClassesPage(
-                            classroomId:
-                                classroomProvider.classroomId.toString(),
-                          )),
+                    builder: (context) => ClassroomClassesPage(
+                      classroomId: classroomProvider.classroomId.toString(),
+                    ),
+                  ),
                 );
               },
             ),

@@ -54,15 +54,48 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                   child: Scaffold(
                     drawer: NavBar(),
                     appBar: AppBar(
-                      // backgroundColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      iconTheme: IconThemeData(color: Colors.orange),
+                      elevation: 2, // 그림자의 높이를 조절 (4는 예시로 사용한 값)
+                      shadowColor: Colors.orange, // 그림자의 색상을 파란색으로 설정
                       title: Row(
                         children: [
-                          Text("생활 탭"),
-                          Spacer(),
-                          Center(
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.27,
                             child: Text(
-                              "$year년 $month월 $day일",
+                              "SCHOOL CHECK",
+                              style: TextStyle(color: Colors.black),
                             ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.46,
+                            child: Center(
+                              child: Text(
+                                "$year년 $month월 $day일",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.1,
+                                    color: Colors.pink,
+                                    child: Image.asset(
+                                        'assets/buttons/classroom_change_button.png'),
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.1,
+                                    color: Colors.pink[100],
+                                    child: Image.asset(
+                                        'assets/buttons/attendance_check_button.png'),
+                                  ),
+                                ]),
                           ),
                         ],
                       ),

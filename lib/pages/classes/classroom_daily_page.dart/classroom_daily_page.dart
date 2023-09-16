@@ -109,8 +109,6 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                   }
                 }
 
-                print(studentNumberList);
-
                 if (students.isEmpty) {
                   return CircularProgressIndicator(); // 데이터 로딩 중
                 } else {
@@ -136,17 +134,61 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                           // final dailyHistory = dailyHistorys[index];
                           return GestureDetector(
                             onTap: () {
-                              setState(() {
-                                dailyHistoryProvider.checkDaily(
-                                  widget.classroomId,
-                                  student.studentNumber!,
-                                  widget.dailyName!,
-                                  student.name,
-                                  widget.order,
-                                  widget.now,
+                              // Daily가 체크되어있지 않을 경우, Daily를 체크
+                              if (studentNumberList[index] == null &&
+                                  cardStates[index] == false) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Daily Check'),
+                                      content: Text('학생의 Daily를 체크하시겠습니까?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              dailyHistoryProvider.checkDaily(
+                                                widget.classroomId,
+                                                student.studentNumber!,
+                                                widget.dailyName!,
+                                                student.name,
+                                                widget.order,
+                                                widget.now,
+                                              );
+                                              cardStates[index] =
+                                                  !cardStates[index];
+                                            });
+                                            Navigator.of(context)
+                                                .pop(); // 다이얼로그 닫기
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                                cardStates[index] = !cardStates[index];
-                              });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('체크 해제'),
+                                      content: Text(
+                                          '이미 학생 체크가 되어있습니다. 체크를 해제하시겠습니까?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            // 출석 체크 해제 로직 추가
+                                            Navigator.of(context)
+                                                .pop(); // 다이얼로그 닫기
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
                             },
                             onLongPress: () {
                               _navigateToStudentAssignments(
