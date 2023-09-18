@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
@@ -11,7 +8,7 @@ import 'package:teacherhelper/services/auth_service.dart';
 class StudentRegistrationPage extends StatefulWidget {
   final String classroomId;
 
-  StudentRegistrationPage({required this.classroomId});
+  const StudentRegistrationPage({super.key, required this.classroomId});
 
   @override
   _StudentRegistrationPageState createState() =>
@@ -25,11 +22,11 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   final DailyProvider _dailyProvider = DailyProvider();
 
   // 성별 버튼을 위한 변수 및 성별 버튼 값
-  static List<String> _genders = <String>['남자', '여자'];
+  static final List<String> _genders = <String>['남자', '여자'];
   String? _selectedGender;
   int? _selectedNumber;
 
-  List<int> _studentNumbers = [];
+  final List<int> _studentNumbers = [];
 
   void _generateList() {
     for (int i = 0; i <= 40; i++) {
@@ -86,17 +83,17 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
     // final birthdate = '$_selectedYear-$_selectedMonth-$_selectedDay';
 
     // 이름, 성별, 생년월일 값 체크
-    if (name == null || name == '') {
+    if (name == '') {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("이름을 입력해주세요.")));
+          .showSnackBar(const SnackBar(content: Text("이름을 입력해주세요.")));
       return;
     } else if (gender == null || gender == '') {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("성별을 입력해주세요.")));
+          .showSnackBar(const SnackBar(content: Text("성별을 입력해주세요.")));
       return;
-    } else if (studentNumber == null || studentNumber == '') {
+    } else if (studentNumber == '') {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("학번을 입력해주세요.")));
+          .showSnackBar(const SnackBar(content: Text("학번을 입력해주세요.")));
       return;
     }
     // else if (birthdate.contains('null')) {
@@ -147,7 +144,7 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
     // _initializeDates();
     return Scaffold(
       appBar: AppBar(
-        title: Text('학생 등록'),
+        title: const Text('학생 등록'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -156,11 +153,11 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
           children: [
             TextFormField(
               controller: _nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '이름',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             DropdownButtonFormField<int>(
               value: _selectedNumber,
               onChanged: (newValue) {
@@ -174,11 +171,11 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                   child: Text(number.toString()),
                 );
               }).toList(),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '학번',
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16.0,
             ),
             DropdownButtonFormField<String>(
@@ -194,16 +191,16 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                   child: Text(gender),
                 );
               }).toList(),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '성별',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 _registerStudent();
               },
-              child: Text('등록'),
+              child: const Text('등록'),
             ),
           ],
         ),

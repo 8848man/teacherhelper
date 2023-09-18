@@ -6,24 +6,25 @@ import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
 
-class ClassroomDailyPageTapBar extends StatefulWidget {
+class ClassroomClassesPageTapBar extends StatefulWidget {
   final String classroomId; // classroomId 변수 추가
 
-  const ClassroomDailyPageTapBar({super.key, required this.classroomId});
+  const ClassroomClassesPageTapBar({super.key, required this.classroomId});
 
   @override
-  _ClassroomDailyPageTapBarState createState() =>
-      _ClassroomDailyPageTapBarState();
+  _ClassroomClassesPageTapBarState createState() =>
+      _ClassroomClassesPageTapBarState();
 }
 
-class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
+class _ClassroomClassesPageTapBarState
+    extends State<ClassroomClassesPageTapBar> {
   final DailyProvider _dailyProvider = DailyProvider(); // DailyProvider 인스턴스 생성
-  final ClassroomProvider _classroomProvider =
-      ClassroomProvider(); // DailyProvider 인스턴스 생성
+  final ClassroomProvider _classroomProvider = ClassroomProvider();
   @override
   void initState() {
     super.initState();
-    _dailyProvider.fetchDailysByClassroomId(widget.classroomId);
+    print(_classroomProvider.classroomId);
+    _dailyProvider.fetchDailysByClassroomId(_classroomProvider.classroomId!);
   }
 
   @override

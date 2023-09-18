@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
 
-class DailyCreatePage extends StatefulWidget {
+class AttitudeCreatePage extends StatefulWidget {
   final String? classroomId;
   final String? studentId;
 
-  const DailyCreatePage({super.key, this.classroomId, this.studentId});
+  const AttitudeCreatePage({super.key, this.classroomId, this.studentId});
 
   @override
-  _DailyCreatePageState createState() => _DailyCreatePageState();
+  _AttitudeCreatePageState createState() => _AttitudeCreatePageState();
 }
 
-class _DailyCreatePageState extends State<DailyCreatePage> {
+class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
   final TextEditingController _nameController = TextEditingController();
   final DailyProvider _dailyProvider = DailyProvider();
 

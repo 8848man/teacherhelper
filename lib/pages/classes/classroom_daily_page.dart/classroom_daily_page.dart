@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/daily_history.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
-import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_history_provider.dart';
-import 'package:teacherhelper/providers/daily_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomDailyPage extends StatefulWidget {
@@ -16,7 +13,7 @@ class ClassroomDailyPage extends StatefulWidget {
   final String? dailyName;
 
   const ClassroomDailyPage(
-      {required this.classroomId, this.order, this.now, this.dailyName});
+      {super.key, required this.classroomId, this.order, this.now, this.dailyName});
 
   @override
   State<ClassroomDailyPage> createState() => _ClassroomDailyPageState();
@@ -63,11 +60,11 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             //반에 등록된 학생 리스트
             Consumer2<StudentProvider, DailyHistoryProvider>(
               builder: (context, studentProvider, dailyHistoryProvider, child) {
@@ -110,7 +107,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                 }
 
                 if (students.isEmpty) {
-                  return CircularProgressIndicator(); // 데이터 로딩 중
+                  return const CircularProgressIndicator(); // 데이터 로딩 중
                 } else {
                   // 데이터가 로드되었을 때
                   if (cardStates.isEmpty) {
@@ -121,7 +118,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GridView.builder(
-                        padding: EdgeInsets.all(100.0),
+                        padding: const EdgeInsets.all(100.0),
                         shrinkWrap: true,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: students.length >= 20 ? 10 : 5,
@@ -141,8 +138,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Daily Check'),
-                                      content: Text('학생의 Daily를 체크하시겠습니까?'),
+                                      title: const Text('Daily Check'),
+                                      content: const Text('학생의 Daily를 체크하시겠습니까?'),
                                       actions: <Widget>[
                                         TextButton(
                                           onPressed: () {
@@ -161,7 +158,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                             Navigator.of(context)
                                                 .pop(); // 다이얼로그 닫기
                                           },
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                         ),
                                       ],
                                     );
@@ -172,8 +169,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('체크 해제'),
-                                      content: Text(
+                                      title: const Text('체크 해제'),
+                                      content: const Text(
                                           '이미 학생 체크가 되어있습니다. 체크를 해제하시겠습니까?'),
                                       actions: <Widget>[
                                         TextButton(
@@ -182,7 +179,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                             Navigator.of(context)
                                                 .pop(); // 다이얼로그 닫기
                                           },
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                         ),
                                       ],
                                     );
@@ -195,11 +192,9 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                   context, student.id);
                             },
                             child: Card(
-                              // color:
-                              //     cardStates[index] ? Colors.red : Colors.grey,
                               color: studentNumberList[index] != null ||
                                       cardStates[index]
-                                  ? Colors.red
+                                  ? const Color(0xFFFE886A)
                                   : Colors.grey,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10000.0),

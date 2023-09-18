@@ -135,8 +135,8 @@ class DailyHistoryProvider extends ChangeNotifier {
     for (final group in groupedData) {
       // 그룹 내에서 checkDate가 가장 큰 데이터 선택
       group.sort((a, b) {
-        final checkDateA = (a as DailyHistory).checkDate;
-        final checkDateB = (b as DailyHistory).checkDate;
+        final checkDateA = (a).checkDate;
+        final checkDateB = (b).checkDate;
         return checkDateB!.compareTo(checkDateA!);
       });
 

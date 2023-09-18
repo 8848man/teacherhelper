@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/assignment.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
@@ -8,7 +7,7 @@ class AssignmentCreatePage extends StatefulWidget {
   final String? classroomId;
   final String? studentId;
 
-  AssignmentCreatePage({this.classroomId, this.studentId});
+  const AssignmentCreatePage({super.key, this.classroomId, this.studentId});
 
   @override
   _AssignmentRegistrationPageState createState() =>
@@ -61,9 +60,9 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
     final name = _nameController.text;
 
     // 이름 체크
-    if (name == null || name == '') {
+    if (name == '') {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("과제 이름을 입력해주세요.")));
+          .showSnackBar(const SnackBar(content: Text("과제 이름을 입력해주세요.")));
       return;
     }
 
@@ -89,7 +88,7 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
       // 기한일 > 시작일인지 체크
       if (startDate.compareTo(deadline) > 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("시작일이 기한일보다 늦습니다. 시작일과 기한일을 확인해주세요.")));
+            const SnackBar(content: Text("시작일이 기한일보다 늦습니다. 시작일과 기한일을 확인해주세요.")));
         return;
       }
       final assignment = Assignment(
@@ -106,7 +105,7 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("시작일 또는 기한일을 지정해주세요.")));
+          .showSnackBar(const SnackBar(content: Text("시작일 또는 기한일을 지정해주세요.")));
       return;
     }
   }
@@ -115,23 +114,23 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('과제 등록'),
+        title: const Text('과제 등록'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
               controller: _nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '과제 이름',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
 
             // 시작일 드롭다운 버튼
-            Text('시작일'),
+            const Text('시작일'),
 
             Row(
               children: [
@@ -149,12 +148,12 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
                         child: Text(year),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '년',
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _selectedStartMonth,
@@ -169,12 +168,12 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
                         child: Text(month),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '월',
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _selectedStartDay,
@@ -189,17 +188,17 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
                         child: Text(day),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '일',
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
 
             // 기한일 드롭다운 버튼
-            Text('기한일'),
+            const Text('기한일'),
             Row(
               children: [
                 Expanded(
@@ -216,12 +215,12 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
                         child: Text(year),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '년',
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _selectedDeadlineMonth,
@@ -236,12 +235,12 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
                         child: Text(month),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '월',
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _selectedDeadlineDay,
@@ -256,18 +255,18 @@ class _AssignmentRegistrationPageState extends State<AssignmentCreatePage> {
                         child: Text(day),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '일',
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
 
             ElevatedButton(
               onPressed: _registerAssignment,
-              child: Text('과제 등록'),
+              child: const Text('과제 등록'),
             ),
           ],
         ),

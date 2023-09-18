@@ -1,13 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teacherhelper/main.dart';
 import 'package:teacherhelper/pages/register_page.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
 import 'main_page.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // class LoginPage1 extends StatefulWidget {
 //   @override
@@ -115,6 +111,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -133,10 +131,10 @@ class _LoginPageState extends State<LoginPage> {
             key: _formKey,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.height * 0.88,
-                  child: Image.asset('assets/images/login_page.jpg'),
                   height: MediaQuery.of(context).size.height * 1,
+                  child: Image.asset('assets/images/login_page.jpg'),
                 ),
                 Container(
                   padding:
@@ -217,14 +215,14 @@ class _LoginPageState extends State<LoginPage> {
                               onSuccess: () {
                                 // 로그인 성공
                                 ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
+                                    .showSnackBar(const SnackBar(
                                   content: Text("로그인 성공"),
                                 ));
                                 // HomePage로 이동
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MainPage_reform()),
+                                      builder: (context) => const MainPage_reform()),
                                 );
                               },
                               onError: (err) {
@@ -238,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: MediaQuery.of(context).size.height * 0.05,
                         child: const Row(
                           children: [
@@ -269,9 +267,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Row(
                         children: [
-                          Text('아직 계정이 없으시다면 '),
+                          const Text('아직 계정이 없으시다면 '),
                           GestureDetector(
-                            child: Text(
+                            child: const Text(
                               '회원가입',
                               style: TextStyle(color: Colors.blue),
                             ),
@@ -279,11 +277,11 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RegisterPage()),
+                                    builder: (context) => const RegisterPage()),
                               );
                             },
                           ),
-                          Text('을 눌러주세요'),
+                          const Text('을 눌러주세요'),
                         ],
                       ),
                     ],

@@ -121,7 +121,7 @@ class StudentProvider with ChangeNotifier {
         for (Student student in students) {
           if (student.studentNumber == studentNumber.toString()) {
             onError('학번이 중복되었습니다. 이전 학생을 삭제하고 등록하시겠습니까?');
-            return null;
+            return;
           }
         }
 
@@ -138,7 +138,7 @@ class StudentProvider with ChangeNotifier {
         notifyListeners();
       } else {
         onSuccess('학생 이름을 입력해주세요.');
-        return null;
+        return;
       }
     } catch (e) {
       print(e);

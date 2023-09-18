@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_attitude.dart/classroom_attitude_page.dart';
-import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_classes_page.dart';
-import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_classes_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_page_tapbar.dart';
+import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_classes_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 import 'package:teacherhelper/pages/main_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 
 class NavBar extends StatelessWidget {
-  NavBar({super.key});
+  final String classroomId;
+  const NavBar({super.key, required this.classroomId});
 
   @override
   Widget build(BuildContext context) {
@@ -32,52 +32,53 @@ class NavBar extends StatelessWidget {
                       image: AssetImage('images/back.jpg'), fit: BoxFit.cover)),
             ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('홈으로'),
+              leading: const Icon(Icons.home),
+              title: const Text('홈으로'),
               onTap: () {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => MainPage_reform()),
+                  MaterialPageRoute(
+                      builder: (context) => const MainPage_reform()),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.calendar_month),
-              title: Text('생활'),
+              leading: const Icon(Icons.calendar_month),
+              title: const Text('생활'),
               onTap: () {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => ClassroomDailyPageTapBar(
-                      classroomId: classroomProvider.classroomId.toString(),
+                      classroomId: classroomId,
                     ),
                   ),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.person_add),
-              title: Text('태도'),
+              leading: const Icon(Icons.person_add),
+              title: const Text('태도'),
               onTap: () {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => ClassroomAttitudePage(
-                      classroomId: classroomProvider.classroomId.toString(),
+                    builder: (context) => ClassroomAttitudePageTapBar(
+                      classroomId: classroomId,
                     ),
                   ),
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.class_outlined),
-              title: Text('수업'),
+              leading: const Icon(Icons.class_outlined),
+              title: const Text('수업'),
               onTap: () {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => ClassroomClassesPage(
-                      classroomId: classroomProvider.classroomId.toString(),
+                    builder: (context) => ClassroomClassesPageTapBar(
+                      classroomId: classroomId,
                     ),
                   ),
                 );

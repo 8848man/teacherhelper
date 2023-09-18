@@ -5,12 +5,11 @@ import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
-import 'package:teacherhelper/services/classroom_service.dart';
 
 class ClassroomRegistPage extends StatefulWidget {
   final String teacherUid;
 
-  ClassroomRegistPage({
+  const ClassroomRegistPage({super.key, 
     required this.teacherUid,
   });
 
@@ -56,7 +55,7 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("반 등록에 실패했습니다.")),
+        const SnackBar(content: Text("반 등록에 실패했습니다.")),
       );
     }
   }
@@ -66,9 +65,9 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
     final classroomProvider = Provider.of<ClassroomProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("반 등록하기")),
+      appBar: AppBar(title: const Text("반 등록하기")),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -76,7 +75,7 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: "반 이름"),
+                decoration: const InputDecoration(labelText: "반 이름"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '반 이름을 입력해주세요.';
@@ -84,10 +83,10 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _gradeController,
-                decoration: InputDecoration(labelText: "학년"),
+                decoration: const InputDecoration(labelText: "학년"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '학년을 입력해주세요.';
@@ -95,14 +94,14 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Center(
                 child: ElevatedButton(
                   onPressed: _isLoading
                       ? null
                       : () => _createClassroom(classroomProvider),
                   child:
-                      _isLoading ? CircularProgressIndicator() : Text("반 등록하기"),
+                      _isLoading ? const CircularProgressIndicator() : const Text("반 등록하기"),
                 ),
               ),
             ],
@@ -118,8 +117,8 @@ class ClassroomRegistPage_reform extends StatefulWidget {
   final String? classroomId;
   final bool isModify;
 
-  ClassroomRegistPage_reform(
-      {required this.teacherUid, this.classroomId, required this.isModify});
+  const ClassroomRegistPage_reform(
+      {super.key, required this.teacherUid, this.classroomId, required this.isModify});
 
   @override
   _ClassroomRegistPage_reformState createState() =>
@@ -203,13 +202,13 @@ class _ClassroomRegistPage_reformState
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("반 이름을 입력해주세요")),
+          const SnackBar(content: Text("반 이름을 입력해주세요")),
         );
         return;
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("반 등록에 실패했습니다.")),
+        const SnackBar(content: Text("반 등록에 실패했습니다.")),
       );
     }
   }
@@ -237,7 +236,7 @@ class _ClassroomRegistPage_reformState
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("반 등록에 실패했습니다.")),
+        const SnackBar(content: Text("반 등록에 실패했습니다.")),
       );
     }
   }
@@ -288,7 +287,7 @@ class _ClassroomRegistPage_reformState
                       Container(
                         height: MediaQuery.of(context).size.height * 0.7,
                         width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           color: Color(0xFFFFE8E0), // 색상 코드를 Color 클래스로 변환하여 사용
                         ),
@@ -298,17 +297,17 @@ class _ClassroomRegistPage_reformState
                               height: MediaQuery.of(context).size.height * 0.1,
                               decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                    const BorderRadius.all(Radius.circular(10)),
                                 color:
                                     Colors.white, // 색상 코드를 Color 클래스로 변환하여 사용
-                                border: Border.all(color: Color(0xFFC4C4C4)),
+                                border: Border.all(color: const Color(0xFFC4C4C4)),
                               ),
                               child: Row(
                                 children: [
                                   SizedBox(
                                       width: MediaQuery.of(context).size.width *
                                           0.05),
-                                  Container(
+                                  SizedBox(
                                     width: MediaQuery.of(context).size.width *
                                         0.35,
                                     child: TextField(
@@ -318,7 +317,7 @@ class _ClassroomRegistPage_reformState
                                             MediaQuery.of(context).size.height *
                                                 0.04, // 원하는 글꼴 크기 설정
                                       ),
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         border: InputBorder
                                             .none, // Remove the border
                                         hintText: '학반명을 입력해주세요',
@@ -329,7 +328,7 @@ class _ClassroomRegistPage_reformState
                                       ],
                                     ),
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Container(
                                     child: Row(
                                       children: [
@@ -378,7 +377,7 @@ class _ClassroomRegistPage_reformState
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.05,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         border: Border(
                                           bottom: BorderSide(
                                             color: Color(
@@ -407,7 +406,7 @@ class _ClassroomRegistPage_reformState
                                             // 번호 및 정렬버튼
                                             child: Row(
                                               children: [
-                                                Text(
+                                                const Text(
                                                   '번호',
                                                 ),
                                                 GestureDetector(
@@ -436,7 +435,7 @@ class _ClassroomRegistPage_reformState
                                                 0.2,
                                             child: Row(
                                               children: [
-                                                Text('이름'),
+                                                const Text('이름'),
                                                 GestureDetector(
                                                   child: isNameAscending
                                                       ? Image.asset(
@@ -463,7 +462,7 @@ class _ClassroomRegistPage_reformState
                                                 0.35,
                                             child: Row(
                                               children: [
-                                                Text('성별'),
+                                                const Text('성별'),
                                                 GestureDetector(
                                                   child: Image.asset(
                                                       'assets/buttons/arrow_down.png'),
@@ -497,7 +496,7 @@ class _ClassroomRegistPage_reformState
                                                           .size
                                                           .height *
                                                       0.05,
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                     border: Border(
                                                       bottom: BorderSide(
                                                         color: Color(
@@ -586,7 +585,7 @@ class _ClassroomRegistPage_reformState
                                                     .size
                                                     .height *
                                                 0.05,
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               border: Border(
                                                 bottom: BorderSide(
                                                   color: Color(
@@ -616,7 +615,7 @@ class _ClassroomRegistPage_reformState
                                                         ScaffoldMessenger.of(
                                                                 context)
                                                             .showSnackBar(
-                                                          SnackBar(
+                                                          const SnackBar(
                                                               content: Text(
                                                                   "학생 번호를 입력해주세요")),
                                                         );
@@ -649,7 +648,7 @@ class _ClassroomRegistPage_reformState
                                                                 (BuildContext
                                                                     context) {
                                                               return AlertDialog(
-                                                                title: Text(
+                                                                title: const Text(
                                                                     '학생 중복'),
                                                                 content:
                                                                     Text(err),
@@ -667,7 +666,7 @@ class _ClassroomRegistPage_reformState
                                                                               context)
                                                                           .pop(); // 다이얼로그 닫기
                                                                     },
-                                                                    child: Text(
+                                                                    child: const Text(
                                                                         '예'),
                                                                   ),
                                                                 ],
@@ -676,10 +675,14 @@ class _ClassroomRegistPage_reformState
                                                           );
                                                         },
                                                       );
-                                                      // _studentNameController
-                                                      //     .text = '';
-                                                      // _studentNumberController
-                                                      //     .text = '';
+                                                      _studentNumberController
+                                                          .text = (int.parse(
+                                                                  _studentNumberController
+                                                                      .text) +
+                                                              1)
+                                                          .toString();
+                                                      _studentNameController
+                                                          .text = '';
                                                     },
                                                   ),
                                                 ),
@@ -720,18 +723,12 @@ class _ClassroomRegistPage_reformState
                                                     controller:
                                                         _studentNameController,
                                                     decoration: InputDecoration(
-                                                        border:
-                                                            InputBorder.none,
-                                                        hintText: '추가학생이름',
-                                                        hintStyle: TextStyle(
-                                                            color: Colors
-                                                                .blue[300])),
-                                                    // onChanged: (text) {
-                                                    //   setState(() {
-                                                    //     nameHintVisible =
-                                                    //         text.isEmpty;
-                                                    //   });
-                                                    // },
+                                                      border: InputBorder.none,
+                                                      hintText: '추가학생이름',
+                                                      hintStyle: TextStyle(
+                                                          color:
+                                                              Colors.blue[300]),
+                                                    ),
                                                   ),
                                                 ),
                                                 // 학생 성별 입력 칸

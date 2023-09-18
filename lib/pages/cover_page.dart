@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teacherhelper/pages/login_page.dart';
 import 'package:teacherhelper/pages/register_page.dart';
 
 class CoverPage extends StatelessWidget {
+  const CoverPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -13,7 +13,7 @@ class CoverPage extends StatelessWidget {
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.07),
         child: Row(
           children: [
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.9,
               width: MediaQuery.of(context).size.width * 0.43,
               // color: Colors.blue,
@@ -34,7 +34,7 @@ class CoverPage extends StatelessWidget {
                       letterSpacing: 0, // 글자 간격 (0em)
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Row(
                     children: [
                       SizedBox(
@@ -47,12 +47,12 @@ class CoverPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => LoginPage(),
+                              builder: (context) => const LoginPage(),
                             ),
                           );
                         },
                       ),
-                      Spacer(),
+                      const Spacer(),
                       GestureDetector(
                         child: Image.asset('assets/buttons/login_button.jpg',
                             height: MediaQuery.of(context).size.height * 0.06),
@@ -60,7 +60,7 @@ class CoverPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RegisterPage()),
+                                builder: (context) => const RegisterPage()),
                           );
                         },
                       ),

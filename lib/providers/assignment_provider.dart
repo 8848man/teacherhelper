@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/assignment.dart';
 import 'package:teacherhelper/datamodels/assignmentHistory.dart';
@@ -105,13 +104,14 @@ class AssignmentProvider with ChangeNotifier {
   Future<void> addAssignmentToStudent(
       String classroomId, String studentId, Assignment assignment) async {
     try {
-      if (studentId != null && studentId != '') {
+      if (studentId != '') {
         _assignmentService.addAssignmentToStudent(
             classroomId, studentId, assignment);
-      } else
+      } else {
         () {
           print('studentId exeption');
         };
+      }
     } catch (e) {
       throw Exception('Failed to add assignment to student: $e');
     }

@@ -6,6 +6,8 @@ import 'package:teacherhelper/pages/main_page.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
 class RegisterPage1 extends StatefulWidget {
+  const RegisterPage1({super.key});
+
   @override
   _RegisterPage1State createState() => _RegisterPage1State();
 }
@@ -56,13 +58,13 @@ class _RegisterPage1State extends State<RegisterPage1> {
 
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("비밀번호를 더 복잡하게 설정해주세요.")));
+            .showSnackBar(const SnackBar(content: Text("비밀번호를 더 복잡하게 설정해주세요.")));
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("이미 등록된 이메일입니다.")));
+            .showSnackBar(const SnackBar(content: Text("이미 등록된 이메일입니다.")));
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("회원가입에 실패했습니다. 다시 시도해주세요.")));
+            .showSnackBar(const SnackBar(content: Text("회원가입에 실패했습니다. 다시 시도해주세요.")));
       }
     }
   }
@@ -70,9 +72,9 @@ class _RegisterPage1State extends State<RegisterPage1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("회원가입")),
+      appBar: AppBar(title: const Text("회원가입")),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -80,7 +82,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
             children: [
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: "이메일"),
+                decoration: const InputDecoration(labelText: "이메일"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '이메일을 입력해주세요.';
@@ -90,7 +92,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: "비밀번호"),
+                decoration: const InputDecoration(labelText: "비밀번호"),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -104,7 +106,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
               ),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: "선생님 이름"),
+                decoration: const InputDecoration(labelText: "선생님 이름"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '선생님 이름을 입력해주세요.';
@@ -114,7 +116,7 @@ class _RegisterPage1State extends State<RegisterPage1> {
               ),
               TextFormField(
                 controller: _phoneController,
-                decoration: InputDecoration(labelText: "휴대폰번호"),
+                decoration: const InputDecoration(labelText: "휴대폰번호"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '휴대폰번호를 입력해주세요.';
@@ -122,16 +124,16 @@ class _RegisterPage1State extends State<RegisterPage1> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _registerUser();
                         }
                       },
-                      child: Text("회원가입")),
+                      child: const Text("회원가입")),
             ],
           ),
         ),
@@ -141,6 +143,8 @@ class _RegisterPage1State extends State<RegisterPage1> {
 }
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -193,13 +197,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("비밀번호를 더 복잡하게 설정해주세요.")));
+            .showSnackBar(const SnackBar(content: Text("비밀번호를 더 복잡하게 설정해주세요.")));
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("이미 등록된 이메일입니다.")));
+            .showSnackBar(const SnackBar(content: Text("이미 등록된 이메일입니다.")));
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("회원가입에 실패했습니다. 다시 시도해주세요.")));
+            .showSnackBar(const SnackBar(content: Text("회원가입에 실패했습니다. 다시 시도해주세요.")));
       }
     }
   }
@@ -213,10 +217,10 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _formKey,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.height * 0.88,
-                  child: Image.asset('assets/images/register_page.jpg'),
                   height: MediaQuery.of(context).size.height * 1,
+                  child: Image.asset('assets/images/register_page.jpg'),
                 ),
                 Container(
                   padding:
@@ -341,14 +345,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               onSuccess: () {
                                 // 로그인 성공
                                 ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
+                                    .showSnackBar(const SnackBar(
                                   content: Text("로그인 성공"),
                                 ));
                                 // HomePage로 이동
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MainPage_reform()),
+                                      builder: (context) => const MainPage_reform()),
                                 );
                               },
                               onError: (err) {
@@ -362,7 +366,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: MediaQuery.of(context).size.height * 0.05,
                         child: const Row(
                           children: [

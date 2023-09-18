@@ -44,12 +44,13 @@ class DailyProvider with ChangeNotifier {
   Future<void> addDailysToStudent(
       String classroomId, String studentId, Daily daily) async {
     try {
-      if (studentId != null && studentId != '') {
+      if (studentId != '') {
         _dailyService.addDailysToStudent(classroomId, studentId, daily);
-      } else
+      } else {
         () {
           print('studentId exeption');
         };
+      }
     } catch (e) {
       throw Exception('Failed to add assignment to student: $e');
     }

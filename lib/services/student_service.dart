@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teacherhelper/datamodels/student.dart';
-import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
 class StudentService {

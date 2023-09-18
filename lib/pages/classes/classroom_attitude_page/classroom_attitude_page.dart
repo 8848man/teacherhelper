@@ -6,13 +6,13 @@ import 'package:teacherhelper/pages/students/student_assignments_page.dart';
 import 'package:teacherhelper/providers/daily_history_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
-class ClassroomClassesPage extends StatefulWidget {
+class ClassroomDailyPage extends StatefulWidget {
   final String classroomId;
   final int? order;
   final DateTime? now;
   final String? dailyName;
 
-  const ClassroomClassesPage(
+  const ClassroomDailyPage(
       {super.key,
       required this.classroomId,
       this.order,
@@ -20,10 +20,10 @@ class ClassroomClassesPage extends StatefulWidget {
       this.dailyName});
 
   @override
-  State<ClassroomClassesPage> createState() => _ClassroomClassesPageState();
+  State<ClassroomDailyPage> createState() => _ClassroomDailyPageState();
 }
 
-class _ClassroomClassesPageState extends State<ClassroomClassesPage> {
+class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
   bool _dataFetched = false;
 
   @override

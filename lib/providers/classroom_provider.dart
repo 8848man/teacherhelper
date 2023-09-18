@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
-import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/assignment_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 import 'package:teacherhelper/services/classroom_service.dart';
@@ -30,6 +29,7 @@ class ClassroomProvider with ChangeNotifier {
 
   String? get classroomId => _classroomId;
 
+  // 반 Id 세팅
   void setClassroomId(String id) {
     _classroomId = id;
     notifyListeners();

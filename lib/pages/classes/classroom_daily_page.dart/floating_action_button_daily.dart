@@ -7,7 +7,7 @@ import 'package:teacherhelper/pages/students/student_register_page.dart';
 class FloatingActionButtonDaily extends StatelessWidget {
   final String classroomId;
 
-  FloatingActionButtonDaily({required this.classroomId});
+  const FloatingActionButtonDaily({super.key, required this.classroomId});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,10 @@ class FloatingActionButtonDaily extends StatelessWidget {
               ),
             );
           },
-          child: Icon(Icons.person_add_alt),
           tooltip: '학생 등록하기',
+          child: const Icon(Icons.person_add_alt),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         FloatingActionButton(
           onPressed: () {
             // Handle second button's action
@@ -41,10 +41,10 @@ class FloatingActionButtonDaily extends StatelessWidget {
               ),
             );
           },
-          child: Icon(Icons.person_remove_alt_1_outlined),
           tooltip: '학생 삭제하기',
+          child: const Icon(Icons.person_remove_alt_1_outlined),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         FloatingActionButton(
           onPressed: () {
             // Handle second button's action
@@ -57,10 +57,10 @@ class FloatingActionButtonDaily extends StatelessWidget {
               ),
             );
           },
-          child: Icon(Icons.add_circle_outline),
           tooltip: '일과 과제 등록하기',
+          child: const Icon(Icons.add_circle_outline),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         FloatingActionButton(
           onPressed: () {
             // Handle second button's action
@@ -73,8 +73,8 @@ class FloatingActionButtonDaily extends StatelessWidget {
               ),
             );
           },
-          child: Icon(Icons.remove_circle_outline),
           tooltip: '일과 과제 삭제하기',
+          child: const Icon(Icons.remove_circle_outline),
         ),
       ],
     );

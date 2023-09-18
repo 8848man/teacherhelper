@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:teacherhelper/datamodels/daily_history.dart';
 
 class DailyHistoryService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
