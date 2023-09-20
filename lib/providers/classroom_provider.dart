@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/services/assignment_service.dart';
+import 'package:teacherhelper/services/attitude_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 import 'package:teacherhelper/services/classroom_service.dart';
 import 'package:teacherhelper/services/daily_service.dart';
@@ -13,6 +14,7 @@ class ClassroomProvider with ChangeNotifier {
   final DailyService _dailyService;
   final AssignmentService _assignmentService;
   final StudentService _studentService;
+  final AttitudeService _attitudeService;
 
   final currentUserUid = AuthService().currentUser()?.uid;
 
@@ -20,14 +22,15 @@ class ClassroomProvider with ChangeNotifier {
       : _classroomService = ClassroomService(),
         _dailyService = DailyService(),
         _assignmentService = AssignmentService(),
-        _studentService = StudentService();
+        _studentService = StudentService(),
+        _attitudeService = AttitudeService();
 
   List<Classroom> _classrooms = [];
   List<Classroom> get classrooms => _classrooms;
 
-  String? _classroomId;
+  String _classroomId = '';
 
-  String? get classroomId => _classroomId;
+  String get classroomId => _classroomId;
 
   // 반 Id 세팅
   void setClassroomId(String id) {
@@ -43,13 +46,16 @@ class ClassroomProvider with ChangeNotifier {
   Future<void> createClassroom(
       Classroom classroom, List<Student> checkedStudents) async {
     try {
+      classroom.createdDate = DateTime.now();
       String? classroomId = await _classroomService.createClassroom(classroom);
 
       // 학생 등록
-      await _studentService.registStudents(checkedStudents, classroomId!);
+      List<String> studentIds =
+          await _studentService.registStudents(checkedStudents, classroomId!);
       // 기본적으로 등록되어야 하는 일상 및 과제 등록
       await _dailyService.addDefaultDaily(classroom.id);
       await _assignmentService.addDefaultAssignment(classroom.id);
+      await _attitudeService.addDefaultAttitude(classroom.id, studentIds);
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to create classroom: $e');

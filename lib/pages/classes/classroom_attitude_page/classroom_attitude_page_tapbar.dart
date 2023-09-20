@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:teacherhelper/datamodels/daily.dart';
-import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page.dart';
-import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/floating_action_button_daily.dart';
+import 'package:teacherhelper/datamodels/attitude.dart';
+import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_page.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
-import 'package:teacherhelper/providers/daily_provider.dart';
 
 class ClassroomAttitudePageTapBar extends StatefulWidget {
   final String classroomId; // classroomId 변수 추가
@@ -18,13 +16,10 @@ class ClassroomAttitudePageTapBar extends StatefulWidget {
 
 class _ClassroomAttitudePageTapBarState
     extends State<ClassroomAttitudePageTapBar> {
-  final DailyProvider _dailyProvider = DailyProvider(); // DailyProvider 인스턴스 생성
-
   final AttitudeProvider _attitudeProvider = AttitudeProvider();
   @override
   void initState() {
     super.initState();
-    _dailyProvider.fetchDailysByClassroomId(widget.classroomId);
     _attitudeProvider.fetchAttitudesByClassroomId(widget.classroomId);
   }
 
@@ -33,8 +28,9 @@ class _ClassroomAttitudePageTapBarState
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Builder(builder: (context) {
-        return FutureBuilder<List<Daily>>(
-            future: _dailyProvider.fetchDailysByClassroomId(widget.classroomId),
+        return FutureBuilder<List<Attitude>>(
+            future: _attitudeProvider
+                .fetchAttitudesByClassroomId(widget.classroomId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator(); // 데이터 로딩 중에 표시할 위젯
@@ -42,7 +38,7 @@ class _ClassroomAttitudePageTapBarState
                 return Text(
                     'Error: ${snapshot.error}'); // 데이터 로딩 중 에러 발생 시 표시할 위젯
               } else if (snapshot.hasData) {
-                List<Daily> dailyList = snapshot.data!;
+                List<Attitude> attitudeList = snapshot.data!;
                 // 오늘 날짜를 위한 변수 할당
                 DateTime now = DateTime.now();
                 int year = now.year;
@@ -50,9 +46,9 @@ class _ClassroomAttitudePageTapBarState
                 int day = now.day;
 
                 List<int?> orderList =
-                    dailyList.map((daily) => daily.order).toList();
+                    attitudeList.map((attitude) => attitude.order).toList();
                 return DefaultTabController(
-                  length: dailyList.length,
+                  length: attitudeList.length,
                   child: Scaffold(
                     drawer: NavBar(classroomId: widget.classroomId),
                     appBar: AppBar(
@@ -104,11 +100,12 @@ class _ClassroomAttitudePageTapBarState
                     ),
                     body: TabBarView(
                       children: List.generate(orderList.length, (index) {
-                        return ClassroomDailyPage(
+                        return ClassroomAttitudePage(
                           classroomId: widget.classroomId,
                           order: orderList[index],
-                          dailyName: dailyList[index].name,
+                          attitudeName: attitudeList[index].name,
                           now: now,
+                          isBad: attitudeList[index].isBad,
                         );
                       }),
                     ),
@@ -134,18 +131,18 @@ class _ClassroomAttitudePageTapBarState
                           labelStyle: const TextStyle(
                             fontSize: 13,
                           ),
-                          tabs: dailyList.map((daily) {
+                          tabs: attitudeList.map((attitude) {
                             return Tab(
                               icon: const Icon(Icons.music_note),
-                              text: daily.name,
+                              text: attitude.name,
                             );
                           }).toList(),
                         ),
                       ),
                     ),
-                    floatingActionButton: FloatingActionButtonDaily(
-                      classroomId: widget.classroomId,
-                    ),
+                    // floatingActionButton: FloatingActionButtonAttitude(
+                    //   classroomId: widget.classroomId,
+                    // ),
                   ),
                 );
               } else {

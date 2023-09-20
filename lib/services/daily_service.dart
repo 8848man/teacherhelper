@@ -6,6 +6,7 @@ class DailyService {
   final CollectionReference _classroomsCollection =
       FirebaseFirestore.instance.collection('classrooms');
 
+  // 일상 가져오기
   Future<List<Daily>> fetchDailysByClassroomId(String classroomId) async {
     final querySnapshot =
         await _classroomsCollection.doc(classroomId).collection('Daily').get();
@@ -35,7 +36,7 @@ class DailyService {
     }
   }
 
-  // 반 생성시 기본 Daily를 추가.
+  // 반 생성시 기본 일상을 추가.
   Future<void> addDefaultDaily(String? classroomId) async {
     try {
       List<Daily> dailyList = [];
@@ -47,17 +48,27 @@ class DailyService {
       Daily noticeDaily = Daily(name: '가정통신문', order: 2);
       dailyList.add(noticeDaily);
 
+      // Firestore 배치 생성
+      var batch = FirebaseFirestore.instance.batch();
+
       for (var daily in dailyList) {
-        _classroomsCollection
+        // 배치에 쓰기 작업 추가
+        var dailyRef = _classroomsCollection
             .doc(classroomId)
             .collection('Daily')
-            .add(daily.toJson());
+            .doc(); // 랜덤한 문서 ID 생성
+        // var studentRef = _classroomsCollection.doc(classroomId).collection(collectionPath)
+        batch.set(dailyRef, daily.toJson());
       }
+
+// 배치 실행
+      await batch.commit();
     } catch (e) {
       print(e);
     }
   }
 
+  // 반에 일상 추가
   Future<void> addDailyToClassroom(Daily daily, String classroomId) async {
     try {
       // daily를 정렬하기 위한 숫자를 가져오는 쿼리 추후 데일리 추가 기능 구현시 필요
@@ -90,6 +101,7 @@ class DailyService {
     }
   }
 
+  // classroomId로 데일리 가져오기
   Future<List<Daily>> getDailysByClassroom(String classroomId) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance

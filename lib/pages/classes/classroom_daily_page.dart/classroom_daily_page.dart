@@ -13,7 +13,11 @@ class ClassroomDailyPage extends StatefulWidget {
   final String? dailyName;
 
   const ClassroomDailyPage(
-      {super.key, required this.classroomId, this.order, this.now, this.dailyName});
+      {super.key,
+      required this.classroomId,
+      this.order,
+      this.now,
+      this.dailyName});
 
   @override
   State<ClassroomDailyPage> createState() => _ClassroomDailyPageState();
@@ -89,6 +93,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                   ..sort(
                       (a, b) => a.studentNumber!.compareTo(b.studentNumber!));
 
+                print(filteredHistorys);
+
                 // 학생 과제 달성 여부 토큰
                 List<int?> studentNumberList = [];
 
@@ -139,7 +145,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       title: const Text('Daily Check'),
-                                      content: const Text('학생의 Daily를 체크하시겠습니까?'),
+                                      content:
+                                          const Text('학생의 Daily를 체크하시겠습니까?'),
                                       actions: <Widget>[
                                         TextButton(
                                           onPressed: () {

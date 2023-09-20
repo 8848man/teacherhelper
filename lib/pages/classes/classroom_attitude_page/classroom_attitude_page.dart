@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teacherhelper/datamodels/daily_history.dart';
+import 'package:teacherhelper/datamodels/attitudeHistory.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
-import 'package:teacherhelper/providers/daily_history_provider.dart';
+import 'package:teacherhelper/providers/attitude_history_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
-class ClassroomDailyPage extends StatefulWidget {
+class ClassroomAttitudePage extends StatefulWidget {
   final String classroomId;
   final int? order;
   final DateTime? now;
-  final String? dailyName;
+  final String attitudeName;
+  final bool isBad;
 
-  const ClassroomDailyPage(
+  const ClassroomAttitudePage(
       {super.key,
       required this.classroomId,
       this.order,
       this.now,
-      this.dailyName});
+      required this.attitudeName,
+      required this.isBad});
 
   @override
-  State<ClassroomDailyPage> createState() => _ClassroomDailyPageState();
+  State<ClassroomAttitudePage> createState() => _ClassroomAttitudePageState();
 }
 
-class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
+class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
   bool _dataFetched = false;
 
   @override
@@ -38,13 +40,13 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
     try {
       final studentProvider =
           Provider.of<StudentProvider>(context, listen: false);
-      final dailyHistoryProvider =
-          Provider.of<DailyHistoryProvider>(context, listen: false);
+      final attitudeHistoryProvider =
+          Provider.of<AttitudeHistoryProvider>(context, listen: false);
 
       await studentProvider.fetchStudentsByClassroom(widget.classroomId);
-      await dailyHistoryProvider.fetchDailysByClassroomIdAndDailyOrder(
+      await attitudeHistoryProvider.fetchAttitudesByClassroomIdAndAttitudeOrder(
           widget.classroomId, widget.order);
-      // await dailyProvider.fetchDailysByClassroomId(
+      // await attitudeProvider.fetchAttitudesByClassroomId(
       //     widget.classroomId, widget.order);
       // 데이터가 로드되면 cardStates를 초기화하고 상태를 갱신
       setState(() {
@@ -70,14 +72,15 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
           children: [
             const SizedBox(height: 16.0),
             //반에 등록된 학생 리스트
-            Consumer2<StudentProvider, DailyHistoryProvider>(
-              builder: (context, studentProvider, dailyHistoryProvider, child) {
+            Consumer2<StudentProvider, AttitudeHistoryProvider>(
+              builder:
+                  (context, studentProvider, attitudeHistoryProvider, child) {
                 // 학생 저장 변수
                 final List<Student> students = studentProvider.students;
 
                 // 출석체크등 완료여부를 알기 위한 토큰.
-                final List<DailyHistory> latestDailyHistorys =
-                    dailyHistoryProvider.latestDailyHistorys;
+                final List<AttitudeHistory> latestAttitudeHistorys =
+                    attitudeHistoryProvider.latestAttitudeHistorys;
 
                 // 0910 student sort기능.
                 List<int> studentNumbers = students
@@ -86,7 +89,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                   ..sort(
                     (a, b) => a.compareTo(b),
                   );
-                List<DailyHistory> filteredHistorys = latestDailyHistorys
+                List<AttitudeHistory> filteredHistorys = latestAttitudeHistorys
                     .where((history) =>
                         studentNumbers.contains(history.studentNumber))
                     .toList()
@@ -98,7 +101,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
 
                 for (int i = 0; i < students.length; i++) {
                   bool isAdded = false;
-                  for (int j = 0; j < latestDailyHistorys.length; j++) {
+                  for (int j = 0; j < latestAttitudeHistorys.length; j++) {
                     if (studentNumbers[i] ==
                         filteredHistorys[j].studentNumber) {
                       studentNumberList.add(studentNumbers[i]);
@@ -132,65 +135,46 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                         itemCount: students.length,
                         itemBuilder: (context, index) {
                           final student = students[index];
-                          // final dailyHistory = dailyHistorys[index];
+                          // final attitudeHistory = attitudeHistorys[index];
                           return GestureDetector(
                             onTap: () {
-                              // Daily가 체크되어있지 않을 경우, Daily를 체크
-                              if (studentNumberList[index] == null &&
-                                  cardStates[index] == false) {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Daily Check'),
-                                      content:
-                                          const Text('학생의 Daily를 체크하시겠습니까?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              dailyHistoryProvider.checkDaily(
-                                                widget.classroomId,
-                                                student.studentNumber!,
-                                                widget.dailyName!,
-                                                student.name,
-                                                widget.order,
-                                                widget.now,
-                                              );
-                                              cardStates[index] =
-                                                  !cardStates[index];
-                                            });
-                                            Navigator.of(context)
-                                                .pop(); // 다이얼로그 닫기
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('체크 해제'),
-                                      content: const Text(
-                                          '이미 학생 체크가 되어있습니다. 체크를 해제하시겠습니까?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            // 출석 체크 해제 로직 추가
-                                            Navigator.of(context)
-                                                .pop(); // 다이얼로그 닫기
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Attitude Check'),
+                                    content:
+                                        const Text('학생의 Attitude를 체크하시겠습니까?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            attitudeHistoryProvider
+                                                .checkAttitude(
+                                              widget.classroomId,
+                                              AttitudeHistory(
+                                                  studentName: student.name,
+                                                  studentNumber: int.parse(
+                                                      student.studentNumber!),
+                                                  isAdd: true,
+                                                  isBad: widget.isBad,
+                                                  checkDate: widget.now,
+                                                  order: widget.order,
+                                                  attitudeName:
+                                                      widget.attitudeName),
+                                            );
+                                            cardStates[index] =
+                                                !cardStates[index];
+                                          });
+                                          Navigator.of(context)
+                                              .pop(); // 다이얼로그 닫기
+                                        },
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             },
                             onLongPress: () {
                               _navigateToStudentAssignments(

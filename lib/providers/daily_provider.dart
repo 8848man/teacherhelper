@@ -12,6 +12,7 @@ class DailyProvider with ChangeNotifier {
   List<Daily> _dailys = [];
   List<Daily> get dailys => _dailys;
 
+  // 일상 가져오기
   Future<List<Daily>> fetchDailysByClassroomId(String classroomId) async {
     try {
       _dailys = await _dailyService.fetchDailysByClassroomId(classroomId);
@@ -21,6 +22,7 @@ class DailyProvider with ChangeNotifier {
     }
   }
 
+  // 일상 추가하기
   Future<void> addDaily(Daily daily, String classroomId) async {
     try {
       await _dailyService.addDailyToStudents(daily, classroomId);
@@ -31,7 +33,7 @@ class DailyProvider with ChangeNotifier {
     }
   }
 
-  // ClassroomId로 Daily 가져오기.
+  // ClassroomId로 Daily 가져오기. 개개인 학생 등록시 필요
   Future<List<Daily>> getDailysByClassroom(String classroomId) async {
     try {
       return await _dailyService.getDailysByClassroom(classroomId);

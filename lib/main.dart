@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/pages/cover_page.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
+import 'package:teacherhelper/providers/attitude_history_provider.dart';
+import 'package:teacherhelper/providers/attitude_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_history_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
@@ -22,6 +24,8 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AssignmentProvider()),
         ChangeNotifierProvider(create: (context) => DailyProvider()),
         ChangeNotifierProvider(create: (context) => DailyHistoryProvider()),
+        ChangeNotifierProvider(create: (context) => AttitudeProvider()),
+        ChangeNotifierProvider(create: (context) => AttitudeHistoryProvider()),
       ],
       child: const MyApp(),
     ),

@@ -1,10 +1,12 @@
-
 class Classroom {
   String? id;
   String name;
   String teacherUid;
   int? grade;
   String? uid;
+  DateTime? createdDate;
+  DateTime? updatedDate;
+  DateTime? deletedDate;
 
   Classroom({
     required this.name,
@@ -12,6 +14,8 @@ class Classroom {
     this.grade,
     id,
     this.uid,
+    this.createdDate,
+    this.deletedDate,
   });
 
   get teacher => null;
@@ -23,6 +27,7 @@ class Classroom {
       'teacherUid': teacherUid,
       'grade': grade,
       'uid': uid,
+      'createdDate': createdDate,
     };
   }
 
@@ -43,6 +48,7 @@ class Classroom {
       teacherUid: json['teacherUid'],
       grade: json['grade'],
       uid: json['uid'],
+      createdDate: json['createdDate'],
     );
   }
 }

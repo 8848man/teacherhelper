@@ -9,7 +9,8 @@ import 'package:teacherhelper/providers/student_provider.dart';
 class ClassroomRegistPage extends StatefulWidget {
   final String teacherUid;
 
-  const ClassroomRegistPage({super.key, 
+  const ClassroomRegistPage({
+    super.key,
     required this.teacherUid,
   });
 
@@ -100,8 +101,9 @@ class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
                   onPressed: _isLoading
                       ? null
                       : () => _createClassroom(classroomProvider),
-                  child:
-                      _isLoading ? const CircularProgressIndicator() : const Text("반 등록하기"),
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text("반 등록하기"),
                 ),
               ),
             ],
@@ -118,7 +120,10 @@ class ClassroomRegistPage_reform extends StatefulWidget {
   final bool isModify;
 
   const ClassroomRegistPage_reform(
-      {super.key, required this.teacherUid, this.classroomId, required this.isModify});
+      {super.key,
+      required this.teacherUid,
+      this.classroomId,
+      required this.isModify});
 
   @override
   _ClassroomRegistPage_reformState createState() =>
@@ -300,7 +305,8 @@ class _ClassroomRegistPage_reformState
                                     const BorderRadius.all(Radius.circular(10)),
                                 color:
                                     Colors.white, // 색상 코드를 Color 클래스로 변환하여 사용
-                                border: Border.all(color: const Color(0xFFC4C4C4)),
+                                border:
+                                    Border.all(color: const Color(0xFFC4C4C4)),
                               ),
                               child: Row(
                                 children: [
@@ -496,7 +502,8 @@ class _ClassroomRegistPage_reformState
                                                           .size
                                                           .height *
                                                       0.05,
-                                                  decoration: const BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     border: Border(
                                                       bottom: BorderSide(
                                                         color: Color(
@@ -648,8 +655,9 @@ class _ClassroomRegistPage_reformState
                                                                 (BuildContext
                                                                     context) {
                                                               return AlertDialog(
-                                                                title: const Text(
-                                                                    '학생 중복'),
+                                                                title:
+                                                                    const Text(
+                                                                        '학생 중복'),
                                                                 content:
                                                                     Text(err),
                                                                 actions: <Widget>[
@@ -666,8 +674,9 @@ class _ClassroomRegistPage_reformState
                                                                               context)
                                                                           .pop(); // 다이얼로그 닫기
                                                                     },
-                                                                    child: const Text(
-                                                                        '예'),
+                                                                    child:
+                                                                        const Text(
+                                                                            '예'),
                                                                   ),
                                                                 ],
                                                               );

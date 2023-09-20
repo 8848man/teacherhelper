@@ -25,68 +25,48 @@ class AttitudeProvider with ChangeNotifier {
     }
   }
 
-  // Attitude 추가할 때 Students에도 추가하기.
-  Future<void> addAtittudeToStudents(
-      Attitude attitude, String classroomId) async {
+  // 태도 추가하기
+  Future<void> addAttitude(Attitude attitude, String classroomId) async {
     try {
-      final studentsSnapshot = await _classroomsCollection
-          .doc(classroomId)
-          .collection('Students')
-          .get();
+      final querySnapshot = await _attitudeService.getLastOrder(classroomId);
 
-      for (var studentDoc in studentsSnapshot.docs) {
-        await studentDoc.reference
-            .collection('attitude')
-            .add(attitude.toJson());
-      }
-    } catch (e) {
-      throw Exception('Failed to add attitude: $e');
-    }
-  }
+      Map<String, dynamic> dataMap =
+          querySnapshot.docs.first.data() as Map<String, dynamic>;
+      int lastOrder = dataMap['order'] + 1;
 
-  // 반 추가할 때 기본적으로 등록되는 태도.
-  Future<void> addDefaultAttitude(String classroomId) async {
-    try {
-      List<Attitude> attitudeList = [];
-      Attitude chattingAttitude = Attitude(
-        name: '떠듦',
-        order: 1,
-      );
-      attitudeList.add(chattingAttitude);
-      Attitude badAttitude = Attitude(name: '태도불량', order: 2);
-      attitudeList.add(badAttitude);
+      attitude.order = lastOrder;
 
-      for (var attitude in attitudeList) {
-        _attitudeService.addDefaultAttitude(classroomId, attitude);
-      }
+      await _attitudeService.addAttitudeToStudents(attitude, classroomId);
+      await _attitudeService.addAttitudeToClassroom(attitude, classroomId);
     } catch (e) {
       print(e);
     }
   }
 
-  // 학반에 태도 추가하기
-  Future<void> addAttitudeToClassroom(
-      Attitude attitude, String classroomId) async {
-    try {
-      // 마지막 order를 저장하기 위한 변수
+  // 학생 태도 체크하기
+  Future<void> checkAttitude(
+      String classroomId, Attitude attitude, String studentId) async {
+    // _attitudeService.checkAttitude(classroomId, attitudeHistory);
 
-      final querySnapshot = await _classroomsCollection
-          .doc(classroomId)
-          .collection('Attitude')
-          .orderBy('order', descending: true)
-          .limit(1)
-          .get();
-
-      int lastOrder = querySnapshot.docs.first.data()['order'] + 1;
-
-      attitude.order = lastOrder;
-
-      _classroomsCollection
-          .doc(classroomId)
-          .collection('Attitude')
-          .add(attitude.toJson());
-    } catch (e) {
-      throw Exception('Failed to add assignment to classroom: $e');
-    }
+    notifyListeners();
   }
+
+  // // 학반에 태도 추가하기
+  // Future<void> addAttitudeToClassroom(
+  //     Attitude attitude, String classroomId) async {
+  //   try {
+  //     // 마지막 order를 저장하기 위한 변수
+  //     final querySnapshot = await _attitudeService.getLastOrder(classroomId);
+
+  //     Map<String, dynamic> dataMap =
+  //         querySnapshot.docs.first.data() as Map<String, dynamic>;
+  //     int lastOrder = dataMap['order'] + 1;
+
+  //     attitude.order = lastOrder;
+
+  //     _attitudeService.addAttitudeToClassroom(attitude, classroomId);
+  //   } catch (e) {
+  //     throw Exception('Failed to add assignment to classroom: $e');
+  //   }
+  // }
 }

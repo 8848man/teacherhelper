@@ -1,5 +1,6 @@
 class Student {
   final String? id;
+  final String? classroomId;
   final String name;
   final String gender;
   final String? birthdate;
@@ -16,6 +17,7 @@ class Student {
 
   Student({
     this.id,
+    this.classroomId,
     required this.name,
     required this.gender,
     this.birthdate,
@@ -34,6 +36,7 @@ class Student {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'classroomId': classroomId,
       'name': name,
       'gender': gender,
       'birthdate': birthdate,
@@ -51,6 +54,7 @@ class Student {
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
       id: json['id'],
+      classroomId: json['classroomId'],
       name: json['name'],
       gender: json['gender'],
       birthdate: json['birthdate'],

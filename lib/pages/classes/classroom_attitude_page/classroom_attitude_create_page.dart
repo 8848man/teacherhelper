@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:teacherhelper/datamodels/daily.dart';
-import 'package:teacherhelper/providers/daily_provider.dart';
+import 'package:teacherhelper/datamodels/attitude.dart';
+import 'package:teacherhelper/providers/attitude_provider.dart';
 
 class AttitudeCreatePage extends StatefulWidget {
   final String? classroomId;
@@ -14,7 +14,7 @@ class AttitudeCreatePage extends StatefulWidget {
 
 class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
   final TextEditingController _nameController = TextEditingController();
-  final DailyProvider _dailyProvider = DailyProvider();
+  final AttitudeProvider _attitudeProvider = AttitudeProvider();
 
   List<String> _years = [];
   List<String> _months = [];
@@ -49,7 +49,7 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
         daysInStartMonth, (index) => (index + 1).toString().padLeft(2, '0'));
   }
 
-  void _registerDaily() async {
+  void _registerAttitude() async {
     final name = _nameController.text;
 
     // 이름 체크
@@ -69,15 +69,16 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
         int.parse(_selectedStartDay!),
       );
 
-      final daily = Daily(
+      final attitude = Attitude(
         name: name,
-        isComplete: false,
         startDate: startDate,
+        // 선행인지 악행인지 여부. 이후 등록시 선택할 수 있도록 추가 필요
+        isBad: true,
       );
 
       // await _assignmentProvider.addAssignment(assignment, widget.classroomId!);
 
-      await _dailyProvider.addDaily(daily, widget.classroomId!);
+      await _attitudeProvider.addAttitude(attitude, widget.classroomId!);
 
       Navigator.of(context).pop();
     } else {
@@ -175,7 +176,7 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
             const SizedBox(height: 16.0),
 
             ElevatedButton(
-              onPressed: _registerDaily,
+              onPressed: _registerAttitude,
               child: const Text('과제 등록'),
             ),
           ],

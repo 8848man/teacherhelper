@@ -259,7 +259,7 @@ class StudentService {
     }
   }
 
-  Future<void> registStudents(
+  Future<List<String>> registStudents(
       List<Student> checkedStudents, String classroomId) async {
     try {
       final CollectionReference studentsCollection =
@@ -267,9 +267,15 @@ class StudentService {
 
       DateTime nowDate = DateTime.now();
 
-      for (Student student in checkedStudents) {
+      // Firestore 배치 생성
+      var batch = FirebaseFirestore.instance.batch();
+
+      List<String> studentIds = [];
+
+      for (var student in checkedStudents) {
         // Student 객체를 Firestore 문서로 변환
         Map<String, dynamic> studentData = {
+          'classroomId': classroomId,
           'name': student.name,
           'studentNumber': student.studentNumber,
           'isChecked': student.isChecked,
@@ -278,9 +284,24 @@ class StudentService {
           // 날짜를 저장할 필드를 추가하려면 여기에 추가
         };
 
-        // Firestore에 문서 추가
-        await studentsCollection.add(studentData);
+        // Students 컬렉션의 참조 생성
+        var studentRef = studentsCollection.doc(); // Firestore에서 자동 생성된 ID 사용
+
+        // 배치에 쓰기 작업 추가
+        batch.set(studentRef, studentData);
+
+        // 생성한 문서의 ID 가져오기
+        var studentId = studentRef.id;
+
+        studentIds.add(studentId);
       }
-    } catch (e) {}
+
+      // 배치 실행
+      await batch.commit();
+
+      return studentIds;
+    } catch (e) {
+      throw Exception('학생 등록 도중 에러가 발생했습니다.');
+    }
   }
 }
