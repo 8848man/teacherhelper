@@ -25,7 +25,6 @@ class AttitudeService {
         order: data['order'],
         id: id,
         isBad: data['isBad'],
-        point: data['point'],
       );
     }).toList()
       ..sort((a, b) => a.order!.compareTo(b.order!));
@@ -142,4 +141,41 @@ class AttitudeService {
   }
 
   addDailyToClassroom(Attitude attitude, String classroomId) {}
+
+  Future<List<Attitude>> getAttitudesByClassroomAndOrder(
+      String classroomId) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collectionGroup('attitude')
+        .where('classroomId', isEqualTo: classroomId)
+        .where('studentId', isNotEqualTo: '')
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>?;
+      final id = doc.id; // 문서의 ID를 가져옵니다.
+
+      return Attitude(
+        name: data?['name'],
+        order: data?['order'],
+        id: id,
+        isBad: data?['isBad'],
+        point: data?['point'],
+        studentId: data?['studentId'],
+      );
+    }).toList();
+  }
+
+  // attitude 체크 로직. 개선 필요
+  Future<void> checkAttitude(
+      String classroomId, String studentId, String attitudeId) async {
+    final snapshot = await _classroomsCollection
+        .doc(classroomId)
+        .collection('Students')
+        .doc(studentId)
+        .collection('attitude')
+        .doc(attitudeId)
+        .get();
+
+    var data = snapshot.data();
+  }
 }

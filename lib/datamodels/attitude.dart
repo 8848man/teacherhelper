@@ -4,7 +4,7 @@ class Attitude {
   String? studentId;
   String name;
   DateTime? startDate;
-  String? point;
+  int? point;
   DateTime? checkDate;
   int? order;
   bool isBad = false;
@@ -29,8 +29,8 @@ class Attitude {
       'name': name,
       'startDate': startDate,
       'checkDate': checkDate,
-      'point': point ?? '0',
-      'order': order ?? '0',
+      'point': point ?? 0,
+      'order': order ?? 0,
       'isBad': isBad,
     };
   }
@@ -43,8 +43,8 @@ class Attitude {
       name: json['name'],
       startDate: json['startDate'].toDate(),
       checkDate: json['checkDate'].toDate(),
-      point: json['point'] ?? '0',
-      order: json['order'],
+      point: json['point'] ?? 0,
+      order: json['order'] ?? 0,
       isBad: json['isBad'],
     );
   }

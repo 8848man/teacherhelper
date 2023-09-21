@@ -14,7 +14,7 @@ class AttitudeProvider with ChangeNotifier {
   List<Attitude> _attitudes = [];
   List<Attitude> get attitudes => _attitudes;
 
-  // classroomId로 태도 데이터 가져오기
+  // classroomId로 태도 데이터 가져오기 페이지 탭에 필요
   Future<List<Attitude>> fetchAttitudesByClassroomId(String classroomId) async {
     try {
       _attitudes =
@@ -45,8 +45,15 @@ class AttitudeProvider with ChangeNotifier {
 
   // 학생 태도 체크하기
   Future<void> checkAttitude(
-      String classroomId, Attitude attitude, String studentId) async {
-    // _attitudeService.checkAttitude(classroomId, attitudeHistory);
+    String classroomId,
+    String studentId,
+    String? attitudeId,
+  ) async {
+    try {
+      _attitudeService.checkAttitude(classroomId, studentId, attitudeId!);
+    } catch (e) {
+      throw Exception(e);
+    }
 
     notifyListeners();
   }

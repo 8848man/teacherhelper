@@ -14,6 +14,11 @@ class Student {
   final DateTime? updatedDate;
   final DateTime? deletedDate;
   bool? isChecked;
+  // attitude등의 데이터를 저장할 변수
+  int? order;
+  int? point;
+  bool? isBad;
+  String? attitudeId;
 
   Student({
     this.id,
@@ -31,6 +36,10 @@ class Student {
     this.createdDate,
     this.deletedDate,
     this.updatedDate,
+    this.order,
+    this.point,
+    this.isBad,
+    this.attitudeId,
   });
 
   Map<String, dynamic> toJson() {

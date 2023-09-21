@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:teacherhelper/datamodels/attitude.dart';
 import 'package:teacherhelper/datamodels/student.dart';
+import 'package:teacherhelper/services/attitude_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 import 'package:teacherhelper/services/student_service.dart';
 
 class StudentProvider with ChangeNotifier {
   final StudentService _studentService = StudentService();
+  final AttitudeService _attitudeService = AttitudeService();
   final currentUserUid = AuthService().currentUser()?.uid;
 
   // 앱에 실제로 사용되는 학생들 데이터를 위한 변수
@@ -15,6 +18,10 @@ class StudentProvider with ChangeNotifier {
   // 학생을 수정할 때 DB에 저장되어있던 학생들을 저장하는 변수.
   List<Student> _loadedStudents = [];
   List<Student> get loadedStudent => _loadedStudents;
+
+  // 태도 데이터를 포함한 학생 데이터
+  List<Student> _studentsWithAttitude = [];
+  List<Student> get studentsWithAttitude => _studentsWithAttitude;
 
   set students(List<Student> students) {
     _students = students;
@@ -46,6 +53,7 @@ class StudentProvider with ChangeNotifier {
   // classroomId로 학생 가져오기
   Future<void> fetchStudentsByClassroom(String classroomId) async {
     try {
+      // 학생 초기화 후 가져오기
       _students = [];
       _students = await _studentService.fetchStudentsByClassroom(classroomId);
       _loadedStudents = _students;
@@ -209,6 +217,33 @@ class StudentProvider with ChangeNotifier {
       selectedStudent.isChecked = true;
     }
 
+    notifyListeners();
+  }
+
+  // 학생 데이터에 태도 데이터 입력
+  Future<void> injectAttitudeToStudents(String classroomId, int order) async {
+    _studentsWithAttitude = [];
+    final studentData = students;
+    final attitudeData =
+        await _attitudeService.getAttitudesByClassroomAndOrder(classroomId);
+    // studentsData를 사용하여 원하는 가공 작업 수행
+
+    Iterable<Attitude> filteredData =
+        attitudeData.where((data) => data.order == order);
+
+    for (Student student in studentData) {
+      for (Attitude attitude in filteredData) {
+        if (attitude.studentId == student.id) {
+          student.order = attitude.order;
+          student.point = attitude.point;
+          student.isBad = attitude.isBad;
+          student.attitudeId = attitude.id;
+          _studentsWithAttitude.add(student);
+        }
+      }
+    }
+
+    // 가공한 결과를 필요한 상태로 업데이트
     notifyListeners();
   }
 }

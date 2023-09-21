@@ -102,6 +102,8 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                     ),
                     body: TabBarView(
                       children: List.generate(orderList.length, (index) {
+                        print('test001');
+                        print(orderList);
                         return ClassroomDailyPage(
                           classroomId: widget.classroomId,
                           order: orderList[index],

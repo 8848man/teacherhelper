@@ -7,6 +7,7 @@ import 'package:teacherhelper/providers/attitude_history_provider.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_history_provider.dart';
+import 'package:teacherhelper/providers/student_attitude_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 import './services/auth_service.dart';
@@ -26,6 +27,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => DailyHistoryProvider()),
         ChangeNotifierProvider(create: (context) => AttitudeProvider()),
         ChangeNotifierProvider(create: (context) => AttitudeHistoryProvider()),
+        ChangeNotifierProvider(create: (context) => StudentAttitudeProvider()),
       ],
       child: const MyApp(),
     ),

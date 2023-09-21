@@ -4,6 +4,7 @@ import 'package:teacherhelper/datamodels/attitudeHistory.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
 import 'package:teacherhelper/providers/attitude_history_provider.dart';
+import 'package:teacherhelper/providers/attitude_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomAttitudePage extends StatefulWidget {
@@ -46,6 +47,9 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
       await studentProvider.fetchStudentsByClassroom(widget.classroomId);
       await attitudeHistoryProvider.fetchAttitudesByClassroomIdAndAttitudeOrder(
           widget.classroomId, widget.order);
+
+      await studentProvider.injectAttitudeToStudents(
+          widget.classroomId, widget.order!);
       // await attitudeProvider.fetchAttitudesByClassroomId(
       //     widget.classroomId, widget.order);
       // 데이터가 로드되면 cardStates를 초기화하고 상태를 갱신
@@ -76,11 +80,15 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
               builder:
                   (context, studentProvider, attitudeHistoryProvider, child) {
                 // 학생 저장 변수
-                final List<Student> students = studentProvider.students;
+                final List<Student> students =
+                    studentProvider.studentsWithAttitude;
 
                 // 출석체크등 완료여부를 알기 위한 토큰.
                 final List<AttitudeHistory> latestAttitudeHistorys =
                     attitudeHistoryProvider.latestAttitudeHistorys;
+
+                final attitudeProvider =
+                    Provider.of<AttitudeProvider>(context, listen: false);
 
                 // 0910 student sort기능.
                 List<int> studentNumbers = students
@@ -149,20 +157,27 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                       TextButton(
                                         onPressed: () {
                                           setState(() {
+                                            // attitudeHistory에 체크된 기록 추가
                                             attitudeHistoryProvider
                                                 .checkAttitude(
                                               widget.classroomId,
                                               AttitudeHistory(
-                                                  studentName: student.name,
-                                                  studentNumber: int.parse(
-                                                      student.studentNumber!),
-                                                  isAdd: true,
-                                                  isBad: widget.isBad,
-                                                  checkDate: widget.now,
-                                                  order: widget.order,
-                                                  attitudeName:
-                                                      widget.attitudeName),
+                                                studentName: student.name,
+                                                studentNumber: int.parse(
+                                                    student.studentNumber!),
+                                                isAdd: true,
+                                                isBad: widget.isBad,
+                                                checkDate: widget.now,
+                                                order: widget.order,
+                                                attitudeName:
+                                                    widget.attitudeName,
+                                              ),
                                             );
+                                            // attitude에 포인트 추가
+                                            attitudeProvider.checkAttitude(
+                                                widget.classroomId,
+                                                student.id!,
+                                                student.attitudeId);
                                             cardStates[index] =
                                                 !cardStates[index];
                                           });
@@ -193,6 +208,7 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                 children: [
                                   Text(student.studentNumber!),
                                   Text(student.name),
+                                  Text(student.point.toString()),
                                 ],
                               ),
                             ),
