@@ -140,8 +140,7 @@ class AttitudeService {
     }
   }
 
-  addDailyToClassroom(Attitude attitude, String classroomId) {}
-
+  // attitude 데이터 가져오기. 생활 페이지에서 사용
   Future<List<Attitude>> getAttitudesByClassroomAndOrder(
       String classroomId) async {
     QuerySnapshot querySnapshot = await _firestore
@@ -161,21 +160,38 @@ class AttitudeService {
         isBad: data?['isBad'],
         point: data?['point'],
         studentId: data?['studentId'],
+        classroomId: data?['classroomId'],
       );
     }).toList();
   }
 
   // attitude 체크 로직. 개선 필요
-  Future<void> checkAttitude(
-      String classroomId, String studentId, String attitudeId) async {
-    final snapshot = await _classroomsCollection
-        .doc(classroomId)
-        .collection('Students')
-        .doc(studentId)
-        .collection('attitude')
-        .doc(attitudeId)
-        .get();
+  Future<void> checkAttitude(Attitude attitudeData) async {
+    try {
+      final batch = _firestore.batch();
+      attitudeData.checkDate = DateTime.now();
+      final attitudeRef = _classroomsCollection
+          .doc(attitudeData.classroomId)
+          .collection('Students')
+          .doc(attitudeData.studentId)
+          .collection('attitude')
+          .doc(attitudeData.id);
+      final attitudeHistoryRef =
+          attitudeRef.collection('attitudeHistory').doc();
 
-    var data = snapshot.data();
+      final addPoint = {'point': attitudeData.point};
+      final addHistory = attitudeData.toJson();
+      batch.update(attitudeRef, addPoint);
+      batch.set(attitudeHistoryRef, addHistory);
+
+      // 필드 업데이트를 수행합니다.
+      batch.commit().then((_) {
+        print("필드 업데이트가 성공했습니다.");
+      }).catchError((error) {
+        print("필드 업데이트 중 오류가 발생했습니다: $error");
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/floating_action_button_daily.dart';
@@ -18,19 +20,36 @@ class ClassroomDailyPageTapBar extends StatefulWidget {
 
 class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
   final DailyProvider _dailyProvider = DailyProvider(); // DailyProvider 인스턴스 생성
-  final ClassroomProvider _classroomProvider =
-      ClassroomProvider(); // DailyProvider 인스턴스 생성
   @override
   void initState() {
     super.initState();
-    _dailyProvider.fetchDailysByClassroomId(widget.classroomId);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Builder(builder: (context) {
+      home: Consumer2<ClassroomProvider, DailyProvider>(
+          builder: (context, classroomProvider, dailyProvider, child) {
+        final List<Classroom> classrooms = classroomProvider.classrooms;
+
+        Map<String, String> classroomData = {};
+
+        for (Classroom classroom in classrooms) {
+          classroomData[classroom.name] = classroom.uid!;
+        }
+
+        List<String> myKeyList = classroomData.keys.toList();
+
+        String? thisClassroomId;
+
+        classroomData.forEach((key, value) {
+          if (value == widget.classroomId) {
+            thisClassroomId = key;
+          }
+        });
+
+        String dropdownValue = thisClassroomId!;
         return FutureBuilder<List<Daily>>(
             future: _dailyProvider.fetchDailysByClassroomId(widget.classroomId),
             builder: (context, snapshot) {
@@ -84,9 +103,45 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                                   Container(
                                     width:
                                         MediaQuery.of(context).size.width * 0.1,
-                                    color: Colors.pink,
-                                    child: Image.asset(
-                                        'assets/buttons/classroom_change_button.png'),
+                                    child: DropdownButton<String>(
+                                      value: dropdownValue,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      elevation: 16,
+                                      style: const TextStyle(
+                                        color: Colors.deepPurple,
+                                      ),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                      onChanged: (String? value) {
+                                        // 사용자가 항목을 선택했을 때 실행할 코드
+                                        setState(() {
+                                          print(value);
+                                          dropdownValue = value!;
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                // 이동하고 싶은 화면을 반환하는 builder 함수를 작성합니다.
+                                                return ClassroomDailyPageTapBar(
+                                                  classroomId:
+                                                      classroomData[value]!,
+                                                ); // YourNextScreen은 이동하고자 하는 화면입니다.
+                                              },
+                                            ),
+                                          );
+                                        });
+                                      },
+                                      items: myKeyList
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
                                   ),
                                   Container(
                                     width:
@@ -102,8 +157,6 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                     ),
                     body: TabBarView(
                       children: List.generate(orderList.length, (index) {
-                        print('test001');
-                        print(orderList);
                         return ClassroomDailyPage(
                           classroomId: widget.classroomId,
                           order: orderList[index],

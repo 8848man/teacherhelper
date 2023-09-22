@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -132,9 +133,7 @@ class ClassroomRegistPage_reform extends StatefulWidget {
 
 class _ClassroomRegistPage_reformState
     extends State<ClassroomRegistPage_reform> {
-  final _formKey = GlobalKey<FormState>();
   final _classNameController = TextEditingController();
-  final _gradeController = TextEditingController();
   final _studentNameController = TextEditingController();
   final _studentNumberController = TextEditingController();
 
@@ -191,6 +190,8 @@ class _ClassroomRegistPage_reformState
         Provider.of<ClassroomProvider>(context, listen: false);
     final studentProvider =
         Provider.of<StudentProvider>(context, listen: false);
+
+    User? user = FirebaseAuth.instance.currentUser;
     try {
       if (_classNameController.text != '') {
         final classroom = Classroom(
@@ -204,6 +205,8 @@ class _ClassroomRegistPage_reformState
             students.where((student) => student.isChecked == true).toList();
 
         await classroomProvider.createClassroom(classroom, checkedStudents);
+        // 반 등록 후 선생님 id로 반 가져오기
+        await classroomProvider.fetchClassrooms(user!.uid);
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

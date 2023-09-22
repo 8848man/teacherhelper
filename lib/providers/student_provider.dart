@@ -234,10 +234,7 @@ class StudentProvider with ChangeNotifier {
     for (Student student in studentData) {
       for (Attitude attitude in filteredData) {
         if (attitude.studentId == student.id) {
-          student.order = attitude.order;
-          student.point = attitude.point;
-          student.isBad = attitude.isBad;
-          student.attitudeId = attitude.id;
+          student.attitudeData = attitude;
           _studentsWithAttitude.add(student);
         }
       }

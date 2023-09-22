@@ -175,9 +175,7 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                             );
                                             // attitude에 포인트 추가
                                             attitudeProvider.checkAttitude(
-                                                widget.classroomId,
-                                                student.id!,
-                                                student.attitudeId);
+                                                student.attitudeData!);
                                             cardStates[index] =
                                                 !cardStates[index];
                                           });
@@ -208,7 +206,7 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                 children: [
                                   Text(student.studentNumber!),
                                   Text(student.name),
-                                  Text(student.point.toString()),
+                                  Text(student.attitudeData!.point.toString()),
                                 ],
                               ),
                             ),

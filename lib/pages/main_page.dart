@@ -115,7 +115,6 @@ class _MainPage_reformState extends State<MainPage_reform> {
   User? user = FirebaseAuth.instance.currentUser;
 
   // 데이터를 가져왔는지에 대한 여부.
-  bool _dataFetched = false;
   @override
   void initState() {
     super.initState();
@@ -131,26 +130,18 @@ class _MainPage_reformState extends State<MainPage_reform> {
           Provider.of<ClassroomProvider>(context, listen: false);
 
       classroomProvider.fetchClassrooms(currentUserUid!);
-      _dataFetched = true;
     } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    // final classroomProvider = Provider.of<ClassroomProvider>(context);
-
-    // final classrooms = classroomProvider.classrooms;
-
-    // useEffect(() {
-    //   classroomProvider.fetchClassrooms(currentUserUid!);
-    // }, []);
-
     return Consumer<AuthService>(
       builder: (context, authService, child) {
         return Scaffold(
           body: Consumer<ClassroomProvider>(
             builder: (context, classroomProvider, child) {
               final List<Classroom> classrooms = classroomProvider.classrooms;
+              print(classrooms);
               return Column(
                 children: [
                   Container(
@@ -304,6 +295,8 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                 ),
                               ),
                               onTap: () {
+                                classroomProvider
+                                    .setClassroomId(classroom.uid!);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

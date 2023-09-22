@@ -45,12 +45,11 @@ class AttitudeProvider with ChangeNotifier {
 
   // 학생 태도 체크하기
   Future<void> checkAttitude(
-    String classroomId,
-    String studentId,
-    String? attitudeId,
+    Attitude attitudeData,
   ) async {
     try {
-      _attitudeService.checkAttitude(classroomId, studentId, attitudeId!);
+      attitudeData.point = attitudeData.point! + 1;
+      _attitudeService.checkAttitude(attitudeData);
     } catch (e) {
       throw Exception(e);
     }
