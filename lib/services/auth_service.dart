@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:teacherhelper/datamodels/user.dart';
 
 class AuthService extends ChangeNotifier {
   User? currentUser() {
@@ -9,44 +11,51 @@ class AuthService extends ChangeNotifier {
 
   bool isLoading = false;
 
-  // 회원가입
-  void signUp({
-    required String email, // 이메일
+  // 회원가입 함수
+  Future<String?> signUp({
+    required AppUser appUser, // 이메일
     required String password, // 비밀번호
-    required Function onSuccess, // 가입 성공시 호출되는 함수
-    required Function(String err) onError, // 에러 발생시 호출되는 함수
   }) async {
-    // 이메일 및 비밀번호 입력 여부 확인
-    if (email.isEmpty) {
-      onError("이메일을 입력해 주세요.");
-      return;
-    } else if (password.isEmpty) {
-      onError("비밀번호를 입력해 주세요.");
-      return;
-    }
-
     // firebase auth 회원 가입
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      // 성공 함수 호출
-      onSuccess();
+      // 파이어베이스 회원가입
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: appUser.email,
+            password: password,
+          )
+          // 회원가입 후 상세정보 저장.
+          .then(
+            (value) async => {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(value.user!.uid)
+                  .set(
+                {
+                  'email': appUser.email,
+                  'name': appUser.name,
+                  'phoneNum': appUser.phoneNum,
+                  'schoolName': appUser.schoolName,
+                  'uid': value.user!.uid,
+                  'userType': appUser.userType,
+                },
+              ),
+            },
+          );
     } on FirebaseAuthException catch (e) {
-      onError(e.message!);
+      return e.message!;
     } catch (e) {
       // Firebase auth 이외의 에러 발생
-      onError(e.toString());
+      return e.toString();
     }
+    return '회원 생성이 완료되었습니다.';
   }
 
   void signIn({
     required String email, // 이메일
     required String password, // 비밀번호
     required Function onSuccess, // 로그인 성공시 호출되는 함수
-    required Function(String err) onError, // 에러 발생시 호출되는 함수
+    required Function(String err) onError,
   }) async {
     // 로그인
     if (email.isEmpty) {

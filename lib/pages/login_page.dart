@@ -111,7 +111,8 @@ import 'main_page.dart';
 // }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final Size screenSize;
+  const LoginPage({super.key, required this.screenSize});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -128,15 +129,16 @@ class _LoginPageState extends State<LoginPage> {
       return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Form(
-            key: _formKey,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.height * 0.88,
-                  height: MediaQuery.of(context).size.height * 1,
-                  child: Image.asset('assets/images/login_page.jpg'),
-                ),
-                Container(
+          key: _formKey,
+          child: Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.height * 0.88,
+                height: MediaQuery.of(context).size.height * 1,
+                child: Image.asset('assets/images/login_page.jpg'),
+              ),
+              SingleChildScrollView(
+                child: Container(
                   padding:
                       EdgeInsets.all(MediaQuery.of(context).size.width * 0.08),
                   child: Column(
@@ -222,7 +224,8 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const MainPage_reform()),
+                                      builder: (context) =>
+                                          const MainPage_reform()),
                                 );
                               },
                               onError: (err) {
@@ -277,18 +280,24 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const RegisterPage()),
+                                    builder: (context) => RegisterPage(
+                                        screenSize: widget.screenSize)),
                               );
                             },
                           ),
                           const Text('을 눌러주세요'),
                         ],
                       ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.4,
+                      ),
                     ],
                   ),
                 ),
-              ],
-            )),
+              ),
+            ],
+          ),
+        ),
       );
     });
   }

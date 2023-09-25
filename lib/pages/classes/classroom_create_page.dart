@@ -631,6 +631,18 @@ class _ClassroomRegistPage_reformState
                                                         );
                                                         return;
                                                       }
+                                                      if (_studentNameController
+                                                              .text ==
+                                                          '') {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          const SnackBar(
+                                                              content: Text(
+                                                                  "학생 이름을 입력해주세요")),
+                                                        );
+                                                        return;
+                                                      }
                                                       studentProvider
                                                           .addStudent(
                                                         studentNumber: int.parse(
@@ -649,6 +661,14 @@ class _ClassroomRegistPage_reformState
                                                             content:
                                                                 Text(message),
                                                           ));
+                                                          _studentNumberController
+                                                              .text = (int.parse(
+                                                                      _studentNumberController
+                                                                          .text) +
+                                                                  1)
+                                                              .toString();
+                                                          _studentNameController
+                                                              .text = '';
                                                         },
                                                         onError: (err) {
                                                           // 에러 발생
@@ -687,14 +707,6 @@ class _ClassroomRegistPage_reformState
                                                           );
                                                         },
                                                       );
-                                                      _studentNumberController
-                                                          .text = (int.parse(
-                                                                  _studentNumberController
-                                                                      .text) +
-                                                              1)
-                                                          .toString();
-                                                      _studentNameController
-                                                          .text = '';
                                                     },
                                                   ),
                                                 ),

@@ -31,6 +31,7 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
       debugShowCheckedModeBanner: false,
       home: Consumer2<ClassroomProvider, DailyProvider>(
           builder: (context, classroomProvider, dailyProvider, child) {
+        // 반 전환을 위한 드롭다운 버튼 변수 설정
         final List<Classroom> classrooms = classroomProvider.classrooms;
 
         Map<String, String> classroomData = {};
@@ -50,6 +51,8 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
         });
 
         String dropdownValue = thisClassroomId!;
+
+        // 반 전환을 위한 드롭다운 버튼 변수 설정 끝
         return FutureBuilder<List<Daily>>(
             future: _dailyProvider.fetchDailysByClassroomId(widget.classroomId),
             builder: (context, snapshot) {
@@ -100,9 +103,9 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.1,
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.12,
                                     child: DropdownButton<String>(
                                       value: dropdownValue,
                                       icon: const Icon(Icons.arrow_downward),
@@ -117,7 +120,6 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                                       onChanged: (String? value) {
                                         // 사용자가 항목을 선택했을 때 실행할 코드
                                         setState(() {
-                                          print(value);
                                           dropdownValue = value!;
                                           Navigator.pushReplacement(
                                             context,
@@ -143,13 +145,14 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                                       }).toList(),
                                     ),
                                   ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.1,
-                                    color: Colors.pink[100],
-                                    child: Image.asset(
-                                        'assets/buttons/attendance_check_button.png'),
-                                  ),
+                                  // 출결 표시 버튼
+                                  // Container(
+                                  //   width:
+                                  //       MediaQuery.of(context).size.width * 0.1,
+                                  //   color: Colors.pink[100],
+                                  //   child: Image.asset(
+                                  //       'assets/buttons/attendance_check_button.png'),
+                                  // ),
                                 ]),
                           ),
                         ],

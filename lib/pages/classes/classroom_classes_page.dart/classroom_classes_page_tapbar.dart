@@ -23,7 +23,6 @@ class _ClassroomClassesPageTapBarState
   @override
   void initState() {
     super.initState();
-    print(_classroomProvider.classroomId);
     _dailyProvider.fetchDailysByClassroomId(_classroomProvider.classroomId);
   }
 

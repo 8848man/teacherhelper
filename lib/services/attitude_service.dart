@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teacherhelper/datamodels/attitude.dart';
-import 'package:teacherhelper/datamodels/student.dart';
 
 class AttitudeService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

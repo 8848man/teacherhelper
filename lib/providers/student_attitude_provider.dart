@@ -7,7 +7,7 @@ class StudentAttitudeProvider extends ChangeNotifier {
   StudentProvider studentProvider = StudentProvider();
   AttitudeProvider attitudeProvider = AttitudeProvider();
 
-  List<Student> _studentsWithAttitude = [];
+  final List<Student> _studentsWithAttitude = [];
   List<Student> get studentsWithAttitude => _studentsWithAttitude;
 
   // 학생과 attitude 데이터를 결합

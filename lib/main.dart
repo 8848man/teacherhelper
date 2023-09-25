@@ -5,6 +5,7 @@ import 'package:teacherhelper/pages/cover_page.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/attitude_history_provider.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
+import 'package:teacherhelper/providers/auth_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_history_provider.dart';
 import 'package:teacherhelper/providers/student_attitude_provider.dart';
@@ -28,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AttitudeProvider()),
         ChangeNotifierProvider(create: (context) => AttitudeHistoryProvider()),
         ChangeNotifierProvider(create: (context) => StudentAttitudeProvider()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
       child: const MyApp(),
     ),
@@ -39,11 +41,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final user = context.read<AuthService>().currentUser();
-
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: user == null ? LoginPage() : HomePage(),
       home: CoverPage(),
     );
   }

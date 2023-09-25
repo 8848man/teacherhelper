@@ -7,6 +7,7 @@ class CoverPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
     // TODO: implement build
     return Scaffold(
       body: Padding(
@@ -47,7 +48,8 @@ class CoverPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
+                              builder: (context) =>
+                                  LoginPage(screenSize: screenSize),
                             ),
                           );
                         },
@@ -60,7 +62,9 @@ class CoverPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RegisterPage()),
+                                builder: (context) => RegisterPage(
+                                      screenSize: screenSize,
+                                    )),
                           );
                         },
                       ),
