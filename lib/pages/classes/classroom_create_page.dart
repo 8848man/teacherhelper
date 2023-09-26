@@ -7,114 +7,6 @@ import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
-class ClassroomRegistPage extends StatefulWidget {
-  final String teacherUid;
-
-  const ClassroomRegistPage({
-    super.key,
-    required this.teacherUid,
-  });
-
-  @override
-  _ClassroomRegistPageState createState() => _ClassroomRegistPageState();
-}
-
-class _ClassroomRegistPageState extends State<ClassroomRegistPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _gradeController = TextEditingController();
-  final studentsProvider = StudentProvider();
-  bool _isLoading = false;
-
-  @override
-  initState() {
-    super.initState();
-  }
-
-  Future<void> _createClassroom(ClassroomProvider classroomProvider) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final classroom = Classroom(
-        name: _nameController.text,
-        teacherUid: widget.teacherUid,
-        grade: int.parse(_gradeController.text),
-        id: '',
-      );
-
-      // await classroomProvider.createClassroom(classroom);
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      Navigator.pop(context);
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("반 등록에 실패했습니다.")),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final classroomProvider = Provider.of<ClassroomProvider>(context);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text("반 등록하기")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: "반 이름"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '반 이름을 입력해주세요.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _gradeController,
-                decoration: const InputDecoration(labelText: "학년"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '학년을 입력해주세요.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () => _createClassroom(classroomProvider),
-                  child: _isLoading
-                      ? const CircularProgressIndicator()
-                      : const Text("반 등록하기"),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class ClassroomRegistPage_reform extends StatefulWidget {
   final String teacherUid;
   final String? classroomId;
@@ -222,32 +114,32 @@ class _ClassroomRegistPage_reformState
   }
 
   // 학반 수정 기능
-  Future<void> _modifyClassroom() async {
-    final classroomProvider =
-        Provider.of<ClassroomProvider>(context, listen: false);
-    final studentProvider =
-        Provider.of<StudentProvider>(context, listen: false);
+  // Future<void> _modifyClassroom() async {
+  //   final classroomProvider =
+  //       Provider.of<ClassroomProvider>(context, listen: false);
+  //   final studentProvider =
+  //       Provider.of<StudentProvider>(context, listen: false);
 
-    try {
-      final classroom = Classroom(
-        name: _classNameController.text,
-        teacherUid: widget.teacherUid,
-        id: '',
-      );
+  //   try {
+  //     final classroom = Classroom(
+  //       name: _classNameController.text,
+  //       teacherUid: widget.teacherUid,
+  //       id: '',
+  //     );
 
-      List<Student> students = studentProvider.students;
-      List<Student> checkedStudents =
-          students.where((student) => student.isChecked == true).toList();
+  //     List<Student> students = studentProvider.students;
+  //     List<Student> checkedStudents =
+  //         students.where((student) => student.isChecked == true).toList();
 
-      await classroomProvider.modifyClassroom(classroom, checkedStudents);
+  //     await classroomProvider.modifyClassroom(classroom, checkedStudents);
 
-      Navigator.pop(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("반 등록에 실패했습니다.")),
-      );
-    }
-  }
+  //     Navigator.pop(context);
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("반 등록에 실패했습니다.")),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +162,7 @@ class _ClassroomRegistPage_reformState
                   // 상단의 텍스트 컨테이너
                   child: Container(
                     child: Text(
-                      widget.isModify == true ? '학반 수정' : '학반 등록',
+                      '학반 등록',
                       style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: MediaQuery.of(context).size.height * 0.055,

@@ -230,6 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               onError: (err) {
                                 // 에러 발생
+                                FocusScope.of(context).unfocus();
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(err),

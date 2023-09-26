@@ -23,6 +23,7 @@ class CoverPage extends StatelessWidget {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.07,
                   ),
+                  // 앱 이름 텍스트
                   Text(
                     'SCHOOL CHECK',
                     style: TextStyle(
@@ -41,6 +42,7 @@ class CoverPage extends StatelessWidget {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.02,
                       ),
+                      // 로그인 페이지 버튼
                       GestureDetector(
                         child: Image.asset('assets/buttons/login_button.jpg',
                             height: MediaQuery.of(context).size.height * 0.06),
@@ -55,16 +57,44 @@ class CoverPage extends StatelessWidget {
                         },
                       ),
                       const Spacer(),
+                      // 회원가입 페이지 버튼
                       GestureDetector(
-                        child: Image.asset('assets/buttons/login_button.jpg',
-                            height: MediaQuery.of(context).size.height * 0.06),
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                                'assets/buttons/orange_rounded_button.png',
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06),
+                            Positioned(
+                              top: MediaQuery.of(context).size.height *
+                                  0.01, // 상단 여백 조절
+                              left: 0, // 좌측 여백 조절
+                              right: 0, // 우측 여백 조절
+                              child: Center(
+                                child: Text(
+                                  '회원가입',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.025,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RegisterPage(
-                                      screenSize: screenSize,
-                                    )),
+                              builder: (context) => RegisterPage(
+                                screenSize: screenSize,
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -79,6 +109,7 @@ class CoverPage extends StatelessWidget {
                 ],
               ),
             ),
+            // 우측 커버페이지 이미지
             Image.asset(
               'assets/images/cover_image.jpg',
               // height: MediaQuery.of(context).size.height * 0.9,

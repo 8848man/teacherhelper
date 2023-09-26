@@ -103,4 +103,29 @@ class ClassroomService {
       throw Exception('Failed to add assignment to classroom: $e');
     }
   }
+
+  Future<bool> deleteClassroom(String classroomId) async {
+    try {
+      // 현재 시간을 얻습니다.
+      DateTime currentTime = DateTime.now();
+
+      // Firestore에 업데이트할 데이터를 Map 형태로 생성합니다.
+      Map<String, dynamic> updateData = {
+        'deletedDate': currentTime,
+        'isDeleted': true,
+      };
+
+      // 해당 Classroom 문서에 업데이트를 수행합니다.
+      await _firestore
+          .collection('classrooms')
+          .doc(classroomId)
+          .update(updateData);
+
+      print('deletedDate 업데이트가 성공했습니다.');
+      return true;
+    } catch (error) {
+      print('deletedDate 업데이트 중 오류가 발생했습니다: $error');
+      return false;
+    }
+  }
 }

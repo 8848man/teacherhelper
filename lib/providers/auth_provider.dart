@@ -34,9 +34,14 @@ class AuthProvider with ChangeNotifier {
 
     // firebase auth 회원 가입
     try {
-      _authService.signUp(appUser: appUser, password: password);
+      String? signUpMessage =
+          await _authService.signUp(appUser: appUser, password: password);
       // 성공 함수 호출
-      onSuccess();
+      if (signUpMessage == 'success') {
+        onSuccess();
+      } else {
+        onError(signUpMessage!);
+      }
     } catch (e) {
       // Firebase auth 이외의 에러 발생
       onError(e.toString());

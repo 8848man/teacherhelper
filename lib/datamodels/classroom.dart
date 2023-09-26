@@ -7,6 +7,7 @@ class Classroom {
   DateTime? createdDate;
   DateTime? updatedDate;
   DateTime? deletedDate;
+  bool? isDeleted;
 
   Classroom({
     required this.name,
@@ -16,6 +17,7 @@ class Classroom {
     this.uid,
     this.createdDate,
     this.deletedDate,
+    this.isDeleted,
   });
 
   get teacher => null;
@@ -28,6 +30,7 @@ class Classroom {
       'grade': grade,
       'uid': uid,
       'createdDate': createdDate,
+      'isDeleted': isDeleted,
     };
   }
 
@@ -49,6 +52,7 @@ class Classroom {
       grade: json['grade'],
       uid: json['uid'],
       createdDate: json['createdDate'],
+      isDeleted: json['isDeleted'],
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/user.dart';
+import 'package:teacherhelper/exeption_messages/treanslate_firebase_auth_exeception.dart';
 
 class AuthService extends ChangeNotifier {
   User? currentUser() {
@@ -42,13 +43,13 @@ class AuthService extends ChangeNotifier {
               ),
             },
           );
+      return 'success';
     } on FirebaseAuthException catch (e) {
-      return e.message!;
+      return translateFirebaseAuthException(e);
     } catch (e) {
       // Firebase auth 이외의 에러 발생
       return e.toString();
     }
-    return '회원 생성이 완료되었습니다.';
   }
 
   void signIn({

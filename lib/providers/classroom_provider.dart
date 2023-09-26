@@ -117,4 +117,12 @@ class ClassroomProvider with ChangeNotifier {
   //Future<void>
 
   // 학생 관련 함수 모음 끝
+
+  Future<void> deleteClassroom(String classroomId) async {
+    try {
+      bool isSuccess = await _classroomService.deleteClassroom(classroomId);
+    } catch (e) {
+      print(e);
+    }
+  }
 }

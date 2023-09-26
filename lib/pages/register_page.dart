@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/user.dart';
@@ -12,7 +11,7 @@ import 'package:teacherhelper/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   final Size screenSize;
-  RegisterPage({super.key, required this.screenSize});
+  const RegisterPage({super.key, required this.screenSize});
 
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -38,6 +37,13 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = true;
     });
 
+    if (_passwordController.text != _passwordCheckController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("입력하신 비밀번호가 다릅니다."),
+      ));
+      FocusScope.of(context).unfocus();
+      return;
+    }
     try {
       AppUser appUser = AppUser(
         userType: 'T',
@@ -64,6 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
         },
         onError: (err) {
           // 에러 발생
+          FocusScope.of(context).unfocus();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(err),
           ));
@@ -101,18 +108,21 @@ class _RegisterPageState extends State<RegisterPage> {
             key: _formKey,
             child: Row(
               children: [
+                // 회원가입 페이지 메인 이미지
                 SizedBox(
                   width: screenSize.height * 0.88,
                   height: screenSize.height * 1,
                   child: Image.asset('assets/images/register_page.jpg'),
                 ),
-                Container(
+                // 회원가입 폼
+                SizedBox(
                   height: screenSize.height * 1,
                   child: SingleChildScrollView(
                     child: Container(
                       padding: EdgeInsets.all(screenSize.width * 0.08),
                       child: Column(
                         children: <Widget>[
+                          // 회원가입
                           const Text(
                             '회원가입',
                             // TextStyle를 정의하여 텍스트 스타일을 설정합니다.
@@ -193,7 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 Row(
                                   children: [
-                                    Spacer(),
+                                    const Spacer(),
                                     GestureDetector(
                                       child: Image.asset(
                                           'assets/images/password_icon.png'),
@@ -229,7 +239,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 Row(
                                   children: [
-                                    Spacer(),
+                                    const Spacer(),
                                     GestureDetector(
                                       child: Image.asset(
                                           'assets/images/password_icon.png'),
