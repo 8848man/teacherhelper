@@ -44,6 +44,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
       await studentProvider.fetchStudentsByClassroom(widget.classroomId);
       await dailyHistoryProvider.fetchDailysByClassroomIdAndDailyOrder(
           widget.classroomId, widget.order);
+      await studentProvider.injectDailyToStudents(
+          widget.classroomId, widget.order!);
       // await dailyProvider.fetchDailysByClassroomId(
       //     widget.classroomId, widget.order);
       // 데이터가 로드되면 cardStates를 초기화하고 상태를 갱신
@@ -73,8 +75,10 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
             Consumer2<StudentProvider, DailyHistoryProvider>(
               builder: (context, studentProvider, dailyHistoryProvider, child) {
                 // 학생 저장 변수
-                final List<Student> students = studentProvider.students;
+                final List<Student> students =
+                    studentProvider.studentsWithDaily;
 
+                print(students);
                 // 출석체크등 완료여부를 알기 위한 토큰.
                 final List<DailyHistory> latestDailyHistorys =
                     dailyHistoryProvider.latestDailyHistorys;
@@ -151,14 +155,22 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                         TextButton(
                                           onPressed: () {
                                             setState(() {
-                                              dailyHistoryProvider.checkDaily(
-                                                widget.classroomId,
-                                                student.studentNumber!,
-                                                widget.dailyName!,
-                                                student.name,
-                                                widget.order,
-                                                widget.now,
+                                              DailyHistory dailyHistory =
+                                                  DailyHistory(
+                                                classroomId: widget.classroomId,
+                                                dailyName: widget.dailyName!,
+                                                order: widget.order,
+                                                studentId: student.id,
+                                                // dailyId:
                                               );
+                                              dailyHistoryProvider.checkDaily(
+                                                  widget.classroomId,
+                                                  student.studentNumber!,
+                                                  widget.dailyName!,
+                                                  student.name,
+                                                  widget.order,
+                                                  widget.now,
+                                                  dailyHistory);
                                               cardStates[index] =
                                                   !cardStates[index];
                                             });

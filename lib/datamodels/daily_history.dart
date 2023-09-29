@@ -1,6 +1,5 @@
 class DailyHistory {
   String? id;
-  String? name;
   bool? isChecked;
   DateTime? startDate;
   DateTime? dueDate;
@@ -10,6 +9,8 @@ class DailyHistory {
   String? studentName;
   String? dailyName;
   int? studentNumber;
+  String? studentId;
+  String? dailyId;
 
   @override
   String toString() {
@@ -18,7 +19,6 @@ class DailyHistory {
 
   DailyHistory({
     this.id,
-    this.name,
     this.isChecked,
     this.startDate,
     this.dueDate,
@@ -28,12 +28,13 @@ class DailyHistory {
     this.studentName,
     this.dailyName,
     this.studentNumber,
+    this.studentId,
+    this.dailyId,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
       'isChecked': isChecked,
       'startDate': startDate,
       'dueDate': dueDate,
@@ -43,13 +44,14 @@ class DailyHistory {
       'studentName': studentName,
       'dailyName': dailyName,
       'studentNumber': studentNumber,
+      'studentId': studentId,
+      'dailyId': dailyId,
     };
   }
 
   factory DailyHistory.fromJson(Map<String, dynamic> json, String? id) {
     return DailyHistory(
       id: json['id'],
-      name: json['name'],
       isChecked: json['isChecked'],
       startDate: json['startDate'] == null ? null : json['startDate'].toDate(),
       dueDate: json['dueDate'] == null ? null : json['dueDate'].toDate(),
@@ -59,6 +61,8 @@ class DailyHistory {
       studentName: json['studentName'],
       dailyName: json['dailyName'],
       studentNumber: json['studentNumber'],
+      studentId: json['sutdentId'],
+      dailyId: json['dailyId'],
     );
   }
 }

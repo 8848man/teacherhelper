@@ -53,7 +53,7 @@ class ClassroomProvider with ChangeNotifier {
       List<String> studentIds =
           await _studentService.registStudents(checkedStudents, classroomId!);
       // 기본적으로 등록되어야 하는 일상 및 과제 등록
-      await _dailyService.addDefaultDaily(classroom.id);
+      await _dailyService.addDefaultDaily(classroom.id, studentIds);
       await _assignmentService.addDefaultAssignment(classroom.id);
       await _attitudeService.addDefaultAttitude(classroom.id, studentIds);
       notifyListeners();
@@ -118,9 +118,18 @@ class ClassroomProvider with ChangeNotifier {
 
   // 학생 관련 함수 모음 끝
 
-  Future<void> deleteClassroom(String classroomId) async {
+  Future<void> deleteClassroom(
+      {required String classroomId,
+      required Function onSuccess,
+      required Function onError}) async {
     try {
-      bool isSuccess = await _classroomService.deleteClassroom(classroomId);
+      bool isSuccess = await _classroomService.deleteClassroom(classroomId!);
+
+      if (isSuccess) {
+        onSuccess();
+      } else {
+        onError('반 삭제에 실패했습니다. 계속 이런 에러가 발생한다면 관리자에게 문의하세요.');
+      }
     } catch (e) {
       print(e);
     }

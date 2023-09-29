@@ -156,29 +156,25 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          setState(() {
-                                            // attitudeHistory에 체크된 기록 추가
-                                            attitudeHistoryProvider
-                                                .checkAttitude(
-                                              widget.classroomId,
-                                              AttitudeHistory(
-                                                studentName: student.name,
-                                                studentNumber: int.parse(
-                                                    student.studentNumber!),
-                                                isAdd: true,
-                                                isBad: widget.isBad,
-                                                checkDate: widget.now,
-                                                order: widget.order,
-                                                attitudeName:
-                                                    widget.attitudeName,
-                                              ),
-                                            );
-                                            // attitude에 포인트 추가
-                                            attitudeProvider.checkAttitude(
-                                                student.attitudeData!);
-                                            cardStates[index] =
-                                                !cardStates[index];
-                                          });
+                                          // attitudeHistory에 체크된 기록 추가
+                                          attitudeHistoryProvider.checkAttitude(
+                                            widget.classroomId,
+                                            AttitudeHistory(
+                                              studentName: student.name,
+                                              studentNumber: int.parse(
+                                                  student.studentNumber!),
+                                              isAdd: true,
+                                              isBad: widget.isBad,
+                                              checkDate: widget.now,
+                                              order: widget.order,
+                                              attitudeName: widget.attitudeName,
+                                            ),
+                                          );
+                                          // attitude에 포인트 추가
+                                          attitudeProvider.checkAttitude(
+                                              student.attitudeData!);
+                                          cardStates[index] =
+                                              !cardStates[index];
                                           Navigator.of(context)
                                               .pop(); // 다이얼로그 닫기
                                         },
@@ -194,10 +190,7 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                   context, student.id);
                             },
                             child: Card(
-                              color: studentNumberList[index] != null ||
-                                      cardStates[index]
-                                  ? const Color(0xFFFE886A)
-                                  : Colors.grey,
+                              color: getColor(student.attitudeData!.point!),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10000.0),
                               ),
@@ -234,5 +227,17 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
         ),
       ),
     );
+  }
+
+  Color getColor(int currentValue) {
+    if (currentValue <= 10) {
+      // 0 ~ 10: 노란색에서 오렌지색으로 변화
+      final double ratio = currentValue / 10.0;
+      return Color.lerp(Colors.yellow, Colors.orange, ratio)!;
+    } else {
+      // 11 ~ 20: 오렌지색에서 빨간색으로 변화
+      final double ratio = (currentValue - 10) / 10.0;
+      return Color.lerp(Colors.orange, Colors.red, ratio)!;
+    }
   }
 }

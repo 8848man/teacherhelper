@@ -1,4 +1,5 @@
 import 'package:teacherhelper/datamodels/attitude.dart';
+import 'package:teacherhelper/datamodels/daily.dart';
 
 class Student {
   final String? id;
@@ -22,6 +23,7 @@ class Student {
   bool? isBad;
   String? attitudeId;
   Attitude? attitudeData;
+  Daily? dailyData;
 
   Student({
     this.id,

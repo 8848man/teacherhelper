@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/attitude.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_attitude_page/floating_action_button_attitude.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
@@ -192,9 +193,11 @@ class _ClassroomAttitudePageTapBarState
                         ),
                       ),
                     ),
-                    // floatingActionButton: FloatingActionButtonAttitude(
-                    //   classroomId: widget.classroomId,
-                    // ),
+                    floatingActionButton: FloatingActionButtonAttitude(
+                      classroomId: widget.classroomId,
+                    ),
+                    floatingActionButtonLocation:
+                        FloatingActionButtonLocation.endDocked,
                   ),
                 );
               } else {

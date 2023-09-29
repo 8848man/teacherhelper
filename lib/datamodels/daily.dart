@@ -6,6 +6,8 @@ class Daily {
   DateTime? dueDate;
   DateTime? checkDate;
   int? order;
+  String? classroomId;
+  String? studentId;
 
   Daily({
     this.id,
@@ -15,6 +17,8 @@ class Daily {
     this.dueDate,
     this.checkDate,
     this.order,
+    this.classroomId,
+    this.studentId,
   });
 
   Map<String, dynamic> toJson() {
@@ -26,6 +30,8 @@ class Daily {
       'dueDate': dueDate,
       'checkDate': checkDate,
       'order': order,
+      'classroomId': classroomId,
+      'studentId': studentId,
     };
   }
 
@@ -38,6 +44,8 @@ class Daily {
       dueDate: json['dueDate'] == null ? null : json['dueDate'].toDate(),
       checkDate: json['checkDate'] == null ? null : json['checkDate'].toDate(),
       order: json['order'],
+      classroomId: json['classroomId'],
+      studentId: json['studentId'],
     );
   }
 }

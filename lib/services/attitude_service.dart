@@ -126,10 +126,11 @@ class AttitudeService {
     try {
       final studentsSnapshot = await _classroomsCollection
           .doc(classroomId)
-          .collection('Attitude')
+          .collection('Students')
           .get();
 
       for (var studentDoc in studentsSnapshot.docs) {
+        attitude.studentId = studentDoc.id;
         await studentDoc.reference
             .collection('attitude')
             .add(attitude.toJson());

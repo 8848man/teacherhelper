@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:teacherhelper/datamodels/daily_history.dart';
 
 class DailyHistoryService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,13 +14,24 @@ class DailyHistoryService {
     String? studentName,
     int? order,
     DateTime? checkDate,
+    DailyHistory dailyHistory,
   ) async {
     try {
-      // DailyHistory 컬렉션 레퍼런스 생성
+      // Batch 작업을 시작합니다.
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      // 이전 버전 데일리 히스토리 컬랙션
       CollectionReference dailyHistoryCollection =
           _classroomsCollection.doc(classroomId).collection('DailyHistory');
 
-      // DailyHistory에 추가할 데이터 생성
+      // 학생 데일리 히스토리 컬랙션
+      CollectionReference dailyHistoryCollectionReform = _classroomsCollection
+          .doc(classroomId)
+          .collection('Students')
+          .doc(dailyHistory.studentId)
+          .collection('dailyHistory');
+
+// DailyHistory에 추가할 데이터 생성
       Map<String, dynamic> data = {
         'studentNumber': int.parse(studentNumber),
         'dailyName': dailyName,
@@ -29,10 +41,13 @@ class DailyHistoryService {
         'isChecked': true
       };
 
-      // DailyHistory 컬렉션에 데이터 추가
-      await dailyHistoryCollection.add(data);
+// DailyHistory 컬렉션에 데이터 추가 (batch에 추가합니다)
+      batch.set(dailyHistoryCollection.doc(), data);
 
-      print('DailyHistory 추가 완료');
+      // Student에 dailyHistory 추가
+      batch.set(dailyHistoryCollectionReform.doc(), dailyHistory.toJson());
+// Batch 작업을 커밋하여 데이터를 Firestore에 저장합니다.
+      await batch.commit();
     } catch (e) {
       print('DailyHistory 추가 오류: $e');
       throw Exception('Failed to add DailyHistory: $e');

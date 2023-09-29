@@ -119,21 +119,19 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                                       ),
                                       onChanged: (String? value) {
                                         // 사용자가 항목을 선택했을 때 실행할 코드
-                                        setState(() {
-                                          dropdownValue = value!;
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                                // 이동하고 싶은 화면을 반환하는 builder 함수를 작성합니다.
-                                                return ClassroomDailyPageTapBar(
-                                                  classroomId:
-                                                      classroomData[value]!,
-                                                ); // YourNextScreen은 이동하고자 하는 화면입니다.
-                                              },
-                                            ),
-                                          );
-                                        });
+                                        dropdownValue = value!;
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              // 이동하고 싶은 화면을 반환하는 builder 함수를 작성합니다.
+                                              return ClassroomDailyPageTapBar(
+                                                classroomId:
+                                                    classroomData[value]!,
+                                              ); // YourNextScreen은 이동하고자 하는 화면입니다.
+                                            },
+                                          ),
+                                        );
                                       },
                                       items: myKeyList
                                           .map<DropdownMenuItem<String>>(

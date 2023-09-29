@@ -26,9 +26,10 @@ class DailyHistoryProvider extends ChangeNotifier {
     String? studentName,
     int? order,
     DateTime? checkDate,
+    DailyHistory dailyHistory,
   ) async {
-    _dailyHistoryService.checkDaily(
-        classroomId, studentNumber, dailyName, studentName, order, checkDate);
+    _dailyHistoryService.checkDaily(classroomId, studentNumber, dailyName,
+        studentName, order, checkDate, dailyHistory);
 
     notifyListeners();
   }

@@ -16,37 +16,13 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
   final TextEditingController _nameController = TextEditingController();
   final AttitudeProvider _attitudeProvider = AttitudeProvider();
 
-  List<String> _years = [];
-  List<String> _months = [];
-  List<String> _days = [];
+  final List<String> _isGoods = ['선행', '악행'];
 
-  String? _selectedStartYear;
-  String? _selectedStartMonth;
-  String? _selectedStartDay;
+  String? _selectedIsGood;
 
   @override
   void initState() {
     super.initState();
-    _initializeDates();
-  }
-
-  void _initializeDates() {
-    final DateTime now = DateTime.now();
-    final int currentYear = now.year;
-
-    _years =
-        List<String>.generate(10, (index) => (currentYear - index).toString());
-    _months = List<String>.generate(
-        12, (index) => (index + 1).toString().padLeft(2, '0'));
-
-    final int selectedStartYear =
-        int.parse(_selectedStartYear ?? currentYear.toString());
-    final int selectedStartMonth = int.parse(_selectedStartMonth ?? '1');
-
-    final int daysInStartMonth =
-        DateTime(selectedStartYear, selectedStartMonth + 1, 0).day;
-    _days = List<String>.generate(
-        daysInStartMonth, (index) => (index + 1).toString().padLeft(2, '0'));
   }
 
   void _registerAttitude() async {
@@ -57,23 +33,18 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("과제 이름을 입력해주세요.")));
       return;
+    } else if (_selectedIsGood == '') {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("선행인지 악행인지를 체크해주세요.")));
+      return;
     }
 
     // 날짜 입력값 Null 체크
-    if (_selectedStartYear != null &&
-        _selectedStartMonth != null &&
-        _selectedStartDay != null) {
-      final startDate = DateTime(
-        int.parse(_selectedStartYear!),
-        int.parse(_selectedStartMonth!),
-        int.parse(_selectedStartDay!),
-      );
-
+    if (_selectedIsGood != null) {
       final attitude = Attitude(
         name: name,
-        startDate: startDate,
         // 선행인지 악행인지 여부. 이후 등록시 선택할 수 있도록 추가 필요
-        isBad: true,
+        isBad: _selectedIsGood == '악행' ? true : false,
       );
 
       // await _assignmentProvider.addAssignment(assignment, widget.classroomId!);
@@ -102,72 +73,33 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: '일상 과제 이름',
+                labelText: '추가할 태도 이름',
               ),
             ),
             const SizedBox(height: 16.0),
 
             // 시작일 드롭다운 버튼
-            const Text('시작일'),
+            const Text('선행/악행'),
 
             Row(
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _selectedStartYear,
+                    value: _selectedIsGood,
                     onChanged: (newValue) {
                       setState(() {
-                        _selectedStartYear = newValue;
+                        _selectedIsGood = newValue;
                       });
                     },
-                    items: _years.map((year) {
+                    items: _isGoods.map((isGood) {
                       return DropdownMenuItem<String>(
-                        value: year,
-                        child: Text(year),
+                        value: isGood,
+                        child: Text(isGood),
                       );
                     }).toList(),
                     decoration: const InputDecoration(
-                      labelText: '년',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedStartMonth,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedStartMonth = newValue;
-                      });
-                    },
-                    items: _months.map((month) {
-                      return DropdownMenuItem<String>(
-                        value: month,
-                        child: Text(month),
-                      );
-                    }).toList(),
-                    decoration: const InputDecoration(
-                      labelText: '월',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedStartDay,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedStartDay = newValue;
-                      });
-                    },
-                    items: _days.map((day) {
-                      return DropdownMenuItem<String>(
-                        value: day,
-                        child: Text(day),
-                      );
-                    }).toList(),
-                    decoration: const InputDecoration(
-                      labelText: '일',
+                      labelText:
+                          '착한 일(발표 등)의 경우 선행, 악한 일(떠듦 등)의 경우 악행으로 체크해주세요',
                     ),
                   ),
                 ),

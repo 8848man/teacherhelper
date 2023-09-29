@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/attitude.dart';
+import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/services/attitude_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
+import 'package:teacherhelper/services/daily_service.dart';
 import 'package:teacherhelper/services/student_service.dart';
 
 class StudentProvider with ChangeNotifier {
   final StudentService _studentService = StudentService();
   final AttitudeService _attitudeService = AttitudeService();
+  final DailyService _dailyService = DailyService();
   final currentUserUid = AuthService().currentUser()?.uid;
 
   // 앱에 실제로 사용되는 학생들 데이터를 위한 변수
@@ -22,6 +25,9 @@ class StudentProvider with ChangeNotifier {
   // 태도 데이터를 포함한 학생 데이터
   List<Student> _studentsWithAttitude = [];
   List<Student> get studentsWithAttitude => _studentsWithAttitude;
+
+  List<Student> _studentsWithDaily = [];
+  List<Student> get studentsWithDaily => _studentsWithDaily;
 
   set students(List<Student> students) {
     _students = students;
@@ -236,6 +242,30 @@ class StudentProvider with ChangeNotifier {
         if (attitude.studentId == student.id) {
           student.attitudeData = attitude;
           _studentsWithAttitude.add(student);
+        }
+      }
+    }
+
+    // 가공한 결과를 필요한 상태로 업데이트
+    notifyListeners();
+  }
+
+  // 학생 데이터에 일상 데이터 입력
+  Future<void> injectDailyToStudents(String classroomId, int order) async {
+    _studentsWithDaily = [];
+    final studentData = students;
+    final dailyData =
+        await _dailyService.getDailysByClassroomAndOrder(classroomId);
+    // studentsData를 사용하여 원하는 가공 작업 수행
+
+    Iterable<Daily> filteredData =
+        dailyData.where((data) => data.order == order);
+
+    for (Student student in studentData) {
+      for (Daily daily in filteredData) {
+        if (daily.studentId == student.id) {
+          student.dailyData = daily;
+          _studentsWithDaily.add(student);
         }
       }
     }

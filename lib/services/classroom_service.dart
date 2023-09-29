@@ -42,6 +42,7 @@ class ClassroomService {
           name: data['name'],
           grade: data['grade'],
           teacherUid: data['teacherUid'],
+          isDeleted: data['isDeleted'],
         );
       }).toList();
     } catch (e) {
@@ -121,10 +122,9 @@ class ClassroomService {
           .doc(classroomId)
           .update(updateData);
 
-      print('deletedDate 업데이트가 성공했습니다.');
       return true;
     } catch (error) {
-      print('deletedDate 업데이트 중 오류가 발생했습니다: $error');
+      print('반 삭제가 실패했습니다.$error');
       return false;
     }
   }

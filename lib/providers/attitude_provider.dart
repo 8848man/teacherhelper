@@ -36,6 +36,8 @@ class AttitudeProvider with ChangeNotifier {
 
       attitude.order = lastOrder;
 
+      attitude.classroomId = classroomId;
+
       await _attitudeService.addAttitudeToStudents(attitude, classroomId);
       await _attitudeService.addAttitudeToClassroom(attitude, classroomId);
     } catch (e) {

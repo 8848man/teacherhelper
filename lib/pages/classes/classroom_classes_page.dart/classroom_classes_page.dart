@@ -149,14 +149,14 @@ class _ClassroomClassesPageState extends State<ClassroomClassesPage> {
                                         TextButton(
                                           onPressed: () {
                                             setState(() {
-                                              dailyHistoryProvider.checkDaily(
-                                                widget.classroomId,
-                                                student.studentNumber!,
-                                                widget.dailyName!,
-                                                student.name,
-                                                widget.order,
-                                                widget.now,
-                                              );
+                                              // dailyHistoryProvider.checkDaily(
+                                              //   widget.classroomId,
+                                              //   student.studentNumber!,
+                                              //   widget.dailyName!,
+                                              //   student.name,
+                                              //   widget.order,
+                                              //   widget.now
+                                              // );
                                               cardStates[index] =
                                                   !cardStates[index];
                                             });

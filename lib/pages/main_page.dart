@@ -141,12 +141,11 @@ class _MainPage_reformState extends State<MainPage_reform> {
         return Scaffold(
           body: Consumer<ClassroomProvider>(
             builder: (context, classroomProvider, child) {
-              final List<Classroom> classrooms = classroomProvider.classrooms;
-              // List<Classroom> classrooms = allClassrooms
-              //     .where((classroom) =>
-              //         classroom.deletedDate != null &&
-              //         classroom.deletedDate.toString() != '')
-              //     .toList();
+              final List<Classroom> allClassrooms =
+                  classroomProvider.classrooms;
+              List<Classroom> classrooms = allClassrooms
+                  .where((classroom) => classroom.isDeleted != true)
+                  .toList();
               return Column(
                 children: [
                   Container(

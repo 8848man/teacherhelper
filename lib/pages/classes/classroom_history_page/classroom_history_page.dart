@@ -4,26 +4,24 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
-import 'package:teacherhelper/pages/main_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
-class ClassroomModifyPage extends StatefulWidget {
+class ClassroomHistoryPage extends StatefulWidget {
   final String teacherUid;
   final String? classroomId;
-  final bool isModify;
 
-  const ClassroomModifyPage(
-      {super.key,
-      required this.teacherUid,
-      this.classroomId,
-      required this.isModify});
+  const ClassroomHistoryPage({
+    super.key,
+    required this.teacherUid,
+    this.classroomId,
+  });
 
   @override
-  _ClassroomModifyPageState createState() => _ClassroomModifyPageState();
+  _ClassroomHistoryPageState createState() => _ClassroomHistoryPageState();
 }
 
-class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
+class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
   final _classNameController = TextEditingController();
   final _studentNameController = TextEditingController();
   final _studentNumberController = TextEditingController();
@@ -106,34 +104,6 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
         return;
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("반 등록에 실패했습니다.")),
-      );
-    }
-  }
-
-  // 학반 수정 기능
-  Future<void> _modifyClassroom() async {
-    final classroomProvider =
-        Provider.of<ClassroomProvider>(context, listen: false);
-    final studentProvider =
-        Provider.of<StudentProvider>(context, listen: false);
-
-    try {
-      final classroom = Classroom(
-        name: _classNameController.text,
-        teacherUid: widget.teacherUid,
-        id: '',
-      );
-
-      List<Student> students = studentProvider.students;
-      List<Student> checkedStudents =
-          students.where((student) => student.isChecked == true).toList();
-
-      await classroomProvider.modifyClassroom(classroom, checkedStudents);
-
-      Navigator.pop(context);
-    } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("반 등록에 실패했습니다.")),
@@ -162,7 +132,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                   // 상단의 텍스트 컨테이너
                   child: Container(
                     child: Text(
-                      '학반 수정',
+                      '기록 보기',
                       style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: MediaQuery.of(context).size.height * 0.055,
@@ -204,118 +174,56 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                     Border.all(color: const Color(0xFFC4C4C4)),
                               ),
                               child: Row(
+                                mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.05),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.35,
-                                    child: TextField(
-                                      controller: _classNameController,
-                                      style: TextStyle(
-                                        fontSize:
-                                            MediaQuery.of(context).size.height *
-                                                0.04, // 원하는 글꼴 크기 설정
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // 버튼이 클릭되었을 때 실행할 동작
+                                      },
+                                      style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                          Size.fromHeight(MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.1),
+                                        ), // 버튼 높이 조정
                                       ),
-                                      decoration: const InputDecoration(
-                                        border: InputBorder
-                                            .none, // Remove the border
-                                        hintText: '학반명을 입력해주세요',
-                                      ),
-                                      inputFormatters: [
-                                        LengthLimitingTextInputFormatter(
-                                            10), // 최대 글자 수 제한
-                                      ],
+                                      child: Text('일상 기록 보기'),
                                     ),
                                   ),
-                                  const Spacer(),
-                                  Container(
-                                    child: Row(
-                                      children: [
-                                        // delete 버튼, 엑셀 가져오기 버튼, 등록하기 버튼
-                                        GestureDetector(
-                                          child: Image.asset(
-                                              'assets/buttons/class_delete_button.jpg'),
-                                          onTap: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: const Text('반 삭제'),
-                                                  content: const Text(
-                                                      '해당 반을 삭제하시겠습니까? 삭제된 반은 6개월 뒤에 영구히 삭제됩니다.'),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        classroomProvider
-                                                            .deleteClassroom(
-                                                          classroomId: widget
-                                                              .classroomId!,
-                                                          onSuccess: () {
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                                    const SnackBar(
-                                                              content: Text(
-                                                                  "반이 성공적으로 삭제되었습니다."),
-                                                            ));
-                                                            // HomePage로 이동
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop(); // 다이얼로그 닫기
-                                                            Navigator
-                                                                .pushReplacement(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        MainPage_reform(),
-                                                              ),
-                                                            );
-                                                          },
-                                                          onError: (String
-                                                              errorText) {
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Text(
-                                                                    '반 삭제에 실패했습니다.'),
-                                                              ),
-                                                            );
-                                                          },
-                                                        );
-                                                        Navigator.of(context)
-                                                            .pop(); // 다이얼로그 닫기
-                                                      },
-                                                      child: const Text('OK'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                        ),
-                                        GestureDetector(
-                                          child: Image.asset(
-                                              'assets/buttons/class_exel_import_button.jpg'),
-                                          onTap: () {},
-                                        ),
-
-                                        // 등록하기 버튼
-                                        GestureDetector(
-                                            child: Image.asset(
-                                                'assets/buttons/class_regist_button.jpg'),
-                                            onTap: () {
-                                              _createClassroom();
-                                            }),
-                                      ],
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // 버튼이 클릭되었을 때 실행할 동작
+                                      },
+                                      style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            Size.fromHeight(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.1)), // 버튼 높이 조정
+                                      ),
+                                      child: Text('태도 기록 보기'),
                                     ),
                                   ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.05)
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // 버튼이 클릭되었을 때 실행할 동작
+                                      },
+                                      style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            Size.fromHeight(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.1)), // 버튼 높이 조정
+                                      ),
+                                      child: Text('수업 기록 보기'),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

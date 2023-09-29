@@ -105,10 +105,8 @@ class _DailyCreatePageState extends State<DailyCreatePage> {
               ),
             ),
             const SizedBox(height: 16.0),
-
             // 시작일 드롭다운 버튼
             const Text('시작일'),
-
             Row(
               children: [
                 Expanded(

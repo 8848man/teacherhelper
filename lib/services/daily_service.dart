@@ -37,20 +37,27 @@ class DailyService {
   }
 
   // 반 생성시 기본 일상을 추가.
-  Future<void> addDefaultDaily(String? classroomId) async {
+  Future<void> addDefaultDaily(
+      String? classroomId, List<String> studentIds) async {
     try {
       List<Daily> dailyList = [];
       Daily attendanceDaily = Daily(
         name: '출석',
         order: 1,
+        classroomId: classroomId,
+      );
+      Daily noticeDaily = Daily(
+        name: '가정통신문',
+        order: 2,
+        classroomId: classroomId,
       );
       dailyList.add(attendanceDaily);
-      Daily noticeDaily = Daily(name: '가정통신문', order: 2);
       dailyList.add(noticeDaily);
 
       // Firestore 배치 생성
       var batch = FirebaseFirestore.instance.batch();
 
+      // 반에 daily 등록
       for (var daily in dailyList) {
         // 배치에 쓰기 작업 추가
         var dailyRef = _classroomsCollection
@@ -59,6 +66,25 @@ class DailyService {
             .doc(); // 랜덤한 문서 ID 생성
         // var studentRef = _classroomsCollection.doc(classroomId).collection(collectionPath)
         batch.set(dailyRef, daily.toJson());
+      }
+
+      // 학생에 daily 등록
+      for (var studentId in studentIds) {
+        for (var daily in dailyList) {
+          Map<String, dynamic> dailyData = daily.toJson();
+          dailyData['studentId'] = studentId;
+
+          // Daily 컬렉션의 참조 생성
+          var dailyRef = _classroomsCollection
+              .doc(classroomId)
+              .collection('Students')
+              .doc(studentId)
+              .collection('daily')
+              .doc();
+
+          // 배치에 쓰기 작업 추가
+          batch.set(dailyRef, dailyData);
+        }
       }
 
 // 배치 실행
@@ -130,5 +156,27 @@ class DailyService {
     } catch (e) {
       throw Exception('Failed to add assignment to student: $e');
     }
+  }
+
+  // 학생 데이터에 Daily 데이터를 넣기 위한 get 함수
+  Future<List<Daily>> getDailysByClassroomAndOrder(String classroomId) async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collectionGroup('Daily')
+        .where('classroomId', isEqualTo: classroomId)
+        .where('studentId', isNotEqualTo: '')
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>?;
+      final id = doc.id; // 문서의 ID를 가져옵니다.
+
+      return Daily(
+        name: data?['name'],
+        order: data?['order'],
+        id: id,
+        studentId: data?['studentId'],
+        classroomId: data?['classroomId'],
+      );
+    }).toList();
   }
 }

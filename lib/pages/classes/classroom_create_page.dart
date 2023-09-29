@@ -107,6 +107,7 @@ class _ClassroomRegistPage_reformState
         return;
       }
     } catch (e) {
+      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("반 등록에 실패했습니다.")),
       );
@@ -233,12 +234,7 @@ class _ClassroomRegistPage_reformState
                                   Container(
                                     child: Row(
                                       children: [
-                                        // delete 버튼, 엑셀 가져오기 버튼, 등록하기 버튼
-                                        GestureDetector(
-                                          child: Image.asset(
-                                              'assets/buttons/class_delete_button.jpg'),
-                                          onTap: () {},
-                                        ),
+                                        // 엑셀 가져오기 버튼, 등록하기 버튼
                                         GestureDetector(
                                           child: Image.asset(
                                               'assets/buttons/class_exel_import_button.jpg'),
