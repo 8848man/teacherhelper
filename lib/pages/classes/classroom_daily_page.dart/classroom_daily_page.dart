@@ -78,7 +78,6 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                 final List<Student> students =
                     studentProvider.studentsWithDaily;
 
-                print(students);
                 // 출석체크등 완료여부를 알기 위한 토큰.
                 final List<DailyHistory> latestDailyHistorys =
                     dailyHistoryProvider.latestDailyHistorys;
@@ -96,8 +95,6 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                     .toList()
                   ..sort(
                       (a, b) => a.studentNumber!.compareTo(b.studentNumber!));
-
-                print(filteredHistorys);
 
                 // 학생 과제 달성 여부 토큰
                 List<int?> studentNumberList = [];
@@ -161,16 +158,17 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                                 dailyName: widget.dailyName!,
                                                 order: widget.order,
                                                 studentId: student.id,
-                                                // dailyId:
+                                                dailyId: student.dailyData!.id,
                                               );
                                               dailyHistoryProvider.checkDaily(
-                                                  widget.classroomId,
-                                                  student.studentNumber!,
-                                                  widget.dailyName!,
-                                                  student.name,
-                                                  widget.order,
-                                                  widget.now,
-                                                  dailyHistory);
+                                                widget.classroomId,
+                                                student.studentNumber!,
+                                                widget.dailyName!,
+                                                student.name,
+                                                widget.order,
+                                                widget.now,
+                                                dailyHistory,
+                                              );
                                               cardStates[index] =
                                                   !cardStates[index];
                                             });

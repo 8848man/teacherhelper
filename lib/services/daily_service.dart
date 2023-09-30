@@ -161,7 +161,7 @@ class DailyService {
   // 학생 데이터에 Daily 데이터를 넣기 위한 get 함수
   Future<List<Daily>> getDailysByClassroomAndOrder(String classroomId) async {
     QuerySnapshot querySnapshot = await _firestore
-        .collectionGroup('Daily')
+        .collectionGroup('daily')
         .where('classroomId', isEqualTo: classroomId)
         .where('studentId', isNotEqualTo: '')
         .get();

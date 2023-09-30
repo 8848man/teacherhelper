@@ -29,9 +29,11 @@ class DailyHistoryService {
           .doc(classroomId)
           .collection('Students')
           .doc(dailyHistory.studentId)
+          .collection('daily')
+          .doc(dailyHistory.dailyId)
           .collection('dailyHistory');
 
-// DailyHistory에 추가할 데이터 생성
+      // DailyHistory에 추가할 데이터 생성
       Map<String, dynamic> data = {
         'studentNumber': int.parse(studentNumber),
         'dailyName': dailyName,
@@ -41,12 +43,12 @@ class DailyHistoryService {
         'isChecked': true
       };
 
-// DailyHistory 컬렉션에 데이터 추가 (batch에 추가합니다)
+      // DailyHistory 컬렉션에 데이터 추가 (batch에 추가합니다)
       batch.set(dailyHistoryCollection.doc(), data);
 
       // Student에 dailyHistory 추가
       batch.set(dailyHistoryCollectionReform.doc(), dailyHistory.toJson());
-// Batch 작업을 커밋하여 데이터를 Firestore에 저장합니다.
+      // Batch 작업을 커밋하여 데이터를 Firestore에 저장합니다.
       await batch.commit();
     } catch (e) {
       print('DailyHistory 추가 오류: $e');
@@ -54,6 +56,7 @@ class DailyHistoryService {
     }
   }
 
+  //
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>
       fetchDailysByClassroomIdAndDailyOrder(
           String classroomId, int? order) async {

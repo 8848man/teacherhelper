@@ -48,6 +48,22 @@ class NavBar extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.class_outlined),
+              title: const Text('기록'),
+              onTap: () {
+                Navigator.of(context).pop(); // Drawer 닫기
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => ClassroomHistoryPage(
+                      teacherUid: authProvider.currentUser()!.uid,
+                      classroomId: classroomId,
+                    ),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
               leading: const Icon(Icons.calendar_month),
               title: const Text('생활'),
               onTap: () {
@@ -61,6 +77,7 @@ class NavBar extends StatelessWidget {
                 );
               },
             ),
+            Divider(),
             ListTile(
               leading: const Icon(Icons.person_add),
               title: const Text('태도'),
@@ -75,6 +92,7 @@ class NavBar extends StatelessWidget {
                 );
               },
             ),
+            Divider(),
             ListTile(
               leading: const Icon(Icons.class_outlined),
               title: const Text('수업'),
@@ -89,20 +107,7 @@ class NavBar extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.class_outlined),
-              title: const Text('기록'),
-              onTap: () {
-                Navigator.of(context).pop(); // Drawer 닫기
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => ClassroomHistoryPage(
-                      teacherUid: authProvider.currentUser()!.uid,
-                    ),
-                  ),
-                );
-              },
-            ),
+            Divider(),
           ],
         );
       }),

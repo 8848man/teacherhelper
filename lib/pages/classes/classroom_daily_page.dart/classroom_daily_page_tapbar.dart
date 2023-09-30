@@ -101,57 +101,50 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.2,
                             child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.12,
-                                    child: DropdownButton<String>(
-                                      value: dropdownValue,
-                                      icon: const Icon(Icons.arrow_downward),
-                                      elevation: 16,
-                                      style: const TextStyle(
-                                        color: Colors.deepPurple,
-                                      ),
-                                      underline: Container(
-                                        height: 2,
-                                        color: Colors.deepPurpleAccent,
-                                      ),
-                                      onChanged: (String? value) {
-                                        // 사용자가 항목을 선택했을 때 실행할 코드
-                                        dropdownValue = value!;
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              // 이동하고 싶은 화면을 반환하는 builder 함수를 작성합니다.
-                                              return ClassroomDailyPageTapBar(
-                                                classroomId:
-                                                    classroomData[value]!,
-                                              ); // YourNextScreen은 이동하고자 하는 화면입니다.
-                                            },
-                                          ),
-                                        );
-                                      },
-                                      items: myKeyList
-                                          .map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.12,
+                                  child: DropdownButton<String>(
+                                    value: dropdownValue,
+                                    icon: const Icon(Icons.arrow_downward),
+                                    elevation: 16,
+                                    style: const TextStyle(
+                                      color: Colors.deepPurple,
                                     ),
+                                    underline: Container(
+                                      height: 2,
+                                      color: Colors.deepPurpleAccent,
+                                    ),
+                                    onChanged: (String? value) {
+                                      // 사용자가 항목을 선택했을 때 실행할 코드
+                                      dropdownValue = value!;
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            // 이동하고 싶은 화면을 반환하는 builder 함수를 작성합니다.
+                                            return ClassroomDailyPageTapBar(
+                                              classroomId:
+                                                  classroomData[value]!,
+                                            ); // YourNextScreen은 이동하고자 하는 화면입니다.
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    items: myKeyList
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
                                   ),
-                                  // 출결 표시 버튼
-                                  // Container(
-                                  //   width:
-                                  //       MediaQuery.of(context).size.width * 0.1,
-                                  //   color: Colors.pink[100],
-                                  //   child: Image.asset(
-                                  //       'assets/buttons/attendance_check_button.png'),
-                                  // ),
-                                ]),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
