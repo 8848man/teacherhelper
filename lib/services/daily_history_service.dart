@@ -24,6 +24,9 @@ class DailyHistoryService {
       CollectionReference dailyHistoryCollection =
           _classroomsCollection.doc(classroomId).collection('DailyHistory');
 
+      // dailyHistory 시간 체크
+      dailyHistory.checkDate = DateTime.now();
+
       // 학생 데일리 히스토리 컬랙션
       CollectionReference dailyHistoryCollectionReform = _classroomsCollection
           .doc(classroomId)
