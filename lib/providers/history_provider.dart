@@ -14,19 +14,20 @@ class HistoryProvider with ChangeNotifier {
   List<Attitude> _attitudes = [];
   List<Attitude> get attitudes => _attitudes;
 
+  List<dynamic> _allHistory = [];
+  List<dynamic> get allHistory => _allHistory;
+
   // 모든 History 가져오기
   void getAllHistorys(String classroomId) async {
     _attitudes = await _historyService.getAttitudesByClassroom(classroomId);
     _attitudes.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
 
+    print('test004');
     _dailys = await _historyService.getDailysByClassroom(classroomId);
     _dailys.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
     List<dynamic> combinedList = [..._attitudes, ..._dailys];
-  }
+    combinedList.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
 
-  // History 정렬
-  void sortHistory() {
-    _dailys.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
-    _attitudes.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
+    print(_attitudes);
   }
 }

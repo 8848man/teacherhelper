@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
+import 'package:teacherhelper/providers/history_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomHistoryPage extends StatefulWidget {
@@ -37,6 +37,10 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
 
   Future<void> fetchData() async {
     try {
+      final historyProvider =
+          Provider.of<HistoryProvider>(context, listen: false);
+      historyProvider.getAllHistorys(widget.classroomId!);
+      print('test003');
       _dataFetched = true;
     } catch (e) {}
   }

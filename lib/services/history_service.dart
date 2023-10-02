@@ -41,12 +41,12 @@ class HistoryService {
       final id = doc.id; // 문서의 ID를 가져옵니다.
 
       return DailyHistory(
-        order: data?['order'],
+        order: data!['order'],
         id: id,
-        studentId: data?['studentId'],
-        classroomId: data?['classroomId'],
-        checkDate: data?['checkDate'],
-        dailyName: data?['dailyName'],
+        studentId: data['studentId'],
+        classroomId: data['classroomId'],
+        checkDate: data['checkDate']!.toDate(),
+        dailyName: data['dailyName'],
       );
     }).toList();
   }
