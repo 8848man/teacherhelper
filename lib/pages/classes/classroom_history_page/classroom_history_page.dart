@@ -26,6 +26,10 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
   // 데이터를 가져왔는지에 대한 여부.
   bool _dataFetched = false;
 
+  String year = DateTime.now().year.toString();
+  String month = DateTime.now().month.toString();
+  String day = DateTime.now().day.toString();
+
   @override
   initState() {
     super.initState();
@@ -40,7 +44,6 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
       final historyProvider =
           Provider.of<HistoryProvider>(context, listen: false);
       historyProvider.getAllHistorys(widget.classroomId!);
-      print('test003');
       _dataFetched = true;
     } catch (e) {}
   }
@@ -67,7 +70,7 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
               width: MediaQuery.of(context).size.width * 0.46,
               child: Center(
                 child: Text(
-                  "2023년 1월 16일",
+                  "$year년 $month월 $day일",
                   style: const TextStyle(color: Colors.black),
                 ),
               ),
@@ -120,8 +123,9 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
           ],
         ),
       ),
-      body: Consumer2<ClassroomProvider, StudentProvider>(
-        builder: (context, classroomProvider, studentProvider, child) {
+      body: Consumer3<ClassroomProvider, StudentProvider, HistoryProvider>(
+        builder: (context, classroomProvider, studentProvider, historyProvider,
+            child) {
           final List<Classroom> classrooms = classroomProvider.classrooms;
           final List<Student> students = studentProvider.students;
 
@@ -175,6 +179,132 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                         title: Row(
                           children: [
                             const Text('학생2'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
+                            Spacer(),
+                            Image.asset(
+                                'assets/buttons/arrow_down_button_2.png')
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(); // Drawer 닫기
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person_add),
+                        title: Row(
+                          children: [
+                            const Text('학생3'),
                             Spacer(),
                             Image.asset(
                                 'assets/buttons/arrow_down_button_2.png')

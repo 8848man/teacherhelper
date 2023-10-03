@@ -35,6 +35,11 @@ class Attitude {
     };
   }
 
+  @override
+  String toString() {
+    return 'Attitude { name: $name, order: $order, id: $id, isBad: $isBad, point: $point, studentId: $studentId, classroomId: $classroomId, checkDate: $checkDate }';
+  }
+
   factory Attitude.fromJson(Map<String, dynamic> json, String? id) {
     return Attitude(
       id: id,

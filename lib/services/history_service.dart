@@ -25,6 +25,9 @@ class HistoryService {
         point: data?['point'],
         studentId: data?['studentId'],
         classroomId: data?['classroomId'],
+        checkDate: data?['checkDate'] != null
+            ? data!['checkDate'].toDate()
+            : DateTime.now(),
       );
     }).toList();
   }
@@ -41,12 +44,14 @@ class HistoryService {
       final id = doc.id; // 문서의 ID를 가져옵니다.
 
       return DailyHistory(
-        order: data!['order'],
+        order: data?['order'],
         id: id,
-        studentId: data['studentId'],
-        classroomId: data['classroomId'],
-        checkDate: data['checkDate']!.toDate(),
-        dailyName: data['dailyName'],
+        studentId: data?['studentId'],
+        classroomId: data?['classroomId'],
+        checkDate: data?['checkDate'] != null
+            ? data!['checkDate'].toDate()
+            : DateTime.now(),
+        dailyName: data?['dailyName'],
       );
     }).toList();
   }

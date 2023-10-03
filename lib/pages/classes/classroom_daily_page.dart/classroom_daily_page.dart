@@ -135,7 +135,6 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                         itemCount: students.length,
                         itemBuilder: (context, index) {
                           final student = students[index];
-                          // final dailyHistory = dailyHistorys[index];
                           return GestureDetector(
                             onTap: () {
                               // Daily가 체크되어있지 않을 경우, Daily를 체크
