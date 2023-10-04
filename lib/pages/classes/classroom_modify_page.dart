@@ -270,7 +270,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                                               MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        MainPage_reform(),
+                                                                        const MainPage_reform(),
                                                               ),
                                                             );
                                                           },

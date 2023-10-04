@@ -158,6 +158,9 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                                 order: widget.order,
                                                 studentId: student.id,
                                                 dailyId: student.dailyData!.id,
+                                                studentName: student.name,
+                                                studentNumber: int.parse(
+                                                    student.studentNumber!),
                                               );
                                               dailyHistoryProvider.checkDaily(
                                                 widget.classroomId,

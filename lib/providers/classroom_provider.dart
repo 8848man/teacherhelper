@@ -123,7 +123,7 @@ class ClassroomProvider with ChangeNotifier {
       required Function onSuccess,
       required Function onError}) async {
     try {
-      bool isSuccess = await _classroomService.deleteClassroom(classroomId!);
+      bool isSuccess = await _classroomService.deleteClassroom(classroomId);
 
       if (isSuccess) {
         onSuccess();

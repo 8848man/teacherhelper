@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_create_page.dart';
-import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_student_delete_page.dart';
 import 'package:teacherhelper/pages/students/student_register_page.dart';
 
@@ -8,7 +7,7 @@ import 'package:teacherhelper/pages/students/student_register_page.dart';
 class FloatingActionButtonAttitude extends StatefulWidget {
   final String classroomId;
 
-  FloatingActionButtonAttitude({super.key, required this.classroomId});
+  const FloatingActionButtonAttitude({super.key, required this.classroomId});
 
   @override
   State<FloatingActionButtonAttitude> createState() =>
@@ -27,9 +26,9 @@ class _FloatingActionButtonAttitudeState
         children: [
           Row(
             children: [
-              Spacer(),
+              const Spacer(),
               AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 height: _isExpanded
                     ? MediaQuery.of(context).size.height * 0.5
                     : 0, // 버튼 그룹 높이 조절
@@ -107,7 +106,7 @@ class _FloatingActionButtonAttitudeState
           ),
           Row(
             children: [
-              Spacer(),
+              const Spacer(),
               ElevatedButton(
                 onPressed: () {
                   setState(() {

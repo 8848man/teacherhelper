@@ -68,6 +68,7 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size.width);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -172,7 +173,10 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                           );
                                           // attitude에 포인트 추가
                                           attitudeProvider.checkAttitude(
-                                              student.attitudeData!);
+                                              student.attitudeData!,
+                                              student.name,
+                                              int.parse(
+                                                  student.studentNumber!));
                                           cardStates[index] =
                                               !cardStates[index];
                                           Navigator.of(context)
@@ -190,7 +194,10 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                   context, student.id);
                             },
                             child: Card(
-                              color: getColor(student.attitudeData!.point!),
+                              color: student.attitudeData!.isBad == true
+                                  ? getColorByBad(student.attitudeData!.point!)
+                                  : getColorByGood(
+                                      student.attitudeData!.point!),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10000.0),
                               ),
@@ -229,7 +236,7 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
     );
   }
 
-  Color getColor(int currentValue) {
+  Color getColorByBad(int currentValue) {
     if (currentValue <= 10) {
       // 0 ~ 10: 노란색에서 오렌지색으로 변화
       final double ratio = currentValue / 10.0;
@@ -238,6 +245,18 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
       // 11 ~ 20: 오렌지색에서 빨간색으로 변화
       final double ratio = (currentValue - 10) / 10.0;
       return Color.lerp(Colors.orange, Colors.red, ratio)!;
+    }
+  }
+
+  Color getColorByGood(int currentValue) {
+    if (currentValue <= 10) {
+      // 0 ~ 10: 노란색에서 오렌지색으로 변화
+      final double ratio = currentValue / 10.0;
+      return Color.lerp(Colors.lightGreen, Colors.green, ratio)!;
+    } else {
+      // 11 ~ 20: 오렌지색에서 빨간색으로 변화
+      final double ratio = (currentValue - 10) / 10.0;
+      return Color.lerp(Colors.green, Colors.blue, ratio)!;
     }
   }
 }

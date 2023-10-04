@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:teacherhelper/datamodels/classroom.dart';
-import 'package:teacherhelper/datamodels/student.dart';
+import 'package:teacherhelper/datamodels/attitude.dart';
+import 'package:teacherhelper/datamodels/daily_history.dart';
+import 'package:teacherhelper/datamodels/history_date.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/history_provider.dart';
@@ -126,19 +126,20 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
       body: Consumer3<ClassroomProvider, StudentProvider, HistoryProvider>(
         builder: (context, classroomProvider, studentProvider, historyProvider,
             child) {
-          final List<Classroom> classrooms = classroomProvider.classrooms;
-          final List<Student> students = studentProvider.students;
-
+          final students = studentProvider.students;
+          final allHistory = historyProvider.allHistory;
           return Row(
             children: [
               // 학생 리스트
-              SingleChildScrollView(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: ListView.builder(
+                  itemCount: studentProvider.students.length +
+                      3, // 추가된 ListTile 두 개를 포함하여 카운트 설정
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      // 첫 번째 ListTile
+                      return ListTile(
                         title: Text(
                           '기록 보기',
                           style: TextStyle(
@@ -146,407 +147,332 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.home),
-                        title: Row(
+                      );
+                    } else if (index == 1) {
+                      // 두 번째 ListTile
+                      return const Divider();
+                    } else if (index == 2) {
+                      // 세 번째 ListTile
+                      return ListTile(
+                        leading: const Icon(Icons.school_sharp),
+                        title: const Row(
                           children: [
-                            const Text('모든 학생'),
+                            Text('모든 학생'),
                           ],
                         ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.class_outlined),
+                        onTap: () {},
+                      );
+                    } else {
+                      // 학생 목록 부분
+                      final student = students[index - 3];
+                      return ListTile(
+                        leading: const Icon(Icons.person),
                         title: Row(
                           children: [
-                            const Text('학생1'),
-                            Spacer(),
+                            Text(student.name), // 학생 이름 출력
+                            const Spacer(),
                             Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
+                                'assets/buttons/arrow_down_button_2.png'),
                           ],
                         ),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.calendar_month),
-                        title: Row(
-                          children: [
-                            const Text('학생2'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person_add),
-                        title: Row(
-                          children: [
-                            const Text('학생3'),
-                            Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png')
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.of(context).pop(); // Drawer 닫기
-                        },
-                      ),
-                    ],
-                  ),
+                      );
+                    }
+                  },
                 ),
               ),
-              SingleChildScrollView(
-                child: Container(
-                  // color: Colors.yellow,
+              SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 확장
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            '1월 15일',
-                            style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.06,
-                              fontWeight: FontWeight.w600,
+                  child: ListView.builder(
+                    itemCount: allHistory.length,
+                    itemBuilder: (context, index) {
+                      final historyItem = allHistory[index];
+
+                      if (historyItem is HistoryDate) {
+                        // historyItem이 문자열인 경우, 날짜를 출력
+                        year = historyItem.checkDate.year.toString();
+                        month = historyItem.checkDate.month.toString();
+                        day = historyItem.checkDate.day.toString();
+                        return Row(
+                          children: [
+                            Text(
+                              '$year년 $month월 $day일',
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.04,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.06,
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.black,
-                              thickness: 2,
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.06,
                             ),
-                          ),
-                        ],
-                      ),
-                      Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const ListTile(
-                              leading: Icon(Icons.calendar_month),
-                              title: Text('일상 이름'),
-                              subtitle: Text('2023-01-15 15:32:11'),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TextButton(
-                                  child: const Text('자세히 보기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                                TextButton(
-                                  child: const Text('해당 기록 삭제하기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                              ],
+                            const Expanded(
+                              child: Divider(
+                                color: Colors.black,
+                                thickness: 2,
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                      Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const ListTile(
-                              leading: Icon(Icons.person_add),
-                              title: Text('태도 이름'),
-                              subtitle: Text('2023-01-15 10:31:11'),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TextButton(
-                                  child: const Text('자세히 보기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                                TextButton(
-                                  child: const Text('해당 기록 삭제하기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const ListTile(
-                              leading: Icon(Icons.class_outlined),
-                              title: Text('수업 이름'),
-                              subtitle: Text('2023-01-15 10:12:11'),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TextButton(
-                                  child: const Text('자세히 보기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                                TextButton(
-                                  child: const Text('해당 기록 삭제하기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            '1월 14일',
-                            style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.06,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        );
+                      } else if (historyItem is Attitude) {
+                        // Attitude 데이터 처리
+                        return Card(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                leading: const Icon(Icons.person_add),
+                                title: Text(historyItem.name),
+                                subtitle:
+                                    Text(historyItem.checkDate.toString()),
+                                // 나머지 ListTile 구성 및 작업 추가
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.06,
+                        );
+                      } else if (historyItem is DailyHistory) {
+                        final studentName = historyItem.studentName;
+                        print(historyItem.studentName);
+                        // DailyHistory 데이터 처리
+                        return Card(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                leading: const Icon(Icons.calendar_today),
+                                title: Row(
+                                  children: [
+                                    Text(historyItem.dailyName!),
+                                    // Text(studentName!),
+                                  ],
+                                ),
+                                subtitle:
+                                    Text(historyItem.checkDate.toString()),
+                                // trailing: Text('test'),
+                                // 나머지 ListTile 구성 및 작업 추가
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.black,
-                              thickness: 2,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const ListTile(
-                              leading: Icon(Icons.person_add),
-                              title: Text('태도 이름'),
-                              subtitle: Text('2023-01-14 10:31:11'),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TextButton(
-                                  child: const Text('자세히 보기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                                TextButton(
-                                  child: const Text('해당 기록 삭제하기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const ListTile(
-                              leading: Icon(Icons.person_add),
-                              title: Text('태도 이름'),
-                              subtitle: Text('2023-01-14 09:31:11'),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TextButton(
-                                  child: const Text('자세히 보기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                                TextButton(
-                                  child: const Text('해당 기록 삭제하기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const ListTile(
-                              leading: Icon(Icons.person_add),
-                              title: Text('태도 이름'),
-                              subtitle: Text('2023-01-14 08:31:11'),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TextButton(
-                                  child: const Text('자세히 보기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                                TextButton(
-                                  child: const Text('해당 기록 삭제하기'),
-                                  onPressed: () {/* ... */},
-                                ),
-                                const SizedBox(width: 8),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                        );
+                      } else {
+                        return const SizedBox(); // 다른 경우에 대한 처리
+                      }
+                    },
+                  )),
+              // SingleChildScrollView(
+              //   child: Container(
+              //     // color: Colors.yellow,
+              //     width: MediaQuery.of(context).size.width * 0.7,
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 확장
+              //       children: [
+              //         Row(
+              //           children: [
+              // Text(
+              //   '1월 15일',
+              //   style: TextStyle(
+              //     fontSize:
+              //         MediaQuery.of(context).size.height * 0.06,
+              //     fontWeight: FontWeight.w600,
+              //   ),
+              // ),
+              //             SizedBox(
+              //               width: MediaQuery.of(context).size.width * 0.06,
+              //             ),
+              //             Expanded(
+              //               child: Divider(
+              //                 color: Colors.black,
+              //                 thickness: 2,
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //         Card(
+              //           child: Column(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: <Widget>[
+              //               const ListTile(
+              //                 leading: Icon(Icons.calendar_month),
+              //                 title: Text('일상 이름'),
+              //                 subtitle: Text('2023-01-15 15:32:11'),
+              //               ),
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.end,
+              //                 children: <Widget>[
+              //                   TextButton(
+              //                     child: const Text('자세히 보기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                   TextButton(
+              //                     child: const Text('해당 기록 삭제하기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                 ],
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //         Card(
+              //           child: Column(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: <Widget>[
+              //               const ListTile(
+              //                 leading: Icon(Icons.person_add),
+              //                 title: Text('태도 이름'),
+              //                 subtitle: Text('2023-01-15 10:31:11'),
+              //               ),
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.end,
+              //                 children: <Widget>[
+              //                   TextButton(
+              //                     child: const Text('자세히 보기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                   TextButton(
+              //                     child: const Text('해당 기록 삭제하기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                 ],
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //         Card(
+              //           child: Column(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: <Widget>[
+              //               const ListTile(
+              //                 leading: Icon(Icons.class_outlined),
+              //                 title: Text('수업 이름'),
+              //                 subtitle: Text('2023-01-15 10:12:11'),
+              //               ),
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.end,
+              //                 children: <Widget>[
+              //                   TextButton(
+              //                     child: const Text('자세히 보기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                   TextButton(
+              //                     child: const Text('해당 기록 삭제하기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                 ],
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //         Row(
+              //           children: [
+              //             Text(
+              //               '1월 14일',
+              //               style: TextStyle(
+              //                 fontSize:
+              //                     MediaQuery.of(context).size.height * 0.06,
+              //                 fontWeight: FontWeight.w600,
+              //               ),
+              //             ),
+              //             SizedBox(
+              //               width: MediaQuery.of(context).size.width * 0.06,
+              //             ),
+              //             Expanded(
+              //               child: Divider(
+              //                 color: Colors.black,
+              //                 thickness: 2,
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //         Card(
+              //           child: Column(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: <Widget>[
+              //               const ListTile(
+              //                 leading: Icon(Icons.person_add),
+              //                 title: Text('태도 이름'),
+              //                 subtitle: Text('2023-01-14 10:31:11'),
+              //               ),
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.end,
+              //                 children: <Widget>[
+              //                   TextButton(
+              //                     child: const Text('자세히 보기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                   TextButton(
+              //                     child: const Text('해당 기록 삭제하기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                 ],
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //         Card(
+              //           child: Column(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: <Widget>[
+              //               const ListTile(
+              //                 leading: Icon(Icons.person_add),
+              //                 title: Text('태도 이름'),
+              //                 subtitle: Text('2023-01-14 09:31:11'),
+              //               ),
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.end,
+              //                 children: <Widget>[
+              //                   TextButton(
+              //                     child: const Text('자세히 보기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                   TextButton(
+              //                     child: const Text('해당 기록 삭제하기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                 ],
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //         Card(
+              //           child: Column(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: <Widget>[
+              //               const ListTile(
+              //                 leading: Icon(Icons.person_add),
+              //                 title: Text('태도 이름'),
+              //                 subtitle: Text('2023-01-14 08:31:11'),
+              //               ),
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.end,
+              //                 children: <Widget>[
+              //                   TextButton(
+              //                     child: const Text('자세히 보기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                   TextButton(
+              //                     child: const Text('해당 기록 삭제하기'),
+              //                     onPressed: () {/* ... */},
+              //                   ),
+              //                   const SizedBox(width: 8),
+              //                 ],
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           );
         },

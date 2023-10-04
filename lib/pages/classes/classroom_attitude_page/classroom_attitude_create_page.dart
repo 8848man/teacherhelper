@@ -61,9 +61,85 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
+    int year = now.year;
+    int month = now.month;
+    int day = now.day;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('일상 등록'),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.orange),
+        elevation: 2, // 그림자의 높이를 조절 (4는 예시로 사용한 값)
+        shadowColor: Colors.orange, // 그림자의 색상을 파란색으로 설정
+        title: Row(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.27,
+              child: const Text(
+                "SCHOOL CHECK",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.46,
+              child: Center(
+                child: Text(
+                  "$year년 $month월 $day일",
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
+            // SizedBox(
+            //   width: MediaQuery.of(context).size.width * 0.2,
+            //   child: Row(
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: [
+            //       SizedBox(
+            //         width:
+            //             MediaQuery.of(context).size.width * 0.12,
+            //         child: DropdownButton<String>(
+            //           value: dropdownValue,
+            //           icon: const Icon(Icons.arrow_downward),
+            //           elevation: 16,
+            //           style: const TextStyle(
+            //             color: Colors.deepPurple,
+            //           ),
+            //           underline: Container(
+            //             height: 2,
+            //             color: Colors.deepPurpleAccent,
+            //           ),
+            //           onChanged: (String? value) {
+            //             // 사용자가 항목을 선택했을 때 실행할 코드
+            //             dropdownValue = value!;
+            //             Navigator.pushReplacement(
+            //               context,
+            //               MaterialPageRoute(
+            //                 builder: (BuildContext context) {
+            //                   // 이동하고 싶은 화면을 반환하는 builder 함수를 작성합니다.
+            //                   return ClassroomDailyPageTapBar(
+            //                     classroomId:
+            //                         classroomData[value]!,
+            //                   ); // YourNextScreen은 이동하고자 하는 화면입니다.
+            //                 },
+            //               ),
+            //             );
+            //           },
+            //           items: myKeyList
+            //               .map<DropdownMenuItem<String>>(
+            //                   (String value) {
+            //             return DropdownMenuItem<String>(
+            //               value: value,
+            //               child: Text(value),
+            //             );
+            //           }).toList(),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

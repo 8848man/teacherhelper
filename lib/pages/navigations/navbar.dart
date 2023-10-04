@@ -62,7 +62,7 @@ class NavBar extends StatelessWidget {
                 );
               },
             ),
-            Divider(),
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.calendar_month),
               title: const Text('생활'),
@@ -77,7 +77,7 @@ class NavBar extends StatelessWidget {
                 );
               },
             ),
-            Divider(),
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.person_add),
               title: const Text('태도'),
@@ -92,7 +92,7 @@ class NavBar extends StatelessWidget {
                 );
               },
             ),
-            Divider(),
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.class_outlined),
               title: const Text('수업'),
@@ -107,7 +107,7 @@ class NavBar extends StatelessWidget {
                 );
               },
             ),
-            Divider(),
+            const Divider(),
           ],
         );
       }),

@@ -8,6 +8,8 @@ class Attitude {
   DateTime? checkDate;
   int? order;
   bool isBad = false;
+  String? studentName;
+  int? studentNumber;
 
   Attitude({
     this.id,
@@ -19,6 +21,8 @@ class Attitude {
     this.point,
     this.order,
     required this.isBad,
+    this.studentName,
+    this.studentNumber,
   });
 
   Map<String, dynamic> toJson() {
@@ -32,6 +36,8 @@ class Attitude {
       'point': point ?? 0,
       'order': order ?? 0,
       'isBad': isBad,
+      'studentName': studentName,
+      'studentNumber': studentNumber,
     };
   }
 
@@ -51,6 +57,8 @@ class Attitude {
       point: json['point'] ?? 0,
       order: json['order'] ?? 0,
       isBad: json['isBad'],
+      studentName: json['studentName'],
+      studentNumber: json['studentNumber'],
     );
   }
 }

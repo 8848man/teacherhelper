@@ -19,6 +19,7 @@ class AttitudeProvider with ChangeNotifier {
     try {
       _attitudes =
           await _attitudeService.fetchAttitudesByClassroomId(classroomId);
+
       return _attitudes;
     } catch (e) {
       throw Exception('Failed to get attitude to attitudes : $e');
@@ -40,6 +41,8 @@ class AttitudeProvider with ChangeNotifier {
 
       await _attitudeService.addAttitudeToStudents(attitude, classroomId);
       await _attitudeService.addAttitudeToClassroom(attitude, classroomId);
+
+      notifyListeners();
     } catch (e) {
       print(e);
     }
@@ -47,8 +50,10 @@ class AttitudeProvider with ChangeNotifier {
 
   // 학생 태도 체크하기
   Future<void> checkAttitude(
-    Attitude attitudeData,
-  ) async {
+      Attitude attitudeData, String studentName, int studentNumber) async {
+    attitudeData.studentName = studentName;
+    attitudeData.studentNumber = studentNumber;
+
     try {
       attitudeData.point = attitudeData.point! + 1;
       _attitudeService.checkAttitude(attitudeData);
