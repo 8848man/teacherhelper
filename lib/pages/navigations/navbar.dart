@@ -97,14 +97,33 @@ class NavBar extends StatelessWidget {
               leading: const Icon(Icons.class_outlined),
               title: const Text('수업'),
               onTap: () {
-                Navigator.of(context).pop(); // Drawer 닫기
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => ClassroomClassesPageTapBar(
-                      classroomId: classroomId,
-                    ),
-                  ),
+                // Todo
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('기능 미구현'),
+                      content: const Text('해당 기능은 추가중입니다.'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            // 출석 체크 해제 로직 추가
+                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
                 );
+                Navigator.of(context).pop(); // Drawer 닫기
+                // Navigator.of(context).pushReplacement(
+                //   MaterialPageRoute(
+                //     builder: (context) => ClassroomClassesPageTapBar(
+                //       classroomId: classroomId,
+                //     ),
+                //   ),
+                // );
               },
             ),
             const Divider(),

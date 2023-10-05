@@ -273,4 +273,9 @@ class StudentProvider with ChangeNotifier {
     // 가공한 결과를 필요한 상태로 업데이트
     notifyListeners();
   }
+
+  void subStudents(List<String> studentNumbers) {
+    students.removeWhere((student) => student.isChecked == true);
+    notifyListeners();
+  }
 }

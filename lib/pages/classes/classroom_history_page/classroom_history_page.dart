@@ -25,6 +25,7 @@ class ClassroomHistoryPage extends StatefulWidget {
 class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
   // 데이터를 가져왔는지에 대한 여부.
   bool _dataFetched = false;
+  bool _isSearched = false;
 
   String year = DateTime.now().year.toString();
   String month = DateTime.now().month.toString();
@@ -127,7 +128,10 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
         builder: (context, classroomProvider, studentProvider, historyProvider,
             child) {
           final students = studentProvider.students;
-          final allHistory = historyProvider.allHistory;
+          final allHistory = _isSearched == false
+              ? historyProvider.allHistory
+              : historyProvider.searchedHistory;
+          print(allHistory);
           return Row(
             children: [
               // 학생 리스트
@@ -160,20 +164,35 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                             Text('모든 학생'),
                           ],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          _isSearched = false;
+                          setState(() {
+                            _isSearched = false;
+                          });
+                        },
                       );
                     } else {
                       // 학생 목록 부분
                       final student = students[index - 3];
-                      return ListTile(
-                        leading: const Icon(Icons.person),
-                        title: Row(
-                          children: [
-                            Text(student.name), // 학생 이름 출력
-                            const Spacer(),
-                            Image.asset(
-                                'assets/buttons/arrow_down_button_2.png'),
-                          ],
+                      return GestureDetector(
+                        child: ListTile(
+                          leading: const Icon(Icons.person),
+                          title: Row(
+                            children: [
+                              Text(student.name), // 학생 이름 출력
+                              const Spacer(),
+                              GestureDetector(
+                                child: Image.asset(
+                                    'assets/buttons/arrow_down_button_2.png'),
+                                onTap: () {},
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            historyProvider.getHistorysByCondition(
+                                int.parse(student.studentNumber!));
+                            _isSearched = true;
+                          },
                         ),
                       );
                     }
@@ -214,6 +233,7 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                           ],
                         );
                       } else if (historyItem is Attitude) {
+                        final studentName = historyItem.studentName;
                         // Attitude 데이터 처리
                         return Card(
                           child: Column(
@@ -221,7 +241,12 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                             children: <Widget>[
                               ListTile(
                                 leading: const Icon(Icons.person_add),
-                                title: Text(historyItem.name),
+                                title: Row(
+                                  children: [
+                                    Text(historyItem.name),
+                                    Text(' (${studentName!})'),
+                                  ],
+                                ),
                                 subtitle:
                                     Text(historyItem.checkDate.toString()),
                                 // 나머지 ListTile 구성 및 작업 추가
@@ -231,7 +256,6 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                         );
                       } else if (historyItem is DailyHistory) {
                         final studentName = historyItem.studentName;
-                        print(historyItem.studentName);
                         // DailyHistory 데이터 처리
                         return Card(
                           child: Column(
@@ -242,7 +266,7 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                                 title: Row(
                                   children: [
                                     Text(historyItem.dailyName!),
-                                    // Text(studentName!),
+                                    Text(' (${studentName!})'),
                                   ],
                                 ),
                                 subtitle:

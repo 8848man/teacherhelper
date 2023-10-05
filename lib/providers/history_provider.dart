@@ -19,6 +19,9 @@ class HistoryProvider with ChangeNotifier {
   List<dynamic> _allHistory = [];
   List<dynamic> get allHistory => _allHistory;
 
+  List<dynamic> _searchedHistory = [];
+  List<dynamic> get searchedHistory => _searchedHistory;
+
   // 모든 History 가져오기
   getAllHistorys(String classroomId) async {
     // 기록 초기화
@@ -84,5 +87,44 @@ class HistoryProvider with ChangeNotifier {
       return DateFormat('MM월 dd일').format(date);
     }
     return '';
+  }
+
+  void getHistorysByCondition(int studentNumber) {
+    _searchedHistory = [];
+    List<HistoryDate> historyDates = [];
+    List<DateTime> dateTimes = [];
+
+    // 학번을 위한 조건
+    List<dynamic> tempHistory = allHistory.where((item) {
+      if (item is Attitude && item.studentNumber == studentNumber) {
+        return true;
+      } else if (item is DailyHistory && item.studentNumber == studentNumber) {
+        return true;
+      }
+      return false;
+    }).toList();
+
+    for (var item in tempHistory) {
+      if (item is Attitude) {
+        // Attitude 데이터 처리
+        _searchedHistory.add(item);
+        dateTimes.add(item.checkDate!);
+        historyDates.add(HistoryDate(checkDate: item.checkDate!));
+      } else if (item is DailyHistory) {
+        // DailyHistory 데이터 처리
+        _searchedHistory.add(item);
+        dateTimes.add(item.checkDate!);
+        historyDates.add(HistoryDate(checkDate: item.checkDate!));
+      }
+    }
+
+    // 중복되지 않은 날짜만 남김
+    Set<HistoryDate> uniqueDates = Set<HistoryDate>.from(historyDates);
+
+    // 중복을 제거한 날짜를 _allHistory에 추가
+    _searchedHistory.addAll(uniqueDates);
+
+    _searchedHistory.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
+    notifyListeners();
   }
 }

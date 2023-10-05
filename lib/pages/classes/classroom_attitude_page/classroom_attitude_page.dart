@@ -68,7 +68,6 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.width);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),

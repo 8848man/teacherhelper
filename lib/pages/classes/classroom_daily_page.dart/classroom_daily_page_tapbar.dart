@@ -193,6 +193,8 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                     floatingActionButton: FloatingActionButtonDaily(
                       classroomId: widget.classroomId,
                     ),
+                    floatingActionButtonLocation:
+                        FloatingActionButtonLocation.endDocked,
                   ),
                 );
               } else {

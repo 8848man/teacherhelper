@@ -149,6 +149,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
           builder: (context, classroomProvider, studentProvider, child) {
             final List<Classroom> classrooms = classroomProvider.classrooms;
             final List<Student> students = studentProvider.students;
+            final List<String> studentNumbers = [];
 
             return Column(
               children: [
@@ -352,9 +353,14 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                                     .size
                                                     .width *
                                                 0.05,
-                                            child: Image.asset(
-                                              'assets/buttons/checkbox_button.jpg',
-                                            ),
+                                            child: GestureDetector(
+                                                child: Image.asset(
+                                                  'assets/buttons/checkbox_button.jpg',
+                                                ),
+                                                onTap: () {
+                                                  studentProvider.subStudents(
+                                                      studentNumbers);
+                                                }),
                                           ),
                                           SizedBox(
                                             width: MediaQuery.of(context)

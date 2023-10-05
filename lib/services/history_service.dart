@@ -28,6 +28,8 @@ class HistoryService {
         checkDate: data?['checkDate'] != null
             ? data!['checkDate'].toDate()
             : DateTime.now(),
+        studentName: data?['studentName'],
+        studentNumber: data?['studentNumber'],
       );
     }).toList();
   }
@@ -52,6 +54,8 @@ class HistoryService {
             ? data!['checkDate'].toDate()
             : DateTime.now(),
         dailyName: data?['dailyName'],
+        studentName: data?['studentName'],
+        studentNumber: data?['studentNumber'],
       );
     }).toList();
   }
