@@ -131,7 +131,6 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
           final allHistory = _isSearched == false
               ? historyProvider.allHistory
               : historyProvider.searchedHistory;
-          print(allHistory);
           return Row(
             children: [
               // 학생 리스트

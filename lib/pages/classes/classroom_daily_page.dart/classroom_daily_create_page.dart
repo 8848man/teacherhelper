@@ -6,7 +6,8 @@ class DailyCreatePage extends StatefulWidget {
   final String? classroomId;
   final String? studentId;
 
-  const DailyCreatePage({super.key, this.classroomId, this.studentId});
+  const DailyCreatePage({Key? key, this.classroomId, this.studentId})
+      : super(key: key);
 
   @override
   _DailyCreatePageState createState() => _DailyCreatePageState();
@@ -15,19 +16,22 @@ class DailyCreatePage extends StatefulWidget {
 class _DailyCreatePageState extends State<DailyCreatePage> {
   final TextEditingController _nameController = TextEditingController();
   final DailyProvider _dailyProvider = DailyProvider();
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 
   void _registerDaily() async {
     final name = _nameController.text;
 
     // 이름 체크
-    if (name == '') {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("과제 이름을 입력해주세요.")));
+    if (name.isEmpty) {
+      _scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(content: Text("과제 이름을 입력해주세요.")),
+      );
       return;
     }
 

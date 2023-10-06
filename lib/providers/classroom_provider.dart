@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/student.dart';
+import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/assignment_service.dart';
 import 'package:teacherhelper/services/attitude_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
@@ -15,6 +16,10 @@ class ClassroomProvider with ChangeNotifier {
   final AssignmentService _assignmentService;
   final StudentService _studentService;
   final AttitudeService _attitudeService;
+
+  final StudentProvider _studentProvider = StudentProvider();
+
+  StudentProvider get studentProvider => _studentProvider;
 
   final currentUserUid = AuthService().currentUser()?.uid;
 
@@ -63,16 +68,13 @@ class ClassroomProvider with ChangeNotifier {
   }
 
   // 반 수정 로직
-  Future<void> modifyClassroom(
-      Classroom classroom, List<Student> checkedStudents) async {
+  Future<void> modifyClassroom(Classroom classroom) async {
     try {
-      String? classroomId = await _classroomService.createClassroom(classroom);
-
+      // print(classroom);
       // checkedStudents 전처리
+      studentProvider.updateStudents(classroom.uid!);
 
       // 학생 등록
-      await _studentService.registStudents(checkedStudents, classroomId!);
-
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to create classroom: $e');
@@ -109,8 +111,6 @@ class ClassroomProvider with ChangeNotifier {
   }
 
   getAssignmentsForStudent(String classroomId, String? studentId) {}
-
-  // modifyClassroom(Classroom classroom) {}
 
   // 학생 관련 함수 모음
 

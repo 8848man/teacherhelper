@@ -284,37 +284,37 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                           'assets/buttons/modify_button.jpg'),
                                       onTap: () {
                                         // Todo
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Text('기능 미구현'),
-                                              content:
-                                                  const Text('해당 기능은 추가중입니다.'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () {
-                                                    // 출석 체크 해제 로직 추가
-                                                    Navigator.of(context)
-                                                        .pop(); // 다이얼로그 닫기
-                                                  },
-                                                  child: const Text('OK'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) =>
-                                        //         ClassroomModifyPage(
-                                        //       teacherUid: user!.uid,
-                                        //       isModify: true,
-                                        //       classroomId: classroom.uid,
-                                        //     ),
-                                        //   ),
+                                        // showDialog(
+                                        //   context: context,
+                                        //   builder: (BuildContext context) {
+                                        //     return AlertDialog(
+                                        //       title: const Text('기능 미구현'),
+                                        //       content:
+                                        //           const Text('해당 기능은 추가중입니다.'),
+                                        //       actions: <Widget>[
+                                        //         TextButton(
+                                        //           onPressed: () {
+                                        //             // 출석 체크 해제 로직 추가
+                                        //             Navigator.of(context)
+                                        //                 .pop(); // 다이얼로그 닫기
+                                        //           },
+                                        //           child: const Text('OK'),
+                                        //         ),
+                                        //       ],
+                                        //     );
+                                        //   },
                                         // );
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ClassroomModifyPage(
+                                              teacherUid: user!.uid,
+                                              isModify: true,
+                                              classroomId: classroom.uid!,
+                                            ),
+                                          ),
+                                        );
                                       },
                                     )
                                   ],

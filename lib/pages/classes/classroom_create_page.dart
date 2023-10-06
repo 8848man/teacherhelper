@@ -114,34 +114,6 @@ class _ClassroomRegistPage_reformState
     }
   }
 
-  // 학반 수정 기능
-  // Future<void> _modifyClassroom() async {
-  //   final classroomProvider =
-  //       Provider.of<ClassroomProvider>(context, listen: false);
-  //   final studentProvider =
-  //       Provider.of<StudentProvider>(context, listen: false);
-
-  //   try {
-  //     final classroom = Classroom(
-  //       name: _classNameController.text,
-  //       teacherUid: widget.teacherUid,
-  //       id: '',
-  //     );
-
-  //     List<Student> students = studentProvider.students;
-  //     List<Student> checkedStudents =
-  //         students.where((student) => student.isChecked == true).toList();
-
-  //     await classroomProvider.modifyClassroom(classroom, checkedStudents);
-
-  //     Navigator.pop(context);
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text("반 등록에 실패했습니다.")),
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

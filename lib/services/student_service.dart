@@ -304,4 +304,101 @@ class StudentService {
       throw Exception('학생 등록 도중 에러가 발생했습니다.');
     }
   }
+
+  // 학생 변경 로직
+  void updateStudents(String classroomId, List<Student> students,
+      List<Student> loadedStudents) {
+    print('test004');
+    print(students);
+    for (final student in students) {
+      // 기존에 등록되어있던 학생 업데이트하기 위한 변수
+      print('test005');
+      final deletedStudent = loadedStudents.firstWhere(
+        (loaded) =>
+            loaded.studentNumber == student.studentNumber &&
+            loaded.name != student.name,
+        orElse: () => Student(name: '', gender: ''),
+      );
+
+      // 업데이트할 학생(학번, 이름이 같은 학생들) 저장 변수
+      final updateStudent = loadedStudents.firstWhere(
+        (loaded) =>
+            loaded.studentNumber == student.studentNumber &&
+            loaded.name == student.name,
+        orElse: () => Student(name: '', gender: ''),
+      );
+
+      if (deletedStudent != Student(name: '', gender: '')) {
+        // 수정된 학생 데이터 처리
+        if (student.isDeleted == true) {
+          // 이미 삭제된 경우, 넘어감
+          continue;
+        }
+        deletedStudent.isDeleted = true;
+        deletedStudent.updatedDate = DateTime.now();
+
+        // 삭제할 학생 삭제 체크
+        try {
+          _classroomCollection
+              .doc(classroomId)
+              .collection('students')
+              .doc(deletedStudent.id)
+              .update(deletedStudent.toJson());
+
+          // 등록할 학생 등록
+          _classroomCollection
+              .doc(classroomId)
+              .collection('students')
+              .add(student.toJson());
+        } catch (e) {
+          print(e);
+        }
+
+        // 여기에서 필요한 로직 추가 가능
+      }
+      // 업데이트할 학생 업데이트
+      if (updateStudent != Student(name: '', gender: '')) {
+        // 수정된 학생 데이터 처리
+        if (student.isDeleted == true) {
+          // 이미 삭제된 경우, 넘어감
+          continue;
+        }
+        updateStudent.updatedDate = DateTime.now();
+
+        // Firestore에 수정된 내용 업데이트
+        _classroomCollection
+            .doc(classroomId)
+            .collection('students')
+            .doc(updateStudent.id)
+            .update(updateStudent.toJson());
+
+        // 여기에서 필요한 로직 추가 가능
+      } else {
+        // 새로 추가된 학생 데이터 처리
+        // Firestore에 추가 작업 수행
+        _firestore.collection('students').add(student.toJson());
+      }
+
+      // 삭제할 학생들 로직
+      for (final loadedStudent in loadedStudents) {
+        print(loadedStudent);
+        final matchingStudent = students.firstWhere(
+          (student) =>
+              student.studentNumber == loadedStudent.studentNumber &&
+              student.name == loadedStudent.name,
+          orElse: () => Student(name: '', gender: ''),
+        );
+
+        if (matchingStudent == Student(name: '', gender: '')) {
+          print('test006');
+          print(loadedStudent);
+          _classroomCollection
+              .doc(classroomId)
+              .collection('students')
+              .doc(loadedStudent.id)
+              .delete();
+        }
+      }
+    }
+  }
 }

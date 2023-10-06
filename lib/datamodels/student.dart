@@ -13,9 +13,10 @@ class Student {
   final List? assignments;
   final List? dailyToken;
   final List? classesToken;
-  final DateTime? createdDate;
-  final DateTime? updatedDate;
-  final DateTime? deletedDate;
+  DateTime? createdDate;
+  DateTime? updatedDate;
+  DateTime? deletedDate;
+  bool? isDeleted;
   bool? isChecked;
   // attitude등의 데이터를 저장할 변수
   int? order;
@@ -45,6 +46,7 @@ class Student {
     this.point,
     this.isBad,
     this.attitudeId,
+    this.isDeleted,
   });
 
   Map<String, dynamic> toJson() {
@@ -62,6 +64,7 @@ class Student {
       'createdDate': createdDate,
       'updatedDate': updatedDate,
       'deletedDate': deletedDate,
+      'isDeleted': isDeleted,
     };
   }
 
@@ -81,6 +84,7 @@ class Student {
       createdDate: json['createdDate'],
       updatedDate: json['updatedDate'],
       deletedDate: json['deletedDate'],
+      isDeleted: json['isDeleted'],
     );
   }
 }

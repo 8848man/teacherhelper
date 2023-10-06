@@ -10,13 +10,13 @@ import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomModifyPage extends StatefulWidget {
   final String teacherUid;
-  final String? classroomId;
+  final String classroomId;
   final bool isModify;
 
   const ClassroomModifyPage(
       {super.key,
       required this.teacherUid,
-      this.classroomId,
+      required this.classroomId,
       required this.isModify});
 
   @override
@@ -123,14 +123,15 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
       final classroom = Classroom(
         name: _classNameController.text,
         teacherUid: widget.teacherUid,
-        id: '',
+        uid: widget.classroomId,
       );
 
       List<Student> students = studentProvider.students;
+
       List<Student> checkedStudents =
           students.where((student) => student.isChecked == true).toList();
-
-      await classroomProvider.modifyClassroom(classroom, checkedStudents);
+      print('test001');
+      await classroomProvider.modifyClassroom(classroom);
 
       Navigator.pop(context);
     } catch (e) {
@@ -149,7 +150,11 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
           builder: (context, classroomProvider, studentProvider, child) {
             final List<Classroom> classrooms = classroomProvider.classrooms;
             final List<Student> students = studentProvider.students;
+            final List<Student> loadedstudents = studentProvider.loadedStudent;
             final List<String> studentNumbers = [];
+            print(students);
+            print('test001');
+            print(loadedstudents);
 
             return Column(
               children: [
@@ -309,7 +314,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                             child: Image.asset(
                                                 'assets/buttons/class_regist_button.jpg'),
                                             onTap: () {
-                                              _createClassroom();
+                                              _modifyClassroom();
                                             }),
                                       ],
                                     ),
