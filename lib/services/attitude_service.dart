@@ -165,7 +165,7 @@ class AttitudeService {
     }).toList();
   }
 
-  // attitude 체크 로직. 개선 필요
+  // attitude 체크
   Future<void> checkAttitude(Attitude attitudeData) async {
     try {
       final batch = _firestore.batch();

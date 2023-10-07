@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:teacherhelper/datamodels/attitudeHistory.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/pages/students/student_assignments_page.dart';
-import 'package:teacherhelper/providers/attitude_history_provider.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
@@ -41,17 +39,10 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
     try {
       final studentProvider =
           Provider.of<StudentProvider>(context, listen: false);
-      final attitudeHistoryProvider =
-          Provider.of<AttitudeHistoryProvider>(context, listen: false);
-
       await studentProvider.fetchStudentsByClassroom(widget.classroomId);
-      await attitudeHistoryProvider.fetchAttitudesByClassroomIdAndAttitudeOrder(
-          widget.classroomId, widget.order);
 
       await studentProvider.injectAttitudeToStudents(
           widget.classroomId, widget.order!);
-      // await attitudeProvider.fetchAttitudesByClassroomId(
-      //     widget.classroomId, widget.order);
       // 데이터가 로드되면 cardStates를 초기화하고 상태를 갱신
       setState(() {
         cardStates =
@@ -76,50 +67,14 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
           children: [
             const SizedBox(height: 16.0),
             //반에 등록된 학생 리스트
-            Consumer2<StudentProvider, AttitudeHistoryProvider>(
-              builder:
-                  (context, studentProvider, attitudeHistoryProvider, child) {
+            Consumer<StudentProvider>(
+              builder: (context, studentProvider, child) {
                 // 학생 저장 변수
                 final List<Student> students =
                     studentProvider.studentsWithAttitude;
 
-                // 출석체크등 완료여부를 알기 위한 토큰.
-                final List<AttitudeHistory> latestAttitudeHistorys =
-                    attitudeHistoryProvider.latestAttitudeHistorys;
-
                 final attitudeProvider =
                     Provider.of<AttitudeProvider>(context, listen: false);
-
-                // 0910 student sort기능.
-                List<int> studentNumbers = students
-                    .map((student) => int.parse(student.studentNumber!))
-                    .toList()
-                  ..sort(
-                    (a, b) => a.compareTo(b),
-                  );
-                List<AttitudeHistory> filteredHistorys = latestAttitudeHistorys
-                    .where((history) =>
-                        studentNumbers.contains(history.studentNumber))
-                    .toList()
-                  ..sort(
-                      (a, b) => a.studentNumber!.compareTo(b.studentNumber!));
-
-                // 학생 과제 달성 여부 토큰
-                List<int?> studentNumberList = [];
-
-                for (int i = 0; i < students.length; i++) {
-                  bool isAdded = false;
-                  for (int j = 0; j < latestAttitudeHistorys.length; j++) {
-                    if (studentNumbers[i] ==
-                        filteredHistorys[j].studentNumber) {
-                      studentNumberList.add(studentNumbers[i]);
-                      isAdded = true;
-                    }
-                  }
-                  if (isAdded == false) {
-                    studentNumberList.add(null);
-                  }
-                }
 
                 if (students.isEmpty) {
                   return const CircularProgressIndicator(); // 데이터 로딩 중
@@ -156,20 +111,6 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () {
-                                          // attitudeHistory에 체크된 기록 추가
-                                          attitudeHistoryProvider.checkAttitude(
-                                            widget.classroomId,
-                                            AttitudeHistory(
-                                              studentName: student.name,
-                                              studentNumber: int.parse(
-                                                  student.studentNumber!),
-                                              isAdd: true,
-                                              isBad: widget.isBad,
-                                              checkDate: widget.now,
-                                              order: widget.order,
-                                              attitudeName: widget.attitudeName,
-                                            ),
-                                          );
                                           // attitude에 포인트 추가
                                           attitudeProvider.checkAttitude(
                                               student.attitudeData!,

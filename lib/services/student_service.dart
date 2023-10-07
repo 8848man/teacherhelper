@@ -51,6 +51,7 @@ class StudentService {
       final querySnapshot = await _classroomCollection
           .doc(classroomId)
           .collection('Students')
+          .where('isDeleted', isNotEqualTo: true)
           .orderBy('studentNumber')
           .get();
 
@@ -171,29 +172,6 @@ class StudentService {
     await historyCollection.doc().set(data);
   }
 
-  Future<void> fetchStudents() async {
-    try {
-      final QuerySnapshot snapshot = await _firestore
-          .collection('students')
-          .where('teacherUid', isEqualTo: currentUserUid)
-          .get();
-      final List<Student> students = snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Student(
-          id: doc.id,
-          name: data['name'],
-          gender: data['gender'],
-          birthdate: data['birthdate'],
-          teacherUid: currentUserUid,
-          classroomUids: [],
-        );
-      }).toList();
-      // _studentProvider.setStudents(students);
-    } catch (e) {
-      print('Failed to fetch students: $e');
-    }
-  }
-
   // 학생 등록
   Future<void> createStudent(
       String name, String gender, String birthdate, String teacherUid,
@@ -308,11 +286,8 @@ class StudentService {
   // 학생 변경 로직
   void updateStudents(String classroomId, List<Student> students,
       List<Student> loadedStudents) {
-    print('test004');
-    print(students);
     for (final student in students) {
       // 기존에 등록되어있던 학생 업데이트하기 위한 변수
-      print('test005');
       final deletedStudent = loadedStudents.firstWhere(
         (loaded) =>
             loaded.studentNumber == student.studentNumber &&
@@ -399,6 +374,21 @@ class StudentService {
               .delete();
         }
       }
+    }
+  }
+
+  // 학생 삭제 - 반 수정 페이지
+  void deleteStudents(String classroomId, Iterable<Student> students) {
+    for (var student in students) {
+      _classroomCollection
+          .doc(classroomId)
+          .collection('Students')
+          .doc(student.id)
+          .update(
+        {
+          'isDeleted': true,
+        },
+      );
     }
   }
 }

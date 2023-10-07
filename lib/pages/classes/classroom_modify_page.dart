@@ -130,7 +130,6 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
 
       List<Student> checkedStudents =
           students.where((student) => student.isChecked == true).toList();
-      print('test001');
       await classroomProvider.modifyClassroom(classroom);
 
       Navigator.pop(context);
@@ -150,11 +149,8 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
           builder: (context, classroomProvider, studentProvider, child) {
             final List<Classroom> classrooms = classroomProvider.classrooms;
             final List<Student> students = studentProvider.students;
-            final List<Student> loadedstudents = studentProvider.loadedStudent;
+
             final List<String> studentNumbers = [];
-            print(students);
-            print('test001');
-            print(loadedstudents);
 
             return Column(
               children: [
@@ -353,19 +349,46 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                       ),
                                       child: Row(
                                         children: [
+                                          // 학생 빼기 버튼
                                           SizedBox(
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
                                                 0.05,
                                             child: GestureDetector(
-                                                child: Image.asset(
-                                                  'assets/buttons/checkbox_button.jpg',
-                                                ),
-                                                onTap: () {
-                                                  studentProvider.subStudents(
-                                                      studentNumbers);
-                                                }),
+                                              child: Image.asset(
+                                                'assets/buttons/checkbox_minus_button.png',
+                                              ),
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title:
+                                                          const Text('학생 삭제'),
+                                                      content: Text(
+                                                          '체크된 학생들을 삭제하시겠습니까? 체크된 학생들은 6개월 뒤에 영구적으로 삭제됩니다.'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            studentProvider
+                                                                .deleteStudents(
+                                                                    widget
+                                                                        .classroomId);
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(); // 다이얼로그 닫기
+                                                          },
+                                                          child:
+                                                              const Text('예'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
                                           ),
                                           SizedBox(
                                             width: MediaQuery.of(context)
@@ -577,7 +600,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                                   //학생 추가 버튼
                                                   child: GestureDetector(
                                                     child: Image.asset(
-                                                      'assets/buttons/default_checkbox_button.jpg',
+                                                      'assets/buttons/checkbox_plus_button.png',
                                                     ),
                                                     onTap: () {
                                                       if (_studentNumberController

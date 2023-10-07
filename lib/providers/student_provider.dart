@@ -275,14 +275,14 @@ class StudentProvider with ChangeNotifier {
   }
 
   // 학생 제거
-  void subStudents(List<String> studentNumbers) {
-    students.removeWhere((student) => student.isChecked == true);
+  void deleteStudents(String classroomId) {
+    Iterable<Student> deletedStudents =
+        students.where((student) => student.isChecked = true);
+    _studentService.deleteStudents(classroomId, deletedStudents);
     notifyListeners();
   }
 
   void updateStudents(String classroomId) {
-    print('test003');
-    print(students);
     _studentService.updateStudents(classroomId, students, loadedStudent);
   }
 }

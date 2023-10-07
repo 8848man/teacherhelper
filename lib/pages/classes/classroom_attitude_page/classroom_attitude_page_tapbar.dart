@@ -24,7 +24,7 @@ class _ClassroomAttitudePageTapBarState
   @override
   void initState() {
     super.initState();
-    _attitudeProvider.fetchAttitudesByClassroomId(widget.classroomId);
+    // _attitudeProvider.fetchAttitudesByClassroomId(widget.classroomId);
   }
 
   @override
