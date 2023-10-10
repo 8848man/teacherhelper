@@ -51,9 +51,17 @@ class StudentService {
       final querySnapshot = await _classroomCollection
           .doc(classroomId)
           .collection('Students')
-          .where('isDeleted', isNotEqualTo: true)
+          // .where('isDeleted', isGreaterThan: false)
           .orderBy('studentNumber')
           .get();
+
+      // final querySnapshot = await _classroomCollection
+      //     .doc(classroomId)
+      //     .collection('Students')
+      //     .orderBy('studentNumber') // 'studentNumber' 필드를 기준으로 정렬
+      //     .where('isDeleted',
+      //         isNotEqualTo: true) // 'isDeleted' 필드가 true가 아닌 데이터만 필터링
+      //     .get();
 
       // studentNumber가 String으로 들어가있는데 다른 코드들이 String으로 작성되어있어 Int를 기준으로 정렬. 추후 수정 필요
       final studentList = querySnapshot.docs.map((doc) {
@@ -378,7 +386,7 @@ class StudentService {
   }
 
   // 학생 삭제 - 반 수정 페이지
-  void deleteStudents(String classroomId, Iterable<Student> students) {
+  void deleteStudentsModify(String classroomId, Iterable<Student> students) {
     for (var student in students) {
       _classroomCollection
           .doc(classroomId)

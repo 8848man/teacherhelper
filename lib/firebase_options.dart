@@ -44,40 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBeHCiqHy2h9S3ShSJP05OyjuRtrOtyyqc',
-    appId: '1:45007901841:web:0e931de9cdb5a9ea061b30',
-    messagingSenderId: '45007901841',
-    projectId: 'bucketlistwithfirebase-8b5ae',
-    authDomain: 'bucketlistwithfirebase-8b5ae.firebaseapp.com',
-    storageBucket: 'bucketlistwithfirebase-8b5ae.appspot.com',
-    measurementId: 'G-K0HS8261F2',
+    apiKey: 'AIzaSyB1HC5lkoerc4cyFjC69Aa84lVIgN1fpfU',
+    appId: '1:126181310389:web:652bdb47507c2bb7c863fc',
+    messagingSenderId: '126181310389',
+    projectId: 'teacherhelper-eebba',
+    authDomain: 'teacherhelper-eebba.firebaseapp.com',
+    storageBucket: 'teacherhelper-eebba.appspot.com',
+    measurementId: 'G-0GR152KB3N',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBW2hnnn7yJhju4R0Ba__gd-XcdlBlPz20',
-    appId: '1:45007901841:android:bcc81c932ab18bab061b30',
-    messagingSenderId: '45007901841',
-    projectId: 'bucketlistwithfirebase-8b5ae',
-    storageBucket: 'bucketlistwithfirebase-8b5ae.appspot.com',
+    apiKey: 'AIzaSyBeMOHv6yN5YB3Qk0HqfBlKT3RSl3P18h8',
+    appId: '1:126181310389:android:19092676ca767cdec863fc',
+    messagingSenderId: '126181310389',
+    projectId: 'teacherhelper-eebba',
+    storageBucket: 'teacherhelper-eebba.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC9MG0ci0QZtD1Hbf7m6VkgjS8HisakK-w',
-    appId: '1:45007901841:ios:0ba29cb9dcfbaa2a061b30',
-    messagingSenderId: '45007901841',
-    projectId: 'bucketlistwithfirebase-8b5ae',
-    storageBucket: 'bucketlistwithfirebase-8b5ae.appspot.com',
-    iosClientId: '45007901841-8fb65lsdj3kqumbe2t796kg8hrgqf1d5.apps.googleusercontent.com',
-    iosBundleId: 'com.example.bucketListWithFirebase',
+    apiKey: 'AIzaSyAWt9m9iyancXamqMX4itbnb2UlNHGsp_w',
+    appId: '1:126181310389:ios:b3e64e7c5b057abec863fc',
+    messagingSenderId: '126181310389',
+    projectId: 'teacherhelper-eebba',
+    storageBucket: 'teacherhelper-eebba.appspot.com',
+    iosBundleId: 'com.example.teacherhelper',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyC9MG0ci0QZtD1Hbf7m6VkgjS8HisakK-w',
-    appId: '1:45007901841:ios:0ba29cb9dcfbaa2a061b30',
-    messagingSenderId: '45007901841',
-    projectId: 'bucketlistwithfirebase-8b5ae',
-    storageBucket: 'bucketlistwithfirebase-8b5ae.appspot.com',
-    iosClientId: '45007901841-8fb65lsdj3kqumbe2t796kg8hrgqf1d5.apps.googleusercontent.com',
-    iosBundleId: 'com.example.bucketListWithFirebase',
+    apiKey: 'AIzaSyAWt9m9iyancXamqMX4itbnb2UlNHGsp_w',
+    appId: '1:126181310389:ios:b3e64e7c5b057abec863fc',
+    messagingSenderId: '126181310389',
+    projectId: 'teacherhelper-eebba',
+    storageBucket: 'teacherhelper-eebba.appspot.com',
+    iosBundleId: 'com.example.teacherhelper',
   );
 }

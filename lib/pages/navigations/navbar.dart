@@ -8,15 +8,22 @@ import 'package:teacherhelper/pages/main_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
-class NavBar extends StatelessWidget {
+class NavBar extends StatefulWidget {
   final String classroomId;
-  const NavBar({super.key, required this.classroomId});
+  NavBar({super.key, required this.classroomId});
+  List<bool> _isExpanded = [false, false];
 
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Consumer2<ClassroomProvider, AuthService>(
           builder: (context, classroomProvider, authProvider, child) {
+        print(MediaQuery.of(context).size.width);
         return ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -56,7 +63,7 @@ class NavBar extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => ClassroomHistoryPage(
                       teacherUid: authProvider.currentUser()!.uid,
-                      classroomId: classroomId,
+                      classroomId: widget.classroomId,
                     ),
                   ),
                 );
@@ -64,14 +71,60 @@ class NavBar extends StatelessWidget {
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.calendar_month),
-              title: const Text('생활'),
+              title: Column(
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        child: Image.asset(
+                          'assets/buttons/to-Down.png',
+                          width: MediaQuery.of(context).size.width * 0.03,
+                        ),
+                        onTap: () {
+                          setState(
+                            () {
+                              widget._isExpanded[0] =
+                                  !widget._isExpanded[0]; // 버튼 그룹 확장/축소 토글
+                            },
+                          );
+                        },
+                      ),
+                      const Text('생활'),
+                      Spacer(),
+                      GestureDetector(
+                        child: Image.asset(
+                          'assets/buttons/class_plus_button.jpg',
+                          width: MediaQuery.of(context).size.width * 0.01,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            widget._isExpanded[0] =
+                                !widget._isExpanded[0]; // 버튼 그룹 확장/축소 토글
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    height: widget._isExpanded[0] ? null : 0, // 버튼 그룹 높이 조절
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('생활'),
+                        Text('생활'),
+                        Text('생활'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               onTap: () {
                 Navigator.of(context).pop(); // Drawer 닫기
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => ClassroomDailyPageTapBar(
-                      classroomId: classroomId,
+                      classroomId: widget.classroomId,
                     ),
                   ),
                 );
@@ -86,7 +139,7 @@ class NavBar extends StatelessWidget {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => ClassroomAttitudePageTapBar(
-                      classroomId: classroomId,
+                      classroomId: widget.classroomId,
                     ),
                   ),
                 );
@@ -94,8 +147,18 @@ class NavBar extends StatelessWidget {
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.class_outlined),
-              title: const Text('수업'),
+              leading: Image.asset('assets/buttons/to-Down.png',
+                  width: MediaQuery.of(context).size.width * 0.03),
+              title: Row(
+                children: [
+                  const Text('수업'),
+                  Spacer(),
+                  Image.asset(
+                    'assets/buttons/class_plus_button.jpg',
+                    width: MediaQuery.of(context).size.width * 0.01,
+                  )
+                ],
+              ),
               onTap: () {
                 // Todo
                 showDialog(

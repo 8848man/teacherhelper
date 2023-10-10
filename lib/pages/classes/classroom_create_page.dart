@@ -96,7 +96,7 @@ class _ClassroomRegistPage_reformState
         List<Student> checkedStudents =
             students.where((student) => student.isChecked == true).toList();
 
-        await classroomProvider.createClassroom(classroom, checkedStudents);
+        await classroomProvider.createClassroom(classroom, students);
         // 반 등록 후 선생님 id로 반 가져오기
         await classroomProvider.fetchClassrooms(user!.uid);
         Navigator.pop(context);
@@ -262,8 +262,14 @@ class _ClassroomRegistPage_reformState
                                                     .size
                                                     .width *
                                                 0.05,
-                                            child: Image.asset(
-                                              'assets/buttons/checkbox_button.jpg',
+                                            child: GestureDetector(
+                                              child: Image.asset(
+                                                'assets/buttons/checkbox_minus_button.png',
+                                              ),
+                                              onTap: () {
+                                                studentProvider
+                                                    .deleteStudentsRegist();
+                                              },
                                             ),
                                           ),
                                           SizedBox(

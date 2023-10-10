@@ -373,7 +373,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                                         TextButton(
                                                           onPressed: () {
                                                             studentProvider
-                                                                .deleteStudents(
+                                                                .deleteStudentsModify(
                                                                     widget
                                                                         .classroomId);
                                                             Navigator.of(

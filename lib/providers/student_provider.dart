@@ -274,11 +274,17 @@ class StudentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // 학생 제거
-  void deleteStudents(String classroomId) {
+  // 학생 제거 - 학반 수정 페이지
+  void deleteStudentsModify(String classroomId) {
     Iterable<Student> deletedStudents =
         students.where((student) => student.isChecked = true);
-    _studentService.deleteStudents(classroomId, deletedStudents);
+    _studentService.deleteStudentsModify(classroomId, deletedStudents);
+    notifyListeners();
+  }
+
+  // 학생 제거 - 학반 등록 페이지
+  void deleteStudentsRegist() {
+    students.removeWhere((student) => student.isChecked == true);
     notifyListeners();
   }
 

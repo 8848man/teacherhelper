@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:teacherhelper/firebase_options.dart';
 import 'package:teacherhelper/pages/cover_page.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
@@ -16,7 +17,9 @@ import 'providers/daily_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // main 함수에서 async 사용하기 위함
-  await Firebase.initializeApp(); // firebase 앱 시작
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ); // firebase 앱 시작
   runApp(
     MultiProvider(
       providers: [
