@@ -105,18 +105,18 @@ class _NavBarState extends State<NavBar> {
                       ),
                     ],
                   ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    height: widget._isExpanded[0] ? null : 0, // 버튼 그룹 높이 조절
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('생활'),
-                        Text('생활'),
-                        Text('생활'),
-                      ],
-                    ),
-                  ),
+                  // AnimatedContainer(
+                  //   duration: const Duration(milliseconds: 300),
+                  //   height: widget._isExpanded[0] ? null : 0, // 버튼 그룹 높이 조절
+                  //   child: Column(
+                  //     mainAxisSize: MainAxisSize.min,
+                  //     children: [
+                  //       Text('생활'),
+                  //       Text('생활'),
+                  //       Text('생활'),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
               onTap: () {
