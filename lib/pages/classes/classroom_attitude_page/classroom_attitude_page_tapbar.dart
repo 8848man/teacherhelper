@@ -186,11 +186,11 @@ class _ClassroomAttitudePageTapBarState
                       ),
                     ),
                   ),
-                  floatingActionButton: FloatingActionButtonAttitude(
-                    classroomId: widget.classroomId,
-                  ),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.endDocked,
+                  // floatingActionButton: FloatingActionButtonAttitude(
+                  //   classroomId: widget.classroomId,
+                  // ),
+                  // floatingActionButtonLocation:
+                  //     FloatingActionButtonLocation.endDocked,
                 ),
               );
             });

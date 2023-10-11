@@ -51,8 +51,8 @@ class StudentService {
       final querySnapshot = await _classroomCollection
           .doc(classroomId)
           .collection('Students')
-          // .where('isDeleted', isGreaterThan: false)
-          .orderBy('studentNumber')
+          .where('isDeleted', isLessThan: true)
+          // .orderBy('studentNumber')
           .get();
 
       // final querySnapshot = await _classroomCollection
@@ -267,6 +267,7 @@ class StudentService {
           'isChecked': student.isChecked,
           'createDate': nowDate,
           'gender': student.gender,
+          'isDeleted': false,
           // 날짜를 저장할 필드를 추가하려면 여기에 추가
         };
 

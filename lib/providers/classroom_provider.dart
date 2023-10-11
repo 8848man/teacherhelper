@@ -49,14 +49,14 @@ class ClassroomProvider with ChangeNotifier {
 
   // 반 등록
   Future<void> createClassroom(
-      Classroom classroom, List<Student> checkedStudents) async {
+      Classroom classroom, List<Student> students) async {
     try {
       classroom.createdDate = DateTime.now();
       String? classroomId = await _classroomService.createClassroom(classroom);
 
       // 학생 등록
       List<String> studentIds =
-          await _studentService.registStudents(checkedStudents, classroomId!);
+          await _studentService.registStudents(students, classroomId!);
       // 기본적으로 등록되어야 하는 일상 및 과제 등록
       await _dailyService.addDefaultDaily(classroom.id, studentIds);
       await _assignmentService.addDefaultAssignment(classroom.id);

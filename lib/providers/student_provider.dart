@@ -62,7 +62,6 @@ class StudentProvider with ChangeNotifier {
       // 학생 초기화 후 가져오기
       _students = [];
       _students = await _studentService.fetchStudentsByClassroom(classroomId);
-      _loadedStudents = _students;
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to fetch students: $e');

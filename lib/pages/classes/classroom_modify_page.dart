@@ -677,6 +677,10 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                                                           _studentNameController
                                                                               .text,
                                                                           gender);
+                                                                      _studentNameController
+                                                                          .text = '';
+                                                                      _studentNumberController
+                                                                          .text = '';
                                                                       Navigator.of(
                                                                               context)
                                                                           .pop(); // 다이얼로그 닫기
