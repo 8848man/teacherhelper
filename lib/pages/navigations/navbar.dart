@@ -5,6 +5,7 @@ import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_at
 import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_classes_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
+import 'package:teacherhelper/pages/classes/classroom_history_page/classroom_history_page_by_daily.dart';
 import 'package:teacherhelper/pages/classes/classroom_history_page/classroom_history_page_detail.dart';
 import 'package:teacherhelper/pages/main_page.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
@@ -132,9 +133,7 @@ class _NavBarState extends State<NavBar> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('생활'),
-                      Text('생활'),
-                      Text('생활'),
+                      Text('테스트중'),
                     ],
                   ),
                 ),
@@ -201,9 +200,7 @@ class _NavBarState extends State<NavBar> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('생활'),
-                      Text('생활'),
-                      Text('생활'),
+                      Text('테스트중'),
                     ],
                   ),
                 ),
@@ -277,7 +274,7 @@ class _NavBarState extends State<NavBar> {
                     Navigator.of(context).pop(); // Drawer 닫기
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => ClassroomHistoryPage(
+                        builder: (context) => ClassroomHistoryPageByDaily(
                           teacherUid: authProvider.currentUser()!.uid,
                           classroomId: widget.classroomId,
                         ),
@@ -290,11 +287,7 @@ class _NavBarState extends State<NavBar> {
                   height: widget._isExpanded[2] ? null : 0, // 버튼 그룹 높이 조절
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('생활'),
-                      Text('생활'),
-                      Text('생활'),
-                    ],
+                    children: [],
                   ),
                 ),
               ],

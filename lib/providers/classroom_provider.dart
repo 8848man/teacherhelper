@@ -33,13 +33,13 @@ class ClassroomProvider with ChangeNotifier {
   List<Classroom> _classrooms = [];
   List<Classroom> get classrooms => _classrooms;
 
-  String _classroomId = '';
+  Classroom _classroom = Classroom(name: '', teacherUid: '');
 
-  String get classroomId => _classroomId;
+  Classroom get classroom => _classroom;
 
   // 반 Id 세팅
-  void setClassroomId(String id) {
-    _classroomId = id;
+  void setClassroomId(Classroom classroom) {
+    _classroom = classroom;
     notifyListeners();
   }
 

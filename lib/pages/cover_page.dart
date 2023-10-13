@@ -62,14 +62,10 @@ class CoverPage extends StatelessWidget {
                         child: Stack(
                           children: [
                             Image.asset(
-                                'assets/buttons/orange_rounded_button.png',
-                                height:
-                                    MediaQuery.of(context).size.height * 0.06),
-                            Positioned(
-                              top: MediaQuery.of(context).size.height *
-                                  0.01, // 상단 여백 조절
-                              left: 0, // 좌측 여백 조절
-                              right: 0, // 우측 여백 조절
+                              'assets/buttons/orange_rounded_button.png',
+                              height: MediaQuery.of(context).size.height * 0.06,
+                            ),
+                            Positioned.fill(
                               child: Center(
                                 child: Text(
                                   '회원가입',

@@ -304,6 +304,8 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                         //     );
                                         //   },
                                         // );
+                                        classroomProvider
+                                            .setClassroomId(classroom);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -321,8 +323,7 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                 ),
                               ),
                               onTap: () {
-                                classroomProvider
-                                    .setClassroomId(classroom.uid!);
+                                classroomProvider.setClassroomId(classroom);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

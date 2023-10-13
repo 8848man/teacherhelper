@@ -2,27 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/attitude.dart';
 import 'package:teacherhelper/datamodels/daily_history.dart';
+import 'package:teacherhelper/datamodels/date_for_history.dart';
 import 'package:teacherhelper/datamodels/history_date.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/history_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
-class ClassroomHistoryPage extends StatefulWidget {
+class ClassroomHistoryPageByDaily extends StatefulWidget {
   final String teacherUid;
   final String? classroomId;
 
-  const ClassroomHistoryPage({
+  const ClassroomHistoryPageByDaily({
     super.key,
     required this.teacherUid,
     this.classroomId,
   });
 
   @override
-  _ClassroomHistoryPageState createState() => _ClassroomHistoryPageState();
+  _ClassroomHistoryPageByDailyState createState() =>
+      _ClassroomHistoryPageByDailyState();
 }
 
-class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
+class _ClassroomHistoryPageByDailyState
+    extends State<ClassroomHistoryPageByDaily> {
   // 데이터를 가져왔는지에 대한 여부.
   bool _dataFetched = false;
   bool _isSearched = false;
@@ -132,6 +135,14 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
               ? historyProvider.allHistory
               : historyProvider.searchedHistory;
           final classroomName = classroomProvider.classroom.name;
+          final dateForHistory = DateForHistory(
+            startYear: 2023,
+            startMonth: 10,
+            startDate: 15,
+            endYear: 2023,
+            endMonth: 10,
+            endDate: 20,
+          );
 
           return Row(
             children: [
@@ -155,13 +166,13 @@ class _ClassroomHistoryPageState extends State<ClassroomHistoryPage> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            // ElevatedButton(
-                            //   onPressed: () {
-                            //     historyProvider.generateExcel(
-                            //         classroomName, students, );
-                            //   },
-                            //   child: Text('엑셀으로 출력하기'),
-                            // ),
+                            ElevatedButton(
+                              onPressed: () {
+                                historyProvider.generateExcel(
+                                    classroomName, students, dateForHistory);
+                              },
+                              child: Text('엑셀으로 출력하기'),
+                            ),
                           ],
                         ),
                       );
