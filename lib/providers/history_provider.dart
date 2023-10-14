@@ -139,6 +139,7 @@ class HistoryProvider with ChangeNotifier {
   Future<void> generateExcel(String classroomName, List<Student> students,
       DateForHistory dateForHistory) async {
     print(_allHistory);
+    int orderCount = 2; // 각 항목의 order 갯수. 추후에는 함수를 호출할 때 받아오는 변수
 
     //Create a Excel document.
 
@@ -159,17 +160,58 @@ class HistoryProvider with ChangeNotifier {
       sheet.getRangeByName('B${6 + index}').setText(student.name);
     }
 
+    List<dynamic> filteredHistory =
+        _allHistory.where((item) => item is DailyHistory).toList();
+    print('filteredHistory');
+    print(filteredHistory);
     // 2022년 10월 5일부터 2023년 1월 15일까지 각 날짜를 문자열로 표기하는 코드 -> 가공해서 쓸 예정
-    int startYear = 2022;
+    int startYear = 2023;
     int endYear = 2023;
 
-    DateTime startDate = DateTime(startYear, 12, 5);
-    DateTime endDate = DateTime(endYear, 1, 15);
+    DateTime startDate = DateTime(startYear, 10, 5);
+    DateTime endDate = DateTime(endYear, 12, 25);
 
+    int index = 0;
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(Duration(days: 1))) {
-      print(date.toLocal().toString().substring(0, 10)); // 날짜를 문자열로 출력
+      print("Date: ${date.toLocal().toString().substring(0, 10)}");
+
+      String nowRow = getColumnLetter(index, orderCount);
+      List<String> rowForOrders = [];
+      for (int i = 0; i <= orderCount - 1; i++) {
+        rowForOrders.add(getColumnLetter(index + i, orderCount));
+      }
+      print(rowForOrders.last);
+      // 년도(열) 세팅
+      // 주석된 부분은 해당 칼럼 합치기 위한 코드. 오류나서 주석처리
+      // sheet.getRangeByName('${nowRow}4:${rowForOrders.last}4').merge();
+      sheet
+          .getRangeByName('${nowRow}4')
+          .setText('${date.year}년 ${date.month}월 ${date.day}일');
+      sheet.getRangeByName('${nowRow}4').cellStyle.fontSize = 11;
+      sheet.getRangeByName('${nowRow}4').columnWidth = 10;
+      sheet.getRangeByName('${nowRow}4').rowHeight = 15;
+
+      // filteredHistory[index]; 왜 쓴거지?
+
+      print(nowRow);
+      print('index is ${index}');
+      for (var historyItem in filteredHistory) {
+        int indexForHistory = 0;
+        int indexForOrders = 0;
+        if (historyItem is DailyHistory) {
+          if (historyItem.checkDate != null &&
+              historyItem.checkDate!.year == date.year &&
+              historyItem.checkDate!.month == date.month &&
+              historyItem.checkDate!.day == date.day) {
+            sheet
+                .getRangeByName('${nowRow}${indexForHistory + 5}')
+                .setText(historyItem.isChecked.toString());
+          }
+        }
+      }
+      index++;
     }
 
     // dateForHistory.startDateTime
@@ -226,53 +268,6 @@ class HistoryProvider with ChangeNotifier {
     // sheet.getRangeByName('B6').setText('정한길');
     // sheet.getRangeByName('B7').setText('상상만');
     // sheet.getRangeByName('B8').setText('무환혹');
-
-    // 날짜 병합
-    sheet.getRangeByName('C4:E4').merge();
-    sheet.getRangeByName('F4:H4').merge();
-    sheet.getRangeByName('I4:K4').merge();
-    sheet.getRangeByName('L4:N4').merge();
-
-    // 날짜 텍스트
-    sheet.getRangeByName('C4').setText('2023년 09월 01일');
-    sheet.getRangeByName('C4').cellStyle.fontSize = 11;
-
-    // 날짜에 해당하는 항목 리스트
-    sheet.getRangeByName('C5').setText('출석');
-    sheet.getRangeByName('D5').setText('가정통신문');
-    sheet.getRangeByName('E5').setText('@');
-
-    // 학생별 항목 체크 리스트
-    sheet.getRangeByName('C6').setText('O');
-    sheet.getRangeByName('D6').setText('X');
-    sheet.getRangeByName('E6').setText('');
-
-    sheet.getRangeByName('C7').setText('O');
-    sheet.getRangeByName('D7').setText('X');
-    sheet.getRangeByName('E7').setText('');
-
-    sheet.getRangeByName('C8').setText('O');
-    sheet.getRangeByName('D8').setText('X');
-    sheet.getRangeByName('E8').setText('');
-
-    sheet.getRangeByName('C9').setText('O');
-    sheet.getRangeByName('D9').setText('X');
-    sheet.getRangeByName('E9').setText('');
-
-    sheet.getRangeByName('C10').setText('O');
-    sheet.getRangeByName('D10').setText('X');
-    sheet.getRangeByName('E10').setText('');
-
-    // 학생별 항목 체크 리스트 끝
-
-    // 날짜 추가
-    sheet.getRangeByName('F4').setText('2023년 09월 02일');
-    sheet.getRangeByName('F4').cellStyle.fontSize = 11;
-
-    sheet.getRangeByName('I4').setText('2023년 09월 03일');
-    sheet.getRangeByName('I4').cellStyle.fontSize = 11;
-    sheet.getRangeByName('L4').setText('2023년 09월 04일');
-    sheet.getRangeByName('L4').cellStyle.fontSize = 11;
 
     // sheet.getRangeByName('C5').setText('출석');
     // sheet.getRangeByName('C5').setText('출석');
@@ -409,5 +404,27 @@ class HistoryProvider with ChangeNotifier {
 
     //Save and launch the file.
     await saveAndLaunchFile(bytes, 'Invoice.xlsx');
+  }
+
+  String getColumnLetter(int index, int orderCount) {
+    int skip = orderCount; // order의 개수만큼 알파벳을 건너뛰도록 설정
+    String result = ""; // 리턴되는 결과값 저장
+    String tempResult = ""; // 알파벳 Z가 넘어갈 시에 AA ~ ZZ까지 표현할 임시 String값
+    int code = index * skip + 67; // 인덱스를 String으로 변환하기 위한 ASCII 코드 저장
+    int charCodeOverFlow = 0; // code가 90(Z의 ASCII Code)을 넘어갈 경우를 카운트하는 값
+    if (code <= 90) {
+      result = String.fromCharCode(code);
+    } else {
+      while (code >= 90) {
+        charCodeOverFlow++;
+        code = code - 25;
+      }
+
+      tempResult = String.fromCharCode(charCodeOverFlow + 64);
+
+      result = tempResult + String.fromCharCode(code);
+    }
+
+    return result;
   }
 }
