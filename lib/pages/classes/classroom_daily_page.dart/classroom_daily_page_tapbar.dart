@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page.dart';
-import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/floating_action_button_daily.dart';
 import 'package:teacherhelper/pages/navigations/navbar.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';

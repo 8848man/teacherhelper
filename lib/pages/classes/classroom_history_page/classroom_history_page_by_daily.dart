@@ -171,7 +171,7 @@ class _ClassroomHistoryPageByDailyState
                                 historyProvider.generateExcel(
                                     classroomName, students, dateForHistory);
                               },
-                              child: Text('엑셀으로 출력하기'),
+                              child: const Text('엑셀으로 출력하기'),
                             ),
                           ],
                         ),

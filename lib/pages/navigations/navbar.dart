@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_page_tapbar.dart';
-import 'package:teacherhelper/pages/classes/classroom_classes_page.dart/classroom_classes_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_history_page/classroom_history_page_by_daily.dart';
@@ -14,7 +13,7 @@ import 'package:teacherhelper/services/auth_service.dart';
 class NavBar extends StatefulWidget {
   final String classroomId;
   NavBar({super.key, required this.classroomId});
-  List<bool> _isExpanded = [false, false, false];
+  final List<bool> _isExpanded = [false, false, false];
 
   @override
   State<NavBar> createState() => _NavBarState();
@@ -95,7 +94,7 @@ class _NavBarState extends State<NavBar> {
                       Row(
                         children: [
                           const Text('생활'),
-                          Spacer(),
+                          const Spacer(),
                           GestureDetector(
                             child: Image.asset(
                               'assets/buttons/class_plus_button.jpg',
@@ -130,7 +129,7 @@ class _NavBarState extends State<NavBar> {
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   height: widget._isExpanded[0] ? null : 0, // 버튼 그룹 높이 조절
-                  child: Column(
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text('테스트중'),
@@ -162,7 +161,7 @@ class _NavBarState extends State<NavBar> {
                       Row(
                         children: [
                           const Text('태도'),
-                          Spacer(),
+                          const Spacer(),
                           GestureDetector(
                             child: Image.asset(
                               'assets/buttons/class_plus_button.jpg',
@@ -197,7 +196,7 @@ class _NavBarState extends State<NavBar> {
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   height: widget._isExpanded[1] ? null : 0, // 버튼 그룹 높이 조절
-                  child: Column(
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text('테스트중'),
@@ -214,7 +213,7 @@ class _NavBarState extends State<NavBar> {
               title: Row(
                 children: [
                   const Text('수업'),
-                  Spacer(),
+                  const Spacer(),
                   Image.asset(
                     'assets/buttons/class_plus_button.jpg',
                     width: MediaQuery.of(context).size.width * 0.01,
@@ -285,7 +284,7 @@ class _NavBarState extends State<NavBar> {
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   height: widget._isExpanded[2] ? null : 0, // 버튼 그룹 높이 조절
-                  child: Column(
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [],
                   ),

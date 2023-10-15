@@ -56,10 +56,8 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
           Provider.of<StudentProvider>(context, listen: false);
 
       studentProvider.resetStudents();
-      if (widget.classroomId != null) {
-        await studentProvider.fetchStudentsByClassroom(widget.classroomId!);
-      }
-      _dataFetched = true;
+      await studentProvider.fetchStudentsByClassroom(widget.classroomId);
+          _dataFetched = true;
     } catch (e) {}
   }
 
@@ -253,7 +251,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                                         classroomProvider
                                                             .deleteClassroom(
                                                           classroomId: widget
-                                                              .classroomId!,
+                                                              .classroomId,
                                                           onSuccess: () {
                                                             ScaffoldMessenger
                                                                     .of(context)
@@ -367,7 +365,7 @@ class _ClassroomModifyPageState extends State<ClassroomModifyPage> {
                                                     return AlertDialog(
                                                       title:
                                                           const Text('학생 삭제'),
-                                                      content: Text(
+                                                      content: const Text(
                                                           '체크된 학생들을 삭제하시겠습니까? 체크된 학생들은 6개월 뒤에 영구적으로 삭제됩니다.'),
                                                       actions: <Widget>[
                                                         TextButton(

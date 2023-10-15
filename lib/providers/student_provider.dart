@@ -19,7 +19,7 @@ class StudentProvider with ChangeNotifier {
   List<Student> get students => _students;
 
   // 학생을 수정할 때 DB에 저장되어있던 학생들을 저장하는 변수.
-  List<Student> _loadedStudents = [];
+  final List<Student> _loadedStudents = [];
   List<Student> get loadedStudent => _loadedStudents;
 
   // 태도 데이터를 포함한 학생 데이터

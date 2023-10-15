@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:teacherhelper/datamodels/attitude.dart';
-import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/daily_history.dart';
 import 'package:teacherhelper/datamodels/date_for_history.dart';
 import 'package:teacherhelper/datamodels/history_date.dart';
 import 'package:teacherhelper/datamodels/student.dart';
-import 'package:teacherhelper/providers/classroom_provider.dart';
-import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/history_service.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column;
 import 'package:teacherhelper/functions/save_excel_mobile.dart'
@@ -140,7 +137,7 @@ class HistoryProvider with ChangeNotifier {
       DateForHistory dateForHistory) async {
     print(_allHistory);
     int orderCount = 2; // 각 항목의 order 갯수. 추후에는 함수를 호출할 때 받아오는 변수
-
+    List<String> orderNames = ['출석', '가정통신문'];
     //Create a Excel document.
 
     //Creating a workbook.
@@ -161,31 +158,33 @@ class HistoryProvider with ChangeNotifier {
     }
 
     List<dynamic> filteredHistory =
-        _allHistory.where((item) => item is DailyHistory).toList();
-    print('filteredHistory');
-    print(filteredHistory);
+        _allHistory.whereType<DailyHistory>().toList();
     // 2022년 10월 5일부터 2023년 1월 15일까지 각 날짜를 문자열로 표기하는 코드 -> 가공해서 쓸 예정
     int startYear = 2023;
     int endYear = 2023;
 
     DateTime startDate = DateTime(startYear, 10, 5);
-    DateTime endDate = DateTime(endYear, 12, 25);
+    DateTime endDate = DateTime(endYear, 10, 20);
 
     int index = 0;
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
-        date = date.add(Duration(days: 1))) {
+        date = date.add(const Duration(days: 1))) {
       print("Date: ${date.toLocal().toString().substring(0, 10)}");
 
-      String nowRow = getColumnLetter(index, orderCount);
-      List<String> rowForOrders = [];
+      String nowRow = getColumnLetter(index, orderCount, 0);
+      List<String> rowForRowOrders = []; // 날짜 끝부분 저장을 위한 변수
+      List<String> rowForOrders = []; // order(항목)을 나열하기 위한 변수
+
+      // 리스트에 값 할당
       for (int i = 0; i <= orderCount - 1; i++) {
-        rowForOrders.add(getColumnLetter(index + i, orderCount));
+        rowForRowOrders.add(getColumnLetter(index + i, orderCount, 0));
+        rowForOrders.add(getColumnLetter(index, orderCount, i));
       }
-      print(rowForOrders.last);
+
       // 년도(열) 세팅
       // 주석된 부분은 해당 칼럼 합치기 위한 코드. 오류나서 주석처리
-      // sheet.getRangeByName('${nowRow}4:${rowForOrders.last}4').merge();
+      // sheet.getRangeByName('${nowRow}4:${rowForRowOrders.last}4').merge();
       sheet
           .getRangeByName('${nowRow}4')
           .setText('${date.year}년 ${date.month}월 ${date.day}일');
@@ -193,24 +192,42 @@ class HistoryProvider with ChangeNotifier {
       sheet.getRangeByName('${nowRow}4').columnWidth = 10;
       sheet.getRangeByName('${nowRow}4').rowHeight = 15;
 
-      // filteredHistory[index]; 왜 쓴거지?
+      // order 항목들 입력
+      for (int i = 0; i <= orderCount - 1; i++) {
+        sheet.getRangeByName('${rowForOrders[i]}5').setText(orderNames[i]);
+      }
+
+      // 빈 칸들 X로 초기화
+      for (var student in students) {
+        int index = students.indexOf(student);
+        for (int i = 0; i <= orderCount - 1; i++) {
+          sheet.getRangeByName('${rowForOrders[i]}${index + 6}').setText('X');
+        }
+      }
 
       print(nowRow);
-      print('index is ${index}');
+      print('index is $index');
+
+      // 학생들의 History 표시
+
       for (var historyItem in filteredHistory) {
-        int indexForHistory = 0;
-        int indexForOrders = 0;
+        int index = filteredHistory.indexOf(historyItem);
         if (historyItem is DailyHistory) {
           if (historyItem.checkDate != null &&
               historyItem.checkDate!.year == date.year &&
               historyItem.checkDate!.month == date.month &&
               historyItem.checkDate!.day == date.day) {
-            sheet
-                .getRangeByName('${nowRow}${indexForHistory + 5}')
-                .setText(historyItem.isChecked.toString());
+            for (int i = 1; i <= orderCount; i++) {
+              if (historyItem.checkDate != null && historyItem.order == i) {
+                sheet
+                    .getRangeByName('${rowForOrders[i - 1]}${index + 6}')
+                    .setText('O');
+              }
+            }
           }
         }
       }
+
       index++;
     }
 
@@ -406,11 +423,13 @@ class HistoryProvider with ChangeNotifier {
     await saveAndLaunchFile(bytes, 'Invoice.xlsx');
   }
 
-  String getColumnLetter(int index, int orderCount) {
-    int skip = orderCount; // order의 개수만큼 알파벳을 건너뛰도록 설정
+  String getColumnLetter(int index, int totalOrderCount, int nowOrderCount) {
+    int skip = totalOrderCount; // order의 개수만큼 알파벳을 건너뛰도록 설정
+    int codePlus = nowOrderCount; // 현재 당장의 order
     String result = ""; // 리턴되는 결과값 저장
     String tempResult = ""; // 알파벳 Z가 넘어갈 시에 AA ~ ZZ까지 표현할 임시 String값
-    int code = index * skip + 67; // 인덱스를 String으로 변환하기 위한 ASCII 코드 저장
+    int code =
+        index * skip + 67 + codePlus; // 인덱스를 String으로 변환하기 위한 ASCII 코드 저장
     int charCodeOverFlow = 0; // code가 90(Z의 ASCII Code)을 넘어갈 경우를 카운트하는 값
     if (code <= 90) {
       result = String.fromCharCode(code);
