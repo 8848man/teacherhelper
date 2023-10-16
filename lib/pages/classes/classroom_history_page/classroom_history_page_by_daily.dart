@@ -166,12 +166,15 @@ class _ClassroomHistoryPageByDailyState
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                historyProvider.generateExcel(
-                                    classroomName, students, dateForHistory);
-                              },
-                              child: const Text('엑셀으로 출력하기'),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  historyProvider.generateExcel(
+                                      classroomName, students, dateForHistory);
+                                },
+                                child: const Text('엑셀으로 출력하기'),
+                              ),
                             ),
                           ],
                         ),

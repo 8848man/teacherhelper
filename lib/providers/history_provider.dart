@@ -133,11 +133,11 @@ class HistoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // history 엑셀 출력
   Future<void> generateExcel(String classroomName, List<Student> students,
       DateForHistory dateForHistory) async {
-    print(_allHistory);
-    int orderCount = 2; // 각 항목의 order 갯수. 추후에는 함수를 호출할 때 받아오는 변수
-    List<String> orderNames = ['출석', '가정통신문'];
+    int orderCount = 3; // 각 항목의 order 갯수. 추후에는 함수를 호출할 때 받아오는 변수
+    List<String> orderNames = ['출석', '가정통신문', '테스트'];
     //Create a Excel document.
 
     //Creating a workbook.
@@ -145,6 +145,11 @@ class HistoryProvider with ChangeNotifier {
     //Accessing via index
     final Worksheet sheet = workbook.worksheets[0];
     sheet.showGridlines = false;
+
+    final Style globalStyle = workbook.styles.add('globalStyle');
+
+    globalStyle.borders.all.lineStyle = LineStyle.thick;
+    globalStyle.borders.all.color = '#9954CC';
 
     // Enable calculation for worksheet.
     sheet.enableSheetCalculations();
@@ -157,8 +162,10 @@ class HistoryProvider with ChangeNotifier {
       sheet.getRangeByName('B${6 + index}').setText(student.name);
     }
 
+    // History 데이터
     List<dynamic> filteredHistory =
         _allHistory.whereType<DailyHistory>().toList();
+
     // 2022년 10월 5일부터 2023년 1월 15일까지 각 날짜를 문자열로 표기하는 코드 -> 가공해서 쓸 예정
     int startYear = 2023;
     int endYear = 2023;
@@ -170,7 +177,7 @@ class HistoryProvider with ChangeNotifier {
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
         date = date.add(const Duration(days: 1))) {
-      print("Date: ${date.toLocal().toString().substring(0, 10)}");
+      // print("Date: ${date.toLocal().toString().substring(0, 10)}");
 
       String nowRow = getColumnLetter(index, orderCount, 0);
       List<String> rowForRowOrders = []; // 날짜 끝부분 저장을 위한 변수
@@ -178,13 +185,14 @@ class HistoryProvider with ChangeNotifier {
 
       // 리스트에 값 할당
       for (int i = 0; i <= orderCount - 1; i++) {
-        rowForRowOrders.add(getColumnLetter(index + i, orderCount, 0));
+        rowForRowOrders.add(getColumnLetter(index + i, orderCount - 1, 0));
         rowForOrders.add(getColumnLetter(index, orderCount, i));
       }
 
+      // print('nowRow is ${nowRow}');
+      // print('rowForRowOrders.lase is ${rowForRowOrders.last}');
       // 년도(열) 세팅
-      // 주석된 부분은 해당 칼럼 합치기 위한 코드. 오류나서 주석처리
-      // sheet.getRangeByName('${nowRow}4:${rowForRowOrders.last}4').merge();
+      sheet.getRangeByName('${nowRow}4:${rowForOrders.last}4').merge();
       sheet
           .getRangeByName('${nowRow}4')
           .setText('${date.year}년 ${date.month}월 ${date.day}일');
@@ -197,31 +205,30 @@ class HistoryProvider with ChangeNotifier {
         sheet.getRangeByName('${rowForOrders[i]}5').setText(orderNames[i]);
       }
 
-      // 빈 칸들 X로 초기화
+      // 학생들의 History 내역을 표시
       for (var student in students) {
         int index = students.indexOf(student);
+
+        // 빈 칸들 X로 초기화
         for (int i = 0; i <= orderCount - 1; i++) {
           sheet.getRangeByName('${rowForOrders[i]}${index + 6}').setText('X');
         }
-      }
 
-      print(nowRow);
-      print('index is $index');
-
-      // 학생들의 History 표시
-
-      for (var historyItem in filteredHistory) {
-        int index = filteredHistory.indexOf(historyItem);
-        if (historyItem is DailyHistory) {
-          if (historyItem.checkDate != null &&
-              historyItem.checkDate!.year == date.year &&
-              historyItem.checkDate!.month == date.month &&
-              historyItem.checkDate!.day == date.day) {
-            for (int i = 1; i <= orderCount; i++) {
-              if (historyItem.checkDate != null && historyItem.order == i) {
-                sheet
-                    .getRangeByName('${rowForOrders[i - 1]}${index + 6}')
-                    .setText('O');
+        // 학생마다 History 내역 값 입력
+        for (var historyItem in filteredHistory) {
+          if (historyItem is DailyHistory) {
+            if (historyItem.checkDate != null &&
+                historyItem.checkDate!.year == date.year &&
+                historyItem.checkDate!.month == date.month &&
+                historyItem.checkDate!.day == date.day) {
+              for (int i = 1; i <= orderCount; i++) {
+                if (historyItem.order == i &&
+                    int.parse(student.studentNumber!) ==
+                        historyItem.studentNumber) {
+                  sheet
+                      .getRangeByName('${rowForOrders[i - 1]}${index + 6}')
+                      .setText('O');
+                }
               }
             }
           }
@@ -230,24 +237,6 @@ class HistoryProvider with ChangeNotifier {
 
       index++;
     }
-
-    // dateForHistory.startDateTime
-    // for (DateTime date = dateForHistory.startDateTime;
-    //     date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
-    //     date = date.add(Duration(days: 1))) {
-    //   print(date.toLocal().toString().substring(0, 10)); // 날짜를 문자열로 출력
-    // }
-
-    //Set data in the worksheet.
-    // sheet.getRangeByName('A1').columnWidth = 4.82;
-    // sheet.getRangeByName('B1:C1').columnWidth = 13.82;
-    // sheet.getRangeByName('D1').columnWidth = 13.20;
-    // sheet.getRangeByName('E1').columnWidth = 7.50;
-    // sheet.getRangeByName('F1').columnWidth = 9.73;
-    // sheet.getRangeByName('G1').columnWidth = 8.82;
-    // sheet.getRangeByName('H1').columnWidth = 4.46;
-
-    // sheet.getRangeByName('A1:H1').cellStyle.backColor = '#333F4F';
 
     sheet.getRangeByName('A1').cellStyle.borders.all;
 
@@ -275,144 +264,6 @@ class HistoryProvider with ChangeNotifier {
     // 학생 학번 및 이름
     sheet.getRangeByName('A5').setText('학번');
     sheet.getRangeByName('B5').setText('이름');
-
-    // // 학생 학번 데이터
-    // sheet.getRangeByName('A6').setText('1');
-    // sheet.getRangeByName('A7').setText('2');
-    // sheet.getRangeByName('A8').setText('3');
-
-    // // 학생 이름 데이터
-    // sheet.getRangeByName('B6').setText('정한길');
-    // sheet.getRangeByName('B7').setText('상상만');
-    // sheet.getRangeByName('B8').setText('무환혹');
-
-    // sheet.getRangeByName('C5').setText('출석');
-    // sheet.getRangeByName('C5').setText('출석');
-    // sheet.getRangeByName('C5').setText('출석');
-
-    // sheet
-    //     .getRangeByName('B10')
-    //     .setText('United States, California, San Mateo,');
-    // sheet.getRangeByName('B10').cellStyle.fontSize = 9;
-
-    // sheet.getRangeByName('B11').setText('9920 BridgePointe Parkway,');
-    // sheet.getRangeByName('B11').cellStyle.fontSize = 9;
-
-    // sheet.getRangeByName('B12').setNumber(9365550136);
-    // sheet.getRangeByName('B12').cellStyle.fontSize = 9;
-    // sheet.getRangeByName('B12').cellStyle.hAlign = HAlignType.left;
-
-    // final Range range1 = sheet.getRangeByName('F8:G8');
-    // final Range range2 = sheet.getRangeByName('F9:G9');
-    // final Range range3 = sheet.getRangeByName('F10:G10');
-    // final Range range4 = sheet.getRangeByName('F11:G11');
-    // final Range range5 = sheet.getRangeByName('F12:G12');
-
-    // range1.merge();
-    // range2.merge();
-    // range3.merge();
-    // range4.merge();
-    // range5.merge();
-
-    // sheet.getRangeByName('F8').setText('INVOICE#');
-    // range1.cellStyle.fontSize = 8;
-    // range1.cellStyle.bold = true;
-    // range1.cellStyle.hAlign = HAlignType.right;
-
-    // sheet.getRangeByName('F9').setNumber(2058557939);
-    // range2.cellStyle.fontSize = 9;
-    // range2.cellStyle.hAlign = HAlignType.right;
-
-    // sheet.getRangeByName('F10').setText('DATE');
-    // range3.cellStyle.fontSize = 8;
-    // range3.cellStyle.bold = true;
-    // range3.cellStyle.hAlign = HAlignType.right;
-
-    // sheet.getRangeByName('F11').dateTime = DateTime(2020, 08, 31);
-    // sheet.getRangeByName('F11').numberFormat =
-    //     r'[$-x-sysdate]dddd, mmmm dd, yyyy';
-    // range4.cellStyle.fontSize = 9;
-    // range4.cellStyle.hAlign = HAlignType.right;
-
-    // range5.cellStyle.fontSize = 8;
-    // range5.cellStyle.bold = true;
-    // range5.cellStyle.hAlign = HAlignType.right;
-
-    // final Range range6 = sheet.getRangeByName('B15:G15');
-    // range6.cellStyle.fontSize = 10;
-    // range6.cellStyle.bold = true;
-
-    // sheet.getRangeByIndex(15, 2).setText('Code');
-    // sheet.getRangeByIndex(16, 2).setText('CA-1098');
-    // sheet.getRangeByIndex(17, 2).setText('LJ-0192');
-    // sheet.getRangeByIndex(18, 2).setText('So-B909-M');
-    // sheet.getRangeByIndex(19, 2).setText('FK-5136');
-    // sheet.getRangeByIndex(20, 2).setText('HL-U509');
-
-    // sheet.getRangeByIndex(15, 3).setText('Description');
-    // sheet.getRangeByIndex(16, 3).setText('AWC Logo Cap');
-    // sheet.getRangeByIndex(17, 3).setText('Long-Sleeve Logo Jersey, M');
-    // sheet.getRangeByIndex(18, 3).setText('Mountain Bike Socks, M');
-    // sheet.getRangeByIndex(19, 3).setText('ML Fork');
-    // sheet.getRangeByIndex(20, 3).setText('Sports-100 Helmet, Black');
-
-    // sheet.getRangeByIndex(15, 3, 15, 4).merge();
-    // sheet.getRangeByIndex(16, 3, 16, 4).merge();
-    // sheet.getRangeByIndex(17, 3, 17, 4).merge();
-    // sheet.getRangeByIndex(18, 3, 18, 4).merge();
-    // sheet.getRangeByIndex(19, 3, 19, 4).merge();
-    // sheet.getRangeByIndex(20, 3, 20, 4).merge();
-
-    // sheet.getRangeByIndex(15, 5).setText('Quantity');
-    // sheet.getRangeByIndex(16, 5).setNumber(2);
-    // sheet.getRangeByIndex(17, 5).setNumber(3);
-    // sheet.getRangeByIndex(18, 5).setNumber(2);
-    // sheet.getRangeByIndex(19, 5).setNumber(6);
-    // sheet.getRangeByIndex(20, 5).setNumber(1);
-
-    // sheet.getRangeByIndex(15, 6).setText('Price');
-    // sheet.getRangeByIndex(16, 6).setNumber(8.99);
-    // sheet.getRangeByIndex(17, 6).setNumber(49.99);
-    // sheet.getRangeByIndex(18, 6).setNumber(9.50);
-    // sheet.getRangeByIndex(19, 6).setNumber(175.49);
-    // sheet.getRangeByIndex(20, 6).setNumber(34.99);
-
-    // sheet.getRangeByIndex(15, 7).setText('Total');
-    // sheet.getRangeByIndex(16, 7).setFormula('=E16*F16+(E16*F16)');
-    // sheet.getRangeByIndex(17, 7).setFormula('=E17*F17+(E17*F17)');
-    // sheet.getRangeByIndex(18, 7).setFormula('=E18*F18+(E18*F18)');
-    // sheet.getRangeByIndex(19, 7).setFormula('=E19*F19+(E19*F19)');
-    // sheet.getRangeByIndex(20, 7).setFormula('=E20*F20+(E20*F20)');
-    // sheet.getRangeByIndex(15, 6, 20, 7).numberFormat = r'$#,##0.00';
-
-    // sheet.getRangeByName('E15:G15').cellStyle.hAlign = HAlignType.right;
-    // sheet.getRangeByName('B15:G15').cellStyle.fontSize = 10;
-    // sheet.getRangeByName('B15:G15').cellStyle.bold = true;
-    // sheet.getRangeByName('B16:G20').cellStyle.fontSize = 9;
-
-    // sheet.getRangeByName('E22:G22').merge();
-    // sheet.getRangeByName('E22:G22').cellStyle.hAlign = HAlignType.right;
-    // sheet.getRangeByName('E23:G24').merge();
-
-    // final Range range7 = sheet.getRangeByName('E22');
-    // final Range range8 = sheet.getRangeByName('E23');
-    // range7.setText('TOTAL');
-    // range7.cellStyle.fontSize = 8;
-    // range8.setFormula('=SUM(G16:G20)');
-    // range8.numberFormat = r'$#,##0.00';
-    // range8.cellStyle.fontSize = 24;
-    // range8.cellStyle.hAlign = HAlignType.right;
-    // range8.cellStyle.bold = true;
-
-    // sheet.getRangeByIndex(26, 1).text =
-    //     '800 Interchange Blvd, Suite 2501, Austin, TX 78721 | support@adventure-works.com';
-    // sheet.getRangeByIndex(26, 1).cellStyle.fontSize = 8;
-
-    // final Range range9 = sheet.getRangeByName('A26:H27');
-    // range9.cellStyle.backColor = '#ACB9CA';
-    // range9.merge();
-    // range9.cellStyle.hAlign = HAlignType.center;
-    // range9.cellStyle.vAlign = VAlignType.center;
 
     //Save and launch the excel.
     final List<int> bytes = workbook.saveAsStream();
