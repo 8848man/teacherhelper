@@ -135,14 +135,68 @@ class _ClassroomHistoryPageByDailyState
               ? historyProvider.allHistory
               : historyProvider.searchedHistory;
           final classroomName = classroomProvider.classroom.name;
-          final dateForHistory = DateForHistory(
-            startYear: 2023,
-            startMonth: 10,
-            startDate: 15,
-            endYear: 2023,
-            endMonth: 10,
-            endDate: 20,
-          );
+          BuildContext? dialogContext; // 임시 context를 위한 변수를 정의
+
+          void _selectEndDate(DateTime startDate) async {
+            DateTime? endDate = await showDatePicker(
+              context: dialogContext!, // 변수 사용
+              initialDate: startDate,
+              firstDate: startDate,
+              lastDate: DateTime(2101),
+            );
+
+            if (endDate != null) {
+              int startYear = startDate.year;
+              int startMonth = startDate.month;
+              int startDay = startDate.day;
+
+              int endYear = endDate.year;
+              int endMonth = endDate.month;
+              int endDay = endDate.day;
+
+              final dateForHistory = DateForHistory(
+                startYear: startYear,
+                startMonth: startMonth,
+                startDate: startDay,
+                endYear: endYear,
+                endMonth: endMonth,
+                endDate: endDay,
+              );
+
+              historyProvider.generateExcel(
+                  classroomName, students, dateForHistory);
+            }
+          }
+
+          void _selectStartDate() async {
+            DateTime? startDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+            );
+
+            if (startDate != null) {
+              dialogContext = context; // 변수에 저장
+              showDialog(
+                context: dialogContext!, // 변수 사용
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("마지막일을 설정해주세요"),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text("확인"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _selectEndDate(startDate);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          }
 
           return Row(
             children: [
@@ -169,11 +223,27 @@ class _ClassroomHistoryPageByDailyState
                             Container(
                               height: MediaQuery.of(context).size.height * 0.06,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  historyProvider.generateExcel(
-                                      classroomName, students, dateForHistory);
+                                onPressed: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text("시작일을 설정해주세요"),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text("확인"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              // 시작일을 선택하는 DatePicker를 여기서 호출
+                                              _selectStartDate();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 },
-                                child: const Text('엑셀으로 출력하기'),
+                                child: const Text('엑셀로 출력하기'),
                               ),
                             ),
                           ],

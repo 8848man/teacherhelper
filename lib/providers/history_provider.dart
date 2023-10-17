@@ -166,13 +166,18 @@ class HistoryProvider with ChangeNotifier {
     List<dynamic> filteredHistory =
         _allHistory.whereType<DailyHistory>().toList();
 
-    // 2022년 10월 5일부터 2023년 1월 15일까지 각 날짜를 문자열로 표기하는 코드 -> 가공해서 쓸 예정
-    int startYear = 2023;
-    int endYear = 2023;
+    // 날짜를 받아와 저장하는 코드
+    int startYear = dateForHistory.startYear;
+    int startMonth = dateForHistory.startMonth;
+    int startDay = dateForHistory.startDate!;
+    int endYear = dateForHistory.endYear;
+    int endMonth = dateForHistory.endMonth;
+    int endDay = dateForHistory.endDate!;
 
-    DateTime startDate = DateTime(startYear, 10, 5);
-    DateTime endDate = DateTime(endYear, 10, 20);
+    DateTime startDate = DateTime(startYear, startMonth, startDay);
+    DateTime endDate = DateTime(endYear, endMonth, endDay);
 
+    // 실제 데이터들 세팅(년도/ 항목/ 데이터)
     int index = 0;
     for (DateTime date = startDate;
         date.isBefore(endDate) || date.isAtSameMomentAs(endDate);
@@ -189,8 +194,6 @@ class HistoryProvider with ChangeNotifier {
         rowForOrders.add(getColumnLetter(index, orderCount, i));
       }
 
-      // print('nowRow is ${nowRow}');
-      // print('rowForRowOrders.lase is ${rowForRowOrders.last}');
       // 년도(열) 세팅
       sheet.getRangeByName('${nowRow}4:${rowForOrders.last}4').merge();
       sheet
