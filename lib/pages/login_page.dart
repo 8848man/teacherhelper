@@ -260,15 +260,15 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      GestureDetector(
-                        child: Image.asset(
-                          'assets/buttons/google_button.png',
-                          width: MediaQuery.of(context).size.width * 0.25,
-                        ),
-                        onTap: () {
-                          // 구글 로그인 버튼
-                        },
-                      ),
+                      // GestureDetector(
+                      //   child: Image.asset(
+                      //     'assets/buttons/google_button.png',
+                      //     width: MediaQuery.of(context).size.width * 0.25,
+                      //   ),
+                      //   onTap: () {
+                      //     // 구글 로그인 버튼
+                      //   },
+                      // ),
                       Row(
                         children: [
                           const Text('아직 계정이 없으시다면 '),

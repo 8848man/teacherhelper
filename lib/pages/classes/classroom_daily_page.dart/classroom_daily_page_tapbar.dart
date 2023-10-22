@@ -9,8 +9,9 @@ import 'package:teacherhelper/providers/daily_provider.dart';
 
 class ClassroomDailyPageTapBar extends StatefulWidget {
   final String classroomId; // classroomId 변수 추가
-
-  const ClassroomDailyPageTapBar({super.key, required this.classroomId});
+  final int? injectedOrder;
+  const ClassroomDailyPageTapBar(
+      {super.key, required this.classroomId, this.injectedOrder});
 
   @override
   _ClassroomDailyPageTapBarState createState() =>

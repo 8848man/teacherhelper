@@ -482,7 +482,7 @@ class _ClassroomRegistPage_reformState
                                                   //학생 추가 버튼
                                                   child: GestureDetector(
                                                     child: Image.asset(
-                                                      'assets/buttons/default_checkbox_button.jpg',
+                                                      'assets/buttons/checkbox_plus_button.png',
                                                     ),
                                                     onTap: () {
                                                       if (_studentNumberController

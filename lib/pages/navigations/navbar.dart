@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_create_page.dart';
+import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_history_page/classroom_history_page_by_daily.dart';
 import 'package:teacherhelper/pages/classes/classroom_history_page/classroom_history_page_detail.dart';
@@ -72,52 +73,109 @@ class _NavBarState extends State<NavBar> {
               },
             ),
             const Divider(),
-            Column(
-              children: [
-                ListTile(
-                  leading: GestureDetector(
-                    child: Image.asset(
-                      'assets/buttons/to-Down.png',
-                      width: MediaQuery.of(context).size.width * 0.03,
+            // Column(
+            //   children: [
+            //     ListTile(
+            //       leading: GestureDetector(
+            //         child: Image.asset(
+            //           'assets/buttons/to-Down.png',
+            //           width: MediaQuery.of(context).size.width * 0.03,
+            //         ),
+            //         onTap: () {
+            //           setState(
+            //             () {
+            //               widget._isExpanded[0] =
+            //                   !widget._isExpanded[0]; // 버튼 그룹 확장/축소 토글
+            //             },
+            //           );
+            //         },
+            //       ),
+            //       title: Column(
+            //         children: [
+            //           Row(
+            //             children: [
+            //               const Text('생활'),
+            //               const Spacer(),
+            //               GestureDetector(
+            //                 child: Image.asset(
+            //                   'assets/buttons/class_plus_button.jpg',
+            //                   width: MediaQuery.of(context).size.width * 0.01,
+            //                 ),
+            //                 onTap: () {
+            //                   Navigator.push(
+            //                     context,
+            //                     MaterialPageRoute(
+            //                       builder: (context) => DailyCreatePage(
+            //                         classroomId: widget.classroomId,
+            //                       ),
+            //                     ),
+            //                   );
+            //                 },
+            //               ),
+            //             ],
+            //           ),
+            //         ],
+            //       ),
+            //       onTap: () {
+            //         Navigator.of(context).pop(); // Drawer 닫기
+            //         Navigator.of(context).pushReplacement(
+            //           MaterialPageRoute(
+            //             builder: (context) => ClassroomDailyPageTapBar(
+            //               classroomId: widget.classroomId,
+            //             ),
+            //           ),
+            //         );
+            //       },
+            //     ),
+            //     AnimatedContainer(
+            //       duration: const Duration(milliseconds: 300),
+            //       height: widget._isExpanded[0] ? null : 0, // 버튼 그룹 높이 조절
+            //       child: const Column(
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           Text('테스트중'),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            ExpansionTile(
+              title: Row(
+                children: [
+                  Text('생활'),
+                  Spacer(),
+                  GestureDetector(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      width: MediaQuery.of(context).size.width * 0.01,
+                      child: Image.asset(
+                        'assets/buttons/class_plus_button.jpg',
+                        width: MediaQuery.of(context).size.width * 0.01,
+                      ),
                     ),
                     onTap: () {
-                      setState(
-                        () {
-                          widget._isExpanded[0] =
-                              !widget._isExpanded[0]; // 버튼 그룹 확장/축소 토글
-                        },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DailyCreatePage(
+                            classroomId: widget.classroomId,
+                          ),
+                        ),
                       );
                     },
                   ),
-                  title: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text('생활'),
-                          const Spacer(),
-                          GestureDetector(
-                            child: Image.asset(
-                              'assets/buttons/class_plus_button.jpg',
-                              width: MediaQuery.of(context).size.width * 0.01,
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DailyCreatePage(
-                                    classroomId: widget.classroomId,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                ],
+              ),
+              controlAffinity: ListTileControlAffinity.leading,
+              children: <Widget>[
+                GestureDetector(
+                  child: ListTile(
+                    title: Text('출석'),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop(); // Drawer 닫기
-                    Navigator.of(context).pushReplacement(
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
                       MaterialPageRoute(
                         builder: (context) => ClassroomDailyPageTapBar(
                           classroomId: widget.classroomId,
@@ -126,16 +184,7 @@ class _NavBarState extends State<NavBar> {
                     );
                   },
                 ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: widget._isExpanded[0] ? null : 0, // 버튼 그룹 높이 조절
-                  child: const Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('테스트중'),
-                    ],
-                  ),
-                ),
+                ListTile(title: Text('가정통신문')),
               ],
             ),
             const Divider(),

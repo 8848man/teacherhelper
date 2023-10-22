@@ -65,12 +65,11 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16.0),
+            // const SizedBox(height: 16.0),
             //반에 등록된 학생 리스트
             Consumer2<StudentProvider, DailyHistoryProvider>(
               builder: (context, studentProvider, dailyHistoryProvider, child) {
@@ -121,115 +120,114 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                     cardStates =
                         List.generate(students.length, (index) => false);
                   }
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GridView.builder(
-                        padding: const EdgeInsets.all(100.0),
-                        shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: students.length >= 20 ? 10 : 5,
-                          crossAxisSpacing: students.length >= 20 ? 3 : 100,
-                          mainAxisSpacing: students.length >= 20 ? 3 : 100,
-                        ),
-                        itemCount: students.length,
-                        itemBuilder: (context, index) {
-                          final student = students[index];
-                          return GestureDetector(
-                            onTap: () {
-                              // Daily가 체크되어있지 않을 경우, Daily를 체크
-                              if (studentNumberList[index] == null &&
-                                  cardStates[index] == false) {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Daily Check'),
-                                      content:
-                                          const Text('학생의 Daily를 체크하시겠습니까?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              DailyHistory dailyHistory =
-                                                  DailyHistory(
-                                                classroomId: widget.classroomId,
-                                                dailyName: widget.dailyName!,
-                                                order: widget.order,
-                                                studentId: student.id,
-                                                dailyId: student.dailyData!.id,
-                                                studentName: student.name,
-                                                studentNumber: int.parse(
-                                                    student.studentNumber!),
-                                              );
-                                              dailyHistoryProvider.checkDaily(
-                                                widget.classroomId,
-                                                student.studentNumber!,
-                                                widget.dailyName!,
-                                                student.name,
-                                                widget.order,
-                                                widget.now,
-                                                dailyHistory,
-                                              );
-                                              cardStates[index] =
-                                                  !cardStates[index];
-                                            });
-                                            Navigator.of(context)
-                                                .pop(); // 다이얼로그 닫기
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('체크 해제'),
-                                      content: const Text(
-                                          '이미 학생 체크가 되어있습니다. 체크를 해제하시겠습니까?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            // 출석 체크 해제 로직 추가
-                                            Navigator.of(context)
-                                                .pop(); // 다이얼로그 닫기
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                            onLongPress: () {
-                              _navigateToStudentAssignments(
-                                  context, student.id);
-                            },
-                            child: Card(
-                              color: studentNumberList[index] != null ||
-                                      cardStates[index]
-                                  ? const Color(0xFFFE886A)
-                                  : Colors.grey,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10000.0),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(student.studentNumber!),
-                                  Text(student.name),
-                                ],
-                              ),
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Text(
+                            '출석',
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.06,
                             ),
-                          );
-                        },
-                      ),
-                    ],
+                          ),
+                        ),
+                        GridView.builder(
+                          padding: EdgeInsets.fromLTRB(
+                            MediaQuery.of(context).size.width * 0.06,
+                            0,
+                            MediaQuery.of(context).size.width * 0.06,
+                            MediaQuery.of(context).size.height * 0.04,
+                          ),
+                          // padding: EdgeInsets.all(
+                          //     MediaQuery.of(context).size.height * 0.08),
+                          shrinkWrap: true,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: students.length >= 20 ? 8 : 5,
+                            crossAxisSpacing: students.length >= 20
+                                ? MediaQuery.of(context).size.width * 0.018
+                                : 100,
+                            mainAxisSpacing: students.length >= 20 ? 3 : 100,
+                          ),
+                          itemCount: students.length,
+                          itemBuilder: (context, index) {
+                            final student = students[index];
+                            return GestureDetector(
+                              onTap: () {
+                                // Daily가 체크되어있지 않을 경우, Daily를 체크
+                                if (studentNumberList[index] == null &&
+                                    cardStates[index] == false) {
+                                  DailyHistory dailyHistory = DailyHistory(
+                                    classroomId: widget.classroomId,
+                                    dailyName: widget.dailyName!,
+                                    order: widget.order,
+                                    studentId: student.id,
+                                    dailyId: student.dailyData!.id,
+                                    studentName: student.name,
+                                    studentNumber:
+                                        int.parse(student.studentNumber!),
+                                  );
+                                  dailyHistoryProvider.checkDaily(
+                                    widget.classroomId,
+                                    student.studentNumber!,
+                                    widget.dailyName!,
+                                    student.name,
+                                    widget.order,
+                                    widget.now,
+                                    dailyHistory,
+                                  );
+                                  cardStates[index] = !cardStates[index];
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('체크 해제'),
+                                        content: const Text(
+                                            '이미 학생 체크가 되어있습니다. 체크를 해제하시겠습니까?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () {
+                                              // 출석 체크 해제 로직 추가
+                                              Navigator.of(context)
+                                                  .pop(); // 다이얼로그 닫기
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              onLongPress: () {
+                                _navigateToStudentAssignments(
+                                    context, student.id);
+                              },
+                              child: Card(
+                                color: studentNumberList[index] != null ||
+                                        cardStates[index]
+                                    ? const Color(0xFFFE886A)
+                                    : Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10000.0),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(student.studentNumber!),
+                                    Text(student.name),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   );
                 }
               },

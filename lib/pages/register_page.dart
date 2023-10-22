@@ -244,7 +244,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                       child: Image.asset(
                                           'assets/images/password_icon.png'),
                                       onTap: () {
-                                        setState(() {});
+                                        setState(() {
+                                          isObscure2 = !isObscure2;
+                                        });
                                       },
                                     ),
                                   ],
@@ -289,35 +291,35 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                             ),
                           ),
-                          SizedBox(
-                            height: screenSize.height * 0.05,
-                            child: const Row(
-                              children: [
-                                Divider(
-                                  height: 20,
-                                  indent: 20,
-                                  endIndent: 0,
-                                  color: Colors.black,
-                                ),
-                                Text('OTHERS'),
-                                Divider(
-                                  height: 20,
-                                  indent: 20,
-                                  endIndent: 0,
-                                  color: Colors.black,
-                                ),
-                              ],
-                            ),
-                          ),
-                          GestureDetector(
-                            child: Image.asset(
-                              'assets/buttons/google_button.png',
-                              width: screenSize.width * 0.25,
-                            ),
-                            onTap: () {
-                              // 구글 로그인 버튼
-                            },
-                          ),
+                          // SizedBox(
+                          //   height: screenSize.height * 0.05,
+                          //   child: const Row(
+                          //     children: [
+                          //       Divider(
+                          //         height: 20,
+                          //         indent: 20,
+                          //         endIndent: 0,
+                          //         color: Colors.black,
+                          //       ),
+                          //       Text('OTHERS'),
+                          //       Divider(
+                          //         height: 20,
+                          //         indent: 20,
+                          //         endIndent: 0,
+                          //         color: Colors.black,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // GestureDetector(
+                          //   child: Image.asset(
+                          //     'assets/buttons/google_button.png',
+                          //     width: screenSize.width * 0.25,
+                          //   ),
+                          //   onTap: () {
+                          //     // 구글 로그인 버튼
+                          //   },
+                          // ),
 
                           SizedBox(
                             height: screenSize.height * 0.4,
