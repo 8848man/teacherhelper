@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/attitude.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
+import 'package:teacherhelper/datamodels/daily_history.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/services/attitude_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
@@ -28,6 +29,10 @@ class StudentProvider with ChangeNotifier {
 
   List<Student> _studentsWithDaily = [];
   List<Student> get studentsWithDaily => _studentsWithDaily;
+
+  // 테스트 dataSet
+  List<Student> _studentsWithDaily2 = [];
+  List<Student> get studentsWithDaily2 => _studentsWithDaily2;
 
   set students(List<Student> students) {
     _students = students;
@@ -273,6 +278,40 @@ class StudentProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // 테스트
+  Future<void> injectDailyToStudents2(
+      String classroomId, int order, DateTime nowDate) async {
+    _studentsWithDaily2 = [];
+    final studentData = students;
+    final dailyHistoryData = await _dailyService.getDailysByClassroomAndOrder2(
+        classroomId, order, nowDate);
+    // studentsData를 사용하여 원하는 가공 작업 수행
+
+    for (Student student in studentData) {
+      int index = students.indexOf(student);
+      student.dailyHistoryData = DailyHistory(isChecked: false);
+      _studentsWithDaily2.add(student);
+      for (DailyHistory dailyHistory in dailyHistoryData) {
+        if (dailyHistory.studentId == student.id) {
+          // student.dailyHistoryData = dailyHistory;
+          // _studentsWithDaily2.add(student);
+          _studentsWithDaily2[index].dailyHistoryData = dailyHistory;
+        }
+      }
+    }
+
+    // 테스트프린트
+    for (var student in studentsWithDaily2) {
+      print('studentData : ${student.name}');
+      if (student.dailyHistoryData != null) {
+        print('studentData : ${student.dailyHistoryData}');
+      }
+    }
+
+    // 가공한 결과를 필요한 상태로 업데이트
+    notifyListeners();
+  }
+
   // 학생 제거 - 학반 수정 페이지
   void deleteStudentsModify(String classroomId) {
     Iterable<Student> deletedStudents =
@@ -289,5 +328,9 @@ class StudentProvider with ChangeNotifier {
 
   void updateStudents(String classroomId) {
     _studentService.updateStudents(classroomId, students, loadedStudent);
+  }
+
+  void setStudentHistoryChecked(Student student) {
+    student.dailyHistoryData!.isChecked = true;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:teacherhelper/datamodels/daily_history.dart';
+import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/services/daily_history_service.dart';
 
 class DailyHistoryProvider extends ChangeNotifier {
@@ -145,5 +146,14 @@ class DailyHistoryProvider extends ChangeNotifier {
     }
 
     return latestDailies;
+  }
+
+  void unCheckDaily(String classroomId, Student student) {
+    if (student.dailyHistoryData!.id != null) {
+      _dailyHistoryService.unCheckDaily(classroomId, student);
+    }
+
+    student.dailyHistoryData!.isChecked = false;
+    notifyListeners();
   }
 }

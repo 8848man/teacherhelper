@@ -1,5 +1,6 @@
 import 'package:teacherhelper/datamodels/attitude.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
+import 'package:teacherhelper/datamodels/daily_history.dart';
 
 class Student {
   final String? id;
@@ -25,6 +26,7 @@ class Student {
   String? attitudeId;
   Attitude? attitudeData;
   Daily? dailyData;
+  DailyHistory? dailyHistoryData;
 
   Student({
     this.id,
@@ -47,6 +49,7 @@ class Student {
     this.isBad,
     this.attitudeId,
     this.isDeleted,
+    this.dailyHistoryData,
   });
 
   Map<String, dynamic> toJson() {

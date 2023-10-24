@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teacherhelper/datamodels/daily_history.dart';
+import 'package:teacherhelper/datamodels/student.dart';
 
 class DailyHistoryService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -26,6 +27,8 @@ class DailyHistoryService {
 
       // dailyHistory 시간 체크
       dailyHistory.checkDate = DateTime.now();
+
+      dailyHistory.isChecked = true;
 
       // 학생 데일리 히스토리 컬랙션
       CollectionReference dailyHistoryCollectionReform = _classroomsCollection
@@ -69,8 +72,7 @@ class DailyHistoryService {
       Timestamp todayTimestamp = Timestamp.fromDate(today);
 
       // Firestore 쿼리
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('classrooms')
+      final querySnapshot = await _classroomsCollection
           .doc(classroomId)
           .collection('DailyHistory')
           .where('order', isEqualTo: order)
@@ -88,6 +90,19 @@ class DailyHistoryService {
     } catch (e) {
       print(e);
       return null; // 에러 발생 시 null 반환 또는 예외 처리
+    }
+  }
+
+  // 데일리 체크 해제
+  void unCheckDaily(String classroomId, Student student) async {
+    try {
+      await _classroomsCollection
+          .doc(classroomId)
+          .collection('Students')
+          .doc(student.id)
+          .collection('daily');
+    } catch (e) {
+      print(e);
     }
   }
 }

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_create_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_attitude_page/classroom_attitude_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_create_page.dart';
-import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 import 'package:teacherhelper/pages/classes/classroom_history_page/classroom_history_page_by_daily.dart';
 import 'package:teacherhelper/pages/classes/classroom_history_page/classroom_history_page_detail.dart';
@@ -142,8 +141,8 @@ class _NavBarState extends State<NavBar> {
             ExpansionTile(
               title: Row(
                 children: [
-                  Text('생활'),
-                  Spacer(),
+                  const Text('생활'),
+                  const Spacer(),
                   GestureDetector(
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.06,
@@ -169,7 +168,7 @@ class _NavBarState extends State<NavBar> {
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
                 GestureDetector(
-                  child: ListTile(
+                  child: const ListTile(
                     title: Text('출석'),
                   ),
                   onTap: () {
@@ -184,7 +183,7 @@ class _NavBarState extends State<NavBar> {
                     );
                   },
                 ),
-                ListTile(title: Text('가정통신문')),
+                const ListTile(title: Text('가정통신문')),
               ],
             ),
             const Divider(),

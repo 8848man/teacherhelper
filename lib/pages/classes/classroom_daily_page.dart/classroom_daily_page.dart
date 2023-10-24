@@ -46,6 +46,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
           widget.classroomId, widget.order);
       await studentProvider.injectDailyToStudents(
           widget.classroomId, widget.order!);
+      await studentProvider.injectDailyToStudents2(
+          widget.classroomId, widget.order!, DateTime.now());
       // await dailyProvider.fetchDailysByClassroomId(
       //     widget.classroomId, widget.order);
       // 데이터가 로드되면 cardStates를 초기화하고 상태를 갱신
@@ -75,7 +77,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
               builder: (context, studentProvider, dailyHistoryProvider, child) {
                 // 학생 저장 변수
                 final List<Student> students =
-                    studentProvider.studentsWithDaily;
+                    studentProvider.studentsWithDaily2;
 
                 // 출석체크등 완료여부를 알기 위한 토큰.
                 final List<DailyHistory> latestDailyHistorys =
@@ -127,7 +129,7 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                       children: [
                         Center(
                           child: Text(
-                            '출석',
+                            widget.dailyName!,
                             style: TextStyle(
                               fontSize:
                                   MediaQuery.of(context).size.width * 0.06,
@@ -179,6 +181,10 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                     widget.now,
                                     dailyHistory,
                                   );
+                                  if (student.dailyHistoryData != null) {
+                                    studentProvider
+                                        .setStudentHistoryChecked(student);
+                                  }
                                   cardStates[index] = !cardStates[index];
                                 } else {
                                   showDialog(
@@ -191,6 +197,10 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                         actions: <Widget>[
                                           TextButton(
                                             onPressed: () {
+                                              dailyHistoryProvider.unCheckDaily(
+                                                widget.classroomId,
+                                                student,
+                                              );
                                               // 출석 체크 해제 로직 추가
                                               Navigator.of(context)
                                                   .pop(); // 다이얼로그 닫기
@@ -208,10 +218,18 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                     context, student.id);
                               },
                               child: Card(
-                                color: studentNumberList[index] != null ||
-                                        cardStates[index]
-                                    ? const Color(0xFFFE886A)
-                                    : Colors.grey,
+                                // color: studentNumberList[index] != null ||
+                                //         cardStates[index]
+                                //     ? const Color(0xFFFE886A)
+                                //     : Colors.grey,
+                                color: student.dailyHistoryData == null
+                                    ? Colors.grey
+                                    : student.dailyHistoryData!.isChecked ==
+                                            true
+                                        ? const Color(0xFFFE886A)
+                                        : Colors.grey,
+                                // ? const Color(0xFFFE886A)
+                                // : Colors.grey,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10000.0),
                                 ),

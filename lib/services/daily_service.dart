@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
+import 'package:teacherhelper/datamodels/daily_history.dart';
 
 class DailyService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -176,6 +177,34 @@ class DailyService {
         id: id,
         studentId: data?['studentId'],
         classroomId: data?['classroomId'],
+      );
+    }).toList();
+  }
+
+  // 테스트
+  Future<List<DailyHistory>> getDailysByClassroomAndOrder2(
+      String classroomId, order, DateTime nowDate) async {
+    DateTime thisDate = DateTime(nowDate.year, nowDate.month, nowDate.day);
+    QuerySnapshot querySnapshot = await _firestore
+        .collectionGroup('dailyHistory')
+        .where('classroomId', isEqualTo: classroomId)
+        .where('order', isEqualTo: order)
+        .where('checkDate', isGreaterThan: thisDate)
+        .where('checkDate', isLessThan: thisDate.add(const Duration(days: 1)))
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>?;
+      final id = doc.id; // 문서의 ID를 가져옵니다.
+
+      return DailyHistory(
+        dailyName: data?['dailyName'],
+        order: data?['order'],
+        id: id,
+        studentId: data?['studentId'],
+        classroomId: data?['classroomId'],
+        isChecked: data?['isChecked'],
+        checkDate: data?['checkDate'].toDate(),
       );
     }).toList();
   }

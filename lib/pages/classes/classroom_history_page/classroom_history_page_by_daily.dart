@@ -182,10 +182,10 @@ class _ClassroomHistoryPageByDailyState
                 context: dialogContext!, // 변수 사용
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text("마지막일을 설정해주세요"),
+                    title: const Text("마지막일을 설정해주세요"),
                     actions: <Widget>[
                       TextButton(
-                        child: Text("확인"),
+                        child: const Text("확인"),
                         onPressed: () {
                           Navigator.of(context).pop();
                           _selectEndDate(startDate);
@@ -220,7 +220,7 @@ class _ClassroomHistoryPageByDailyState
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               height: MediaQuery.of(context).size.height * 0.06,
                               child: ElevatedButton(
                                 onPressed: () async {
@@ -228,10 +228,10 @@ class _ClassroomHistoryPageByDailyState
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text("시작일을 설정해주세요"),
+                                        title: const Text("시작일을 설정해주세요"),
                                         actions: <Widget>[
                                           TextButton(
-                                            child: Text("확인"),
+                                            child: const Text("확인"),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                               // 시작일을 선택하는 DatePicker를 여기서 호출
