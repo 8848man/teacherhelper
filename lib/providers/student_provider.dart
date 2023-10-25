@@ -300,14 +300,6 @@ class StudentProvider with ChangeNotifier {
       }
     }
 
-    // 테스트프린트
-    for (var student in studentsWithDaily2) {
-      print('studentData : ${student.name}');
-      if (student.dailyHistoryData != null) {
-        print('studentData : ${student.dailyHistoryData}');
-      }
-    }
-
     // 가공한 결과를 필요한 상태로 업데이트
     notifyListeners();
   }

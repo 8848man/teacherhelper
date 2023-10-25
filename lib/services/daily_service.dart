@@ -205,6 +205,7 @@ class DailyService {
         classroomId: data?['classroomId'],
         isChecked: data?['isChecked'],
         checkDate: data?['checkDate'].toDate(),
+        dailyId: data?['dailyId'],
       );
     }).toList();
   }

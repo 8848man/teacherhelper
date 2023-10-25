@@ -94,15 +94,21 @@ class DailyHistoryService {
   }
 
   // 데일리 체크 해제
-  void unCheckDaily(String classroomId, Student student) async {
+  Future<void> unCheckDaily(String classroomId, Student student) async {
     try {
       await _classroomsCollection
           .doc(classroomId)
           .collection('Students')
           .doc(student.id)
-          .collection('daily');
+          .collection('daily')
+          .doc(student.dailyHistoryData!.dailyId)
+          .collection('dailyHistory')
+          .doc(student.dailyHistoryData!.id)
+          .delete();
+      print('unCheckDaily Complete');
     } catch (e) {
       print(e);
+      throw Exception(e);
     }
   }
 }

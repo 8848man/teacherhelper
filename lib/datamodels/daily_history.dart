@@ -14,7 +14,7 @@ class DailyHistory {
 
   @override
   String toString() {
-    return 'DailyHistory: {dailyName: $dailyName, checkDate: $checkDate, isChecked: $isChecked, order: $order, studentName: $studentName, studentNumber: $studentNumber, id: $id}';
+    return 'DailyHistory: {dailyName: $dailyName, checkDate: $checkDate, isChecked: $isChecked, order: $order, studentName: $studentName, studentNumber: $studentNumber, id: $id, dailyId: $dailyId}';
   }
 
   DailyHistory({

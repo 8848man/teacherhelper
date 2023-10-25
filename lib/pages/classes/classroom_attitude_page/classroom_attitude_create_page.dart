@@ -20,12 +20,17 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
 
   String? _selectedIsGood;
 
+  bool isLoading = false; // 초기에 로딩 상태를 false로 설정
+
   @override
   void initState() {
     super.initState();
   }
 
   void _registerAttitude() async {
+    setState(() {
+      isLoading = true; // 버튼을 클릭하면 로딩 상태로 변경
+    });
     final name = _nameController.text;
 
     // 이름 체크
@@ -49,8 +54,17 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
 
       // await _assignmentProvider.addAssignment(assignment, widget.classroomId!);
 
-      await _attitudeProvider.addAttitude(attitude, widget.classroomId!);
-
+      try {
+        await _attitudeProvider.addAttitude(attitude, widget.classroomId!);
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        print(e);
+        setState(() {
+          isLoading = false;
+        });
+      }
       Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context)
@@ -184,8 +198,10 @@ class _AttitudeCreatePageState extends State<AttitudeCreatePage> {
             const SizedBox(height: 16.0),
 
             ElevatedButton(
-              onPressed: _registerAttitude,
-              child: const Text('과제 등록'),
+              onPressed: isLoading ? null : _registerAttitude, // 버튼 비활성화 상태 설정
+              child: isLoading
+                  ? const CircularProgressIndicator() // 로딩 중에는 Circular Progress Indicator 표시
+                  : const Text('과제 등록'), // 로딩 중이 아니면 버튼 텍스트 표시
             ),
           ],
         ),

@@ -148,7 +148,7 @@ class DailyHistoryProvider extends ChangeNotifier {
     return latestDailies;
   }
 
-  void unCheckDaily(String classroomId, Student student) {
+  Future<void> unCheckDaily(String classroomId, Student student) async {
     if (student.dailyHistoryData!.id != null) {
       _dailyHistoryService.unCheckDaily(classroomId, student);
     }

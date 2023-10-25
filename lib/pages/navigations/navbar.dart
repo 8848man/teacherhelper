@@ -72,72 +72,6 @@ class _NavBarState extends State<NavBar> {
               },
             ),
             const Divider(),
-            // Column(
-            //   children: [
-            //     ListTile(
-            //       leading: GestureDetector(
-            //         child: Image.asset(
-            //           'assets/buttons/to-Down.png',
-            //           width: MediaQuery.of(context).size.width * 0.03,
-            //         ),
-            //         onTap: () {
-            //           setState(
-            //             () {
-            //               widget._isExpanded[0] =
-            //                   !widget._isExpanded[0]; // 버튼 그룹 확장/축소 토글
-            //             },
-            //           );
-            //         },
-            //       ),
-            //       title: Column(
-            //         children: [
-            //           Row(
-            //             children: [
-            //               const Text('생활'),
-            //               const Spacer(),
-            //               GestureDetector(
-            //                 child: Image.asset(
-            //                   'assets/buttons/class_plus_button.jpg',
-            //                   width: MediaQuery.of(context).size.width * 0.01,
-            //                 ),
-            //                 onTap: () {
-            //                   Navigator.push(
-            //                     context,
-            //                     MaterialPageRoute(
-            //                       builder: (context) => DailyCreatePage(
-            //                         classroomId: widget.classroomId,
-            //                       ),
-            //                     ),
-            //                   );
-            //                 },
-            //               ),
-            //             ],
-            //           ),
-            //         ],
-            //       ),
-            //       onTap: () {
-            //         Navigator.of(context).pop(); // Drawer 닫기
-            //         Navigator.of(context).pushReplacement(
-            //           MaterialPageRoute(
-            //             builder: (context) => ClassroomDailyPageTapBar(
-            //               classroomId: widget.classroomId,
-            //             ),
-            //           ),
-            //         );
-            //       },
-            //     ),
-            //     AnimatedContainer(
-            //       duration: const Duration(milliseconds: 300),
-            //       height: widget._isExpanded[0] ? null : 0, // 버튼 그룹 높이 조절
-            //       child: const Column(
-            //         mainAxisSize: MainAxisSize.min,
-            //         children: [
-            //           Text('테스트중'),
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
             ExpansionTile(
               title: Row(
                 children: [
@@ -183,56 +117,62 @@ class _NavBarState extends State<NavBar> {
                     );
                   },
                 ),
-                const ListTile(title: Text('가정통신문')),
+                GestureDetector(
+                  child: const ListTile(
+                    title: Text('가정통신문'),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClassroomDailyPageTapBar(
+                          classroomId: widget.classroomId,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
             const Divider(),
-            Column(
-              children: [
-                ListTile(
-                  leading: GestureDetector(
-                    child: Image.asset(
-                      'assets/buttons/to-Down.png',
-                      width: MediaQuery.of(context).size.width * 0.03,
+            ExpansionTile(
+              title: Row(
+                children: [
+                  const Text('태도'),
+                  const Spacer(),
+                  GestureDetector(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      width: MediaQuery.of(context).size.width * 0.01,
+                      child: Image.asset(
+                        'assets/buttons/class_plus_button.jpg',
+                        width: MediaQuery.of(context).size.width * 0.01,
+                      ),
                     ),
                     onTap: () {
-                      setState(
-                        () {
-                          widget._isExpanded[1] =
-                              !widget._isExpanded[1]; // 버튼 그룹 확장/축소 토글
-                        },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AttitudeCreatePage(
+                            classroomId: widget.classroomId,
+                          ),
+                        ),
                       );
                     },
                   ),
-                  title: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text('태도'),
-                          const Spacer(),
-                          GestureDetector(
-                            child: Image.asset(
-                              'assets/buttons/class_plus_button.jpg',
-                              width: MediaQuery.of(context).size.width * 0.01,
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AttitudeCreatePage(
-                                    classroomId: widget.classroomId,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                ],
+              ),
+              controlAffinity: ListTileControlAffinity.leading,
+              children: <Widget>[
+                GestureDetector(
+                  child: const ListTile(
+                    title: Text('떠듦'),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop(); // Drawer 닫기
-                    Navigator.of(context).pushReplacement(
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
                       MaterialPageRoute(
                         builder: (context) => ClassroomAttitudePageTapBar(
                           classroomId: widget.classroomId,
@@ -241,15 +181,21 @@ class _NavBarState extends State<NavBar> {
                     );
                   },
                 ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: widget._isExpanded[1] ? null : 0, // 버튼 그룹 높이 조절
-                  child: const Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('테스트중'),
-                    ],
+                GestureDetector(
+                  child: const ListTile(
+                    title: Text('태도 불량'),
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClassroomAttitudePageTapBar(
+                          classroomId: widget.classroomId,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

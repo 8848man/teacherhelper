@@ -60,8 +60,7 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -87,12 +86,27 @@ class _ClassroomAttitudePageState extends State<ClassroomAttitudePage> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Center(
+                        child: Text(
+                          widget.attitudeName,
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.06,
+                          ),
+                        ),
+                      ),
                       GridView.builder(
-                        padding: const EdgeInsets.all(100.0),
+                        padding: EdgeInsets.fromLTRB(
+                          MediaQuery.of(context).size.width * 0.06,
+                          0,
+                          MediaQuery.of(context).size.width * 0.06,
+                          MediaQuery.of(context).size.height * 0.04,
+                        ),
                         shrinkWrap: true,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: students.length >= 20 ? 10 : 5,
-                          crossAxisSpacing: students.length >= 20 ? 3 : 100,
+                          crossAxisCount: students.length >= 20 ? 8 : 5,
+                          crossAxisSpacing: students.length >= 20
+                              ? MediaQuery.of(context).size.width * 0.018
+                              : 100,
                           mainAxisSpacing: students.length >= 20 ? 3 : 100,
                         ),
                         itemCount: students.length,

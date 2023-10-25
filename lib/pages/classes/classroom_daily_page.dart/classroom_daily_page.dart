@@ -160,8 +160,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                             return GestureDetector(
                               onTap: () {
                                 // Daily가 체크되어있지 않을 경우, Daily를 체크
-                                if (studentNumberList[index] == null &&
-                                    cardStates[index] == false) {
+                                if (student.dailyHistoryData!.isChecked ==
+                                    false) {
                                   DailyHistory dailyHistory = DailyHistory(
                                     classroomId: widget.classroomId,
                                     dailyName: widget.dailyName!,

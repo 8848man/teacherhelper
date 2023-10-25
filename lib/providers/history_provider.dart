@@ -45,7 +45,10 @@ class HistoryProvider with ChangeNotifier {
         _dailys.where((daily) => daily.checkDate != null).toList();
     nonNullCheckDateDailys.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
 
-    List<dynamic> combinedList = [..._attitudes, ...nonNullCheckDateDailys];
+    List<dynamic> combinedList = [
+      ...nonNullCheckDateAttitudes,
+      ...nonNullCheckDateDailys
+    ];
     combinedList.sort((a, b) => a.checkDate!.compareTo(b.checkDate!));
 
     processHistoryData(classroomId, combinedList);
