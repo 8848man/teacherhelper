@@ -47,6 +47,7 @@ dependencies:
   open_file: ^3.3.2
   path_provider: ^2.1.1
   syncfusion_flutter_xlsio: ^21.2.3
+  tabbed_view: ^1.18.0
   
 
 dev_dependencies:
@@ -77,6 +78,10 @@ flutter:
     - assets/
     - assets/images/
     - assets/buttons/
+    - assets/icons_for_sidebar/
+    - assets/icons_for_bottomnav/classes/
+    - assets/icons_for_bottomnav/dailys/
+    - assets/icons_for_contents_box/
 
     
   # An image asset can refer to one or more resolution-specific "variants", see

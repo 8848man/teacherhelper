@@ -25,6 +25,16 @@ class DailyProvider with ChangeNotifier {
   // 일상 추가하기
   Future<void> addDaily(Daily daily, String classroomId) async {
     try {
+      final querySnapshot = await _dailyService.getLastOrder(classroomId);
+
+      Map<String, dynamic> dataMap =
+          querySnapshot.docs.first.data() as Map<String, dynamic>;
+      int lastOrder = dataMap['order'] + 1;
+
+      daily.order = lastOrder;
+
+      daily.classroomId = classroomId;
+
       await _dailyService.addDailyToStudents(daily, classroomId);
       await _dailyService.addDailyToClassroom(daily, classroomId);
       notifyListeners();

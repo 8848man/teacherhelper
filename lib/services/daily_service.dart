@@ -29,7 +29,12 @@ class DailyService {
           .collection('Students')
           .get();
 
+      print('test001');
       for (var studentDoc in studentsSnapshot.docs) {
+        print('test002');
+        daily.studentId = studentDoc.id;
+        print(daily.studentId);
+        print('test003');
         await studentDoc.reference.collection('daily').add(daily.toJson());
       }
     } catch (e) {
@@ -107,24 +112,24 @@ class DailyService {
       //         .limit(1)
       //         .get();
 
-      // 마지막 order를 저장하기 위한 변수
-      final querySnapshot = await _classroomsCollection
-          .doc(classroomId)
-          .collection('Daily')
-          .orderBy('order', descending: true)
-          .limit(1)
-          .get();
+      // // 마지막 order를 저장하기 위한 변수
+      // final querySnapshot = await _classroomsCollection
+      //     .doc(classroomId)
+      //     .collection('Daily')
+      //     .orderBy('order', descending: true)
+      //     .limit(1)
+      //     .get();
 
-      int lastOrder = querySnapshot.docs.first.data()['order'] + 1;
+      // int lastOrder = querySnapshot.docs.first.data()['order'] + 1;
 
-      daily.order = lastOrder;
+      // daily.order = lastOrder;
 
-      _classroomsCollection
+      await _classroomsCollection
           .doc(classroomId)
           .collection('Daily')
           .add(daily.toJson());
     } catch (e) {
-      throw Exception('Failed to add assignment to classroom: $e');
+      throw Exception('Failed to add daily to classroom: $e');
     }
   }
 
@@ -208,5 +213,19 @@ class DailyService {
         dailyId: data?['dailyId'],
       );
     }).toList();
+  }
+
+  getLastOrder(String classroomId) async {
+    try {
+      final querySnapshot = await _classroomsCollection
+          .doc(classroomId)
+          .collection('Daily')
+          .orderBy('order', descending: true)
+          .limit(1)
+          .get();
+      return querySnapshot;
+    } catch (e) {
+      throw Exception('Error fetching Attitude data: $e');
+    }
   }
 }
