@@ -5,7 +5,6 @@ import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
 // import 'package:teacherhelper/pages/classes/create_classroom_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_create_page.dart';
-import 'package:teacherhelper/pages/classes/classroom_modify_page.dart';
 import 'package:teacherhelper/pages/layout/layout_classroom.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/services/auth_service.dart';
@@ -324,7 +323,7 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                ClassroomLayout(),
+                                                const ClassroomLayout(),
                                           ),
                                         );
                                         // ClassroomLayout

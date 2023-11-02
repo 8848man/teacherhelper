@@ -6,6 +6,7 @@ import 'package:teacherhelper/pages/cover_page.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
 import 'package:teacherhelper/providers/auth_provider.dart';
+import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_history_provider.dart';
 import 'package:teacherhelper/providers/history_provider.dart';
@@ -30,6 +31,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AssignmentProvider()),
         ChangeNotifierProvider(create: (context) => DailyProvider()),
         ChangeNotifierProvider(create: (context) => DailyHistoryProvider()),
+        ChangeNotifierProvider(create: (context) => ClassesProvider()),
         ChangeNotifierProvider(create: (context) => AttitudeProvider()),
         ChangeNotifierProvider(create: (context) => StudentAttitudeProvider()),
         ChangeNotifierProvider(create: (context) => AuthProvider()),

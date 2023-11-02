@@ -228,4 +228,13 @@ class DailyService {
       throw Exception('Error fetching Attitude data: $e');
     }
   }
+
+  // layout 컨텐츠에서 사용할 Daily CRUD
+  Future<void> createDailyLayout() async {}
+  Future<List<Daily>> getDailyLayout() async {
+    return List<Daily>.empty();
+  }
+
+  Future<void> updateDailyLayout() async {}
+  Future<void> deleteDailyLayout() async {}
 }

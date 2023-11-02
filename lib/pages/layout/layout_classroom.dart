@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
+import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
+import 'package:teacherhelper/providers/daily_provider.dart';
 import 'package:teacherhelper/providers/layout_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
@@ -28,17 +30,19 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
   @override
   Widget build(BuildContext context) {
-    // 컨텐츠 탭 생성
-    generateTabs();
-    String currentDate = DateFormat('yyyy년 MM월 dd일')
-        .format(DateTime.now()); // 현재 날짜를 원하는 형식으로 포맷
-    // 메인컨텐츠 탭
-    TabbedView tabbedView = TabbedView(controller: _controller);
-    Widget w = TabbedViewTheme(
-        data: TabbedViewThemeData.classic()..menu.ellipsisOverflowText = true,
-        child: tabbedView);
-    return Consumer2<ClassroomProvider, StudentProvider>(
-        builder: (context, classroomProvider, studentProvider, child) {
+    return Consumer5<ClassroomProvider, StudentProvider, DailyProvider,
+            ClassesProvider, LayoutProvider>(
+        builder: (context, classroomProvider, studentProvider, dailyProvider,
+            classesProvider, layoutProvider, child) {
+      // 컨텐츠 탭 생성
+      generateTabs();
+      String currentDate = DateFormat('yyyy년 MM월 dd일')
+          .format(DateTime.now()); // 현재 날짜를 원하는 형식으로 포맷
+      // 메인컨텐츠 탭
+      TabbedView tabbedView = TabbedView(controller: _controller);
+      Widget w = TabbedViewTheme(
+          data: TabbedViewThemeData.classic()..menu.ellipsisOverflowText = true,
+          child: tabbedView);
       return SafeArea(
         child: Scaffold(
           appBar: _myAppBar(currentDate, classroomProvider.classroom),
@@ -76,17 +80,18 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             width: MediaQuery.sizeOf(context).width * 0.03,
             child: Image.asset('assets/checkmark_circle.png'),
           ),
-          Container(
+          SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.3,
-            child: Text(
+            child: const Text(
               'SchoolCheck',
               style: TextStyle(color: Colors.orange),
             ),
           ),
-          Container(
+          SizedBox(
             width: MediaQuery.sizeOf(context).width * 1 / 3,
             child: Center(
-              child: Text(currentDate, style: TextStyle(color: Colors.orange)),
+              child: Text(currentDate,
+                  style: const TextStyle(color: Colors.orange)),
             ),
           ),
           Expanded(
@@ -94,14 +99,14 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
               child: Align(
                 alignment: Alignment.centerRight, // Text를 오른쪽에 정렬
                 child: Text(classroom.name,
-                    style: TextStyle(color: Colors.orange)),
+                    style: const TextStyle(color: Colors.orange)),
               ),
             ),
           )
         ],
       ),
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(2.0),
+        preferredSize: const Size.fromHeight(2.0),
         child: Container(
           color: Colors.orange,
           height: 2.0,
@@ -116,7 +121,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     return Consumer<LayoutProvider>(builder: (context, layoutProvider, child) {
       List<String> sidebarImages = layoutProvider.getSidebarImages();
       return Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           border: Border(
             right: BorderSide(
               color: Color(0xFFC4C4C4), // Border 색상 설정
@@ -130,7 +135,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             // 내 정보
             Container(
               width: 70,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               height: MediaQuery.sizeOf(context).height * 0.1,
               color: Colors.white,
               child: GestureDetector(
@@ -150,7 +155,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             // 전체 메뉴
             Container(
               width: 70,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               height: MediaQuery.sizeOf(context).height * 0.1,
               color: Colors.white,
               child: GestureDetector(
@@ -173,7 +178,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                   // 일상
                   Container(
                     width: 70,
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     height: MediaQuery.sizeOf(context).height * 0.1,
                     color: Colors.white,
                     child: GestureDetector(
@@ -186,7 +191,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                   // 수업
                   Container(
                     width: 70,
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     height: MediaQuery.sizeOf(context).height * 0.1,
                     color: Colors.white,
                     child: GestureDetector(
@@ -199,7 +204,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                   // 통계
                   Container(
                     width: 70,
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     height: MediaQuery.sizeOf(context).height * 0.1,
                     color: Colors.white,
                     child: GestureDetector(
@@ -222,7 +227,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             // 앱 옵션 버튼
             Container(
               width: 70,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               height: MediaQuery.sizeOf(context).height * 0.1,
               color: Colors.white,
               child: GestureDetector(
@@ -235,7 +240,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             // 로그아웃 버튼
             Container(
               width: 70,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               height: MediaQuery.sizeOf(context).height * 0.1,
               color: Colors.white,
               child: Image.asset(sidebarImages[6]),
@@ -250,23 +255,24 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   Widget _myContentsBox(Widget w) {
     return Expanded(
       child: Container(
+        padding: const EdgeInsets.all(16),
         child: w,
-        padding: EdgeInsets.all(16),
       ),
     );
   }
 
   // 바텀 네비게이션
   Widget _myBottomNavigation() {
-    return Consumer<LayoutProvider>(builder: (context, layoutProvider, child) {
+    return Consumer3<LayoutProvider, DailyProvider, ClassesProvider>(builder:
+        (context, layoutProvider, dailyProvider, classesProvider, child) {
       List<String> navbarImages = layoutProvider.getNavbarImages();
       return Container(
         width: double.infinity,
         height: 90,
-        color: Color(0xFF344054),
+        color: const Color(0xFF344054),
         child: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 90,
             ),
             Expanded(
@@ -317,8 +323,17 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             Expanded(
               flex: 1,
               child: Center(
-                child: Image.asset(
-                    'assets/icons_for_bottomnav/dailys/plus_button.png'),
+                child: GestureDetector(
+                  child: Image.asset(
+                      'assets/icons_for_bottomnav/dailys/plus_button.png'),
+                  onTap: () {
+                    if (layoutProvider.selectedIndices[2] == 1) {
+                      print('데일리 추가');
+                    } else if (layoutProvider.selectedIndices[3] == 1) {
+                      print('수업 추가');
+                    }
+                  },
+                ),
               ),
             ),
             Expanded(
@@ -362,12 +377,12 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 90),
+                    const SizedBox(width: 90),
                   ],
                 ),
               ),
             ),
-            Container(
+            SizedBox(
               width: 90,
               child: Image.asset(navbarImages[6]),
             ),
@@ -422,7 +437,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                   padding: const EdgeInsets.all(16.0),
                   child: Stack(
                     children: [
-                      Align(
+                      const Align(
                         alignment: Alignment.center,
                         child: Text(
                           '활동지 완료',

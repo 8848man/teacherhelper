@@ -67,4 +67,23 @@ class DailyProvider with ChangeNotifier {
       throw Exception('Failed to add assignment to student: $e');
     }
   }
+
+  // layout 컨텐츠에서 사용할 Daily CRUD
+  Future<void> createDailyLayout() async {
+    print('dailyProvider complete');
+    _dailyService.createDailyLayout();
+  }
+
+  Future<List<Daily>> getDailyLayout() async {
+    _dailyService.getDailyLayout();
+    return List<Daily>.empty();
+  }
+
+  Future<void> updateDailyLayout() async {
+    _dailyService.updateDailyLayout();
+  }
+
+  Future<void> deleteDailyLayout() async {
+    _dailyService.deleteDailyLayout();
+  }
 }
