@@ -8,6 +8,7 @@ class Daily {
   int? order;
   String? classroomId;
   String? studentId;
+  String? kind;
 
   Daily({
     this.id,
@@ -19,6 +20,7 @@ class Daily {
     this.order,
     this.classroomId,
     this.studentId,
+    this.kind,
   });
 
   Map<String, dynamic> toJson() {
@@ -32,6 +34,7 @@ class Daily {
       'order': order,
       'classroomId': classroomId,
       'studentId': studentId,
+      'kind': kind,
     };
   }
 
@@ -46,6 +49,7 @@ class Daily {
       order: json['order'],
       classroomId: json['classroomId'],
       studentId: json['studentId'],
+      kind: json['kind'],
     );
   }
 }

@@ -325,4 +325,23 @@ class StudentProvider with ChangeNotifier {
   void setStudentHistoryChecked(Student student) {
     student.dailyHistoryData!.isChecked = true;
   }
+
+  Future<void> getStudentsByClassroomId(String classroomId) async {
+    _students = [];
+    _students = await _studentService.getStudentsByClassroom(classroomId);
+    notifyListeners();
+  }
+
+  // Students Controll for Layout
+  // classroomId로 학생 가져오기
+  Future<void> getStudentsByClassroomLayout(String classroomId) async {
+    try {
+      // 학생 초기화 후 가져오기
+      _students = [];
+      _students = await _studentService.fetchStudentsByClassroom(classroomId);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to fetch students: $e');
+    }
+  }
 }

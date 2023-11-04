@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
+import 'package:teacherhelper/datamodels/classes.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
+import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
 import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
@@ -22,10 +24,25 @@ class ClassroomLayout extends StatefulWidget {
 class _ClassroomLayoutState extends State<ClassroomLayout> {
   late TabbedViewController _controller;
   ImageUrls imageUrls = ImageUrls();
+  // 날짜 통제 변수
+  DateTime thisDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    final classroomProvider =
+        Provider.of<ClassroomProvider>(context, listen: false);
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
+    final dailyProvider = Provider.of<DailyProvider>(context, listen: false);
+    final classesProvider =
+        Provider.of<ClassesProvider>(context, listen: false);
+
+    final classroomId = classroomProvider.classroom.uid!;
+    // 데이터들 가져오기
+    dailyProvider.getDailyLayout(classroomId, thisDate);
+    // classesProvider.getClassesLayout(classroomId, thisDate);
+    studentProvider.getStudentsByClassroomLayout(classroomId);
   }
 
   @override
@@ -34,10 +51,22 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             ClassesProvider, LayoutProvider>(
         builder: (context, classroomProvider, studentProvider, dailyProvider,
             classesProvider, layoutProvider, child) {
+      List<dynamic> combinedList = [
+        dailyProvider.dailys,
+        classesProvider.classes
+      ];
+      String nowDatas = '';
+      if (layoutProvider.selectedIndices[2] == 1) {
+        nowDatas = 'Daily';
+      } else if (layoutProvider.selectedIndices[3] == 1) {
+        nowDatas = 'Classes';
+      } else {
+        nowDatas = 'unDefined';
+      }
       // 컨텐츠 탭 생성
-      generateTabs();
-      String currentDate = DateFormat('yyyy년 MM월 dd일')
-          .format(DateTime.now()); // 현재 날짜를 원하는 형식으로 포맷
+      generateTabs(nowDatas, combinedList);
+      String currentDate =
+          DateFormat('yyyy년 MM월 dd일').format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
       // 메인컨텐츠 탭
       TabbedView tabbedView = TabbedView(controller: _controller);
       Widget w = TabbedViewTheme(
@@ -263,8 +292,10 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
   // 바텀 네비게이션
   Widget _myBottomNavigation() {
-    return Consumer3<LayoutProvider, DailyProvider, ClassesProvider>(builder:
-        (context, layoutProvider, dailyProvider, classesProvider, child) {
+    return Consumer4<LayoutProvider, DailyProvider, ClassesProvider,
+            ClassroomProvider>(
+        builder: (context, layoutProvider, dailyProvider, classesProvider,
+            classroomProvider, child) {
       List<String> navbarImages = layoutProvider.getNavbarImages();
       return Container(
         width: double.infinity,
@@ -328,7 +359,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                       'assets/icons_for_bottomnav/dailys/plus_button.png'),
                   onTap: () {
                     if (layoutProvider.selectedIndices[2] == 1) {
-                      print('데일리 추가');
+                      layoutProvider.createDailyLayout(
+                          thisDate, classroomProvider.classroom.uid!);
                     } else if (layoutProvider.selectedIndices[3] == 1) {
                       print('수업 추가');
                     }
@@ -393,7 +425,23 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   }
 
   // 컨텐츠 탭 생성 함수(컨텐츠 박스 위젯을 위해 필요함)
-  void generateTabs() {
+  void generateTabs(String nowDatas, List<dynamic> combinedList) {
+    final datas = [];
+    // 일상인지 수업인지에 따른 데이터 분기
+    if (nowDatas == 'Dailys') {
+      for (var item in combinedList) {
+        if (item is Daily) {
+          datas.add(item);
+        }
+      }
+    } else if (nowDatas == 'Classes') {
+      for (var item in combinedList) {
+        if (item is Classes) {
+          datas.add(item);
+        }
+      }
+    }
+
     // 변수 초기화
     List<TabData> tabs = [];
 
@@ -407,70 +455,84 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
         ),
       );
     }
+    // for (var data in datas) {
+    //   tabs.add(
+    //     TabData(
+    //       text: 'Tab number is ${data.}',
+    //       leading: (context, status) => const Icon(Icons.star, size: 16),
+    //       content: contentsWidget(),
+    //     ),
+    //   );
+    // }
 
     _controller = TabbedViewController(tabs);
   }
 
   // 컨텐츠박스 내부 위젯
   Widget contentsWidget() {
-    return Column(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Container(color: Colors.amber),
-        ),
-        Expanded(
-          flex: 4,
-          child: Container(
-            color: Colors.orange,
-            child: Align(
-              alignment: Alignment.center,
-              child: Container(
-                width: 500,
-                height: 90,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0), // 둥근 테두리 설정
-                  border: Border.all(
-                      width: 1.0, color: Colors.black), // 테두리 선 스타일 설정
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Stack(
-                    children: [
-                      const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          '활동지 완료',
-                          style: TextStyle(fontSize: 30),
+    return Consumer4<LayoutProvider, DailyProvider, ClassesProvider,
+            StudentProvider>(
+        builder: (context, layoutProvider, dailyProvider, classesProvider,
+            studentProvider, child) {
+      return Column(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Container(color: Colors.amber),
+          ),
+          Expanded(
+            flex: 4,
+            child: Container(
+              color: Colors.orange,
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 500,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0), // 둥근 테두리 설정
+                    border: Border.all(
+                        width: 1.0, color: Colors.black), // 테두리 선 스타일 설정
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Stack(
+                      children: [
+                        const Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            '활동지 완료',
+                            style: TextStyle(fontSize: 30),
+                          ),
                         ),
-                      ),
-                      //체크박스 넣을 공간
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                            height: 50, width: 50, color: Colors.blue),
-                      ),
-                    ],
+                        //체크박스 넣을 공간
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                              height: 50, width: 50, color: Colors.blue),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-        // 학생들 정렬
-        Expanded(
-          flex: 15,
-          child: Container(
-            color: Colors.red,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 15, 70, 15),
-              child: Container(
-                color: Colors.blue,
+          // 학생들 정렬
+          Expanded(
+            flex: 15,
+            child: Container(
+              color: Colors.red,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(70, 15, 70, 15),
+                child: Container(
+                  color: Colors.blue,
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }

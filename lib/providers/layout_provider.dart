@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
 import 'package:teacherhelper/providers/classes_provider.dart';
+import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
 
 // 레이아웃 프로바이더
@@ -10,13 +11,36 @@ class LayoutProvider with ChangeNotifier {
   DailyProvider dailyProvider = DailyProvider();
   ClassesProvider classesProvider = ClassesProvider();
 
+  ClassroomProvider classroomProvider = ClassroomProvider();
   // 사이드바 인덱스
   final List<int> _selectedIndices = [0, 0, 0, 0, 0, 0, 0];
   List<int> get selectedIndices => _selectedIndices;
+  // 사이드바 인덱스 명칭
+  List<String> indexNames = ['내 정보', '전체 목록', '생활', '수업', '통계', '옵션', '로그아웃'];
+
+  // 반 정보 가져오기
+  // Classroom get classroom => classroomProvider.classroom;
 
   // 바텀 네비 인덱스
   final List<int> _selectedBottomNavIndices = [0, 0, 0, 0, 0, 0, 0];
   List<int> get selectedBottomNavIndices => _selectedBottomNavIndices;
+  // 바텀 네비 인덱스 명칭
+  List<String> dailyBottomIndexNames = [
+    '등교시간',
+    '통신문',
+    '숙제',
+    '준비물',
+    '우유',
+    '1인1역'
+  ];
+  List<String> classesBottomIndexNames = [
+    '평가',
+    '태도',
+    '완료',
+    '숙제',
+    '준비물',
+    '자리비움'
+  ];
 
   ImageUrls imageUrls = ImageUrls();
   // 사이드바 버튼 인덱스 선택 함수
@@ -84,12 +108,26 @@ class LayoutProvider with ChangeNotifier {
   }
 
   // Daily CRUD
-  Future<void> createDailyLayout() async {
-    dailyProvider.createDailyLayout();
+  Future<void> createDailyLayout(DateTime thisDate, String classroomId) async {
+    Daily daily = Daily(
+      name: '',
+      isComplete: false,
+      classroomId: classroomId,
+      startDate: thisDate,
+    );
+    // 데일리 종류 설정
+    for (var index in selectedBottomNavIndices) {
+      if (selectedBottomNavIndices[index] == 1) {
+        daily.name = dailyBottomIndexNames[index];
+        daily.kind = dailyBottomIndexNames[index];
+      }
+    }
+    dailyProvider.createDailyLayout(daily, thisDate);
   }
 
-  Future<List<Daily>> getDailyLayout() async {
-    return dailyProvider.getDailyLayout();
+  Future<List<Daily>> getDailyLayout(
+      String classroomId, DateTime thisDate) async {
+    return dailyProvider.getDailyLayout(classroomId, thisDate);
   }
 
   Future<void> updateDailyLayout() async {

@@ -144,6 +144,7 @@ class _ClassroomAttitudePageTapBarState
                     ),
                   ),
                   body: TabBarView(
+                    physics: const NeverScrollableScrollPhysics(),
                     children: List.generate(orderList.length, (index) {
                       return ClassroomAttitudePage(
                         classroomId: widget.classroomId,

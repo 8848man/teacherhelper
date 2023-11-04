@@ -150,6 +150,7 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                       ),
                     ),
                     body: TabBarView(
+                      physics: const NeverScrollableScrollPhysics(),
                       children: List.generate(orderList.length, (index) {
                         return ClassroomDailyPage(
                           classroomId: widget.classroomId,

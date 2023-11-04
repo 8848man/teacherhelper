@@ -29,12 +29,9 @@ class DailyService {
           .collection('Students')
           .get();
 
-      print('test001');
       for (var studentDoc in studentsSnapshot.docs) {
-        print('test002');
         daily.studentId = studentDoc.id;
         print(daily.studentId);
-        print('test003');
         await studentDoc.reference.collection('daily').add(daily.toJson());
       }
     } catch (e) {
@@ -230,9 +227,43 @@ class DailyService {
   }
 
   // layout 컨텐츠에서 사용할 Daily CRUD
-  Future<void> createDailyLayout() async {}
-  Future<List<Daily>> getDailyLayout() async {
-    return List<Daily>.empty();
+  Future<void> createDailyLayout(
+    Daily daily,
+    DateTime thisDate,
+  ) async {
+    try {
+      _classroomsCollection
+          .doc(daily.classroomId)
+          .collection('NewDaily')
+          .add(daily.toJson());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<List<Daily>> getDailyLayout(
+      String classroomId, DateTime thisDate) async {
+    try {
+      // 당일 시작시간과 마지막시간 변수 할당
+      DateTime thisDateStart =
+          DateTime(thisDate.year, thisDate.month, thisDate.day, 0, 0, 0, 0);
+      DateTime thisDateEnd = DateTime(
+          thisDate.year, thisDate.month, thisDate.day, 23, 59, 59, 999);
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('classrooms')
+          .doc(classroomId)
+          .collection('NewDaily')
+          .where('startDate', isGreaterThanOrEqualTo: thisDateStart)
+          .where('startDate', isLessThan: thisDateEnd)
+          .get();
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return Daily.fromJson(data, doc.id);
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch assignments by classroom: $e');
+    }
   }
 
   Future<void> updateDailyLayout() async {}

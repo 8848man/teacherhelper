@@ -69,14 +69,23 @@ class DailyProvider with ChangeNotifier {
   }
 
   // layout 컨텐츠에서 사용할 Daily CRUD
-  Future<void> createDailyLayout() async {
+  Future<void> createDailyLayout(Daily daily, DateTime thisDate) async {
     print('dailyProvider complete');
-    _dailyService.createDailyLayout();
+    _dailyService.createDailyLayout(daily, thisDate);
   }
 
-  Future<List<Daily>> getDailyLayout() async {
-    _dailyService.getDailyLayout();
-    return List<Daily>.empty();
+  Future<List<Daily>> getDailyLayout(
+      String classroomId, DateTime thisDate) async {
+    try {
+      _dailys = [];
+      _dailys = await _dailyService.getDailyLayout(classroomId, thisDate);
+      print('getDailyLayout');
+      print(_dailys);
+      notifyListeners();
+      return dailys;
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   Future<void> updateDailyLayout() async {
