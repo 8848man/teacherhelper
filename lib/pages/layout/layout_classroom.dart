@@ -27,6 +27,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   // 날짜 통제 변수
   DateTime thisDate = DateTime.now();
 
+  bool dataFetched = false;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +43,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     final classroomId = classroomProvider.classroom.uid!;
     // 데이터들 가져오기
     dailyProvider.getDailyLayout(classroomId, thisDate);
+
     // classesProvider.getClassesLayout(classroomId, thisDate);
     studentProvider.getStudentsByClassroomLayout(classroomId);
   }
@@ -51,20 +54,11 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             ClassesProvider, LayoutProvider>(
         builder: (context, classroomProvider, studentProvider, dailyProvider,
             classesProvider, layoutProvider, child) {
-      List<dynamic> combinedList = [
-        dailyProvider.dailys,
-        classesProvider.classes
-      ];
-      String nowDatas = '';
-      if (layoutProvider.selectedIndices[2] == 1) {
-        nowDatas = 'Daily';
-      } else if (layoutProvider.selectedIndices[3] == 1) {
-        nowDatas = 'Classes';
-      } else {
-        nowDatas = 'unDefined';
-      }
+      List<int> selectedIndex = layoutProvider.selectedIndices;
+      List<Daily> dailys = dailyProvider.dailys;
+      List<Classes> classes = classesProvider.classes;
       // 컨텐츠 탭 생성
-      generateTabs(nowDatas, combinedList);
+      generateTabs(dailys, classes, selectedIndex);
       String currentDate =
           DateFormat('yyyy년 MM월 dd일').format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
       // 메인컨텐츠 탭
@@ -425,55 +419,70 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   }
 
   // 컨텐츠 탭 생성 함수(컨텐츠 박스 위젯을 위해 필요함)
-  void generateTabs(String nowDatas, List<dynamic> combinedList) {
-    final datas = [];
-    // 일상인지 수업인지에 따른 데이터 분기
-    if (nowDatas == 'Dailys') {
-      for (var item in combinedList) {
-        if (item is Daily) {
-          datas.add(item);
-        }
-      }
-    } else if (nowDatas == 'Classes') {
-      for (var item in combinedList) {
-        if (item is Classes) {
-          datas.add(item);
-        }
-      }
-    }
+  void generateTabs(
+    List<Daily> dailys,
+    List<Classes> classes,
+    List<int> selectedIndex,
+  ) {
+    StudentProvider studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
 
     // 변수 초기화
     List<TabData> tabs = [];
+    List<String> tabNames = [];
+    int tabCounts = 0;
+    List<Map<String, dynamic>> tabDatas = [];
+
+    // 사이드탭이 일상일 경우의 탭 설정
+    if (selectedIndex[2] == 1) {
+      for (Daily daily in dailys) {
+        tabDatas.add({'data': daily, 'name': daily.name, 'kind': 'daily'});
+      }
+    }
+    // 사이드탭이 수업일 경우의 탭 설정
+    else if (selectedIndex[3] == 1) {
+      for (Classes classes in classes) {
+        tabDatas
+            .add({'data': classes, 'name': classes.name, 'kind': 'classes'});
+      }
+    } else {}
+    // 데이터가 없을 경우 처리
+    if (tabNames.isEmpty) {
+      tabDatas.add({'data': null, 'name': '추가하기', 'kind': 'noData'});
+    }
 
     // 컨텐츠 탭 생성
-    for (int i = 1; i <= 3; i++) {
+    for (int i = 0; i < tabDatas.length; i++) {
       tabs.add(
         TabData(
-          text: 'Tab number is $i',
+          text: tabDatas[i]['name'],
           leading: (context, status) => const Icon(Icons.star, size: 16),
-          content: contentsWidget(),
+          content: tabDatas.isEmpty
+              ? contentsWidget('')
+              : contentsWidget(tabDatas[i]),
         ),
       );
     }
-    // for (var data in datas) {
-    //   tabs.add(
-    //     TabData(
-    //       text: 'Tab number is ${data.}',
-    //       leading: (context, status) => const Icon(Icons.star, size: 16),
-    //       content: contentsWidget(),
-    //     ),
-    //   );
-    // }
-
     _controller = TabbedViewController(tabs);
   }
 
   // 컨텐츠박스 내부 위젯
-  Widget contentsWidget() {
-    return Consumer4<LayoutProvider, DailyProvider, ClassesProvider,
-            StudentProvider>(
+  Widget contentsWidget(var data) {
+    return Consumer5<LayoutProvider, DailyProvider, ClassesProvider,
+            StudentProvider, ClassroomProvider>(
         builder: (context, layoutProvider, dailyProvider, classesProvider,
-            studentProvider, child) {
+            studentProvider, classroomProvider, child) {
+      print('1nowFetched is $dataFetched');
+      // List<Daily> dailys = dailyProvider.dailys;
+      // List<Classes> classes = classesProvider.classes;
+      if (data['kind'] == 'daily' && dataFetched == false) {
+        dailyProvider.getDailyLayout(
+            classroomProvider.classroom.uid!, thisDate);
+        print('2nowFetched is $dataFetched');
+        dataFetched = true;
+        print('3nowFetched is $dataFetched');
+      }
+      // dataFetched = false;
       return Column(
         children: [
           Expanded(

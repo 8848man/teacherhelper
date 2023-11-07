@@ -79,8 +79,6 @@ class DailyProvider with ChangeNotifier {
     try {
       _dailys = [];
       _dailys = await _dailyService.getDailyLayout(classroomId, thisDate);
-      print('getDailyLayout');
-      print(_dailys);
       notifyListeners();
       return dailys;
     } catch (e) {

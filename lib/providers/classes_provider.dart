@@ -7,6 +7,6 @@ class ClassesProvider with ChangeNotifier {
 
   ClassesProvider() : _classesService = ClassesService();
 
-  List<Classes> _classes = [];
+  final List<Classes> _classes = [];
   List<Classes> get classes => _classes;
 }

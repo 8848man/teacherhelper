@@ -63,6 +63,8 @@ class _ClassroomDailyPageTapBarState extends State<ClassroomDailyPageTapBar> {
                     'Error: ${snapshot.error}'); // 데이터 로딩 중 에러 발생 시 표시할 위젯
               } else if (snapshot.hasData) {
                 List<Daily> dailyList = snapshot.data!;
+                print('testDaily');
+                print(_dailyProvider.dailys);
                 // 오늘 날짜를 위한 변수 할당
                 DateTime now = DateTime.now();
                 int year = now.year;
