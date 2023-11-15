@@ -49,12 +49,12 @@ class ImageUrls {
   ];
 
   List<String> selectedClassesBottomNav = [
-    'assets/icons_for_bottomnav/classes/attendance_selected.png',
-    'assets/icons_for_bottomnav/classes/notify_selected.png',
+    'assets/icons_for_bottomnav/classes/evaluation_selected.png',
+    'assets/icons_for_bottomnav/classes/attitude_selected.png',
+    'assets/icons_for_bottomnav/classes/complete_selected.png',
     'assets/icons_for_bottomnav/classes/task_selected.png',
     'assets/icons_for_bottomnav/classes/supplies_selected.png',
-    'assets/icons_for_bottomnav/classes/milk_selected.png',
-    'assets/icons_for_bottomnav/classes/onebyone_role_selected.png',
+    'assets/icons_for_bottomnav/classes/away_selected.png',
     'assets/icons_for_bottomnav/dailys/pepicons-pencil_dots-y.png',
   ];
 }

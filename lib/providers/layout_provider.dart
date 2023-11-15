@@ -13,10 +13,17 @@ class LayoutProvider with ChangeNotifier {
 
   ClassroomProvider classroomProvider = ClassroomProvider();
   // 사이드바 인덱스
-  final List<int> _selectedIndices = [0, 0, 0, 0, 0, 0, 0];
+  final List<int> _selectedIndices = [0, 0, 1, 0, 0, 0, 0];
   List<int> get selectedIndices => _selectedIndices;
   // 사이드바 인덱스 명칭
   List<String> indexNames = ['내 정보', '전체 목록', '생활', '수업', '통계', '옵션', '로그아웃'];
+
+  // daily / classes 등의 데이터 선택 리스트
+  List<int> _selectedData = [];
+  List<int> get selectedData => _selectedData;
+  // daily / classes 등의 실제 데이터 저장 리스트
+  List<Map<String, dynamic>> _storedData = [];
+  List<Map<String, dynamic>> get storedData => _storedData;
 
   // 반 정보 가져오기
   // Classroom get classroom => classroomProvider.classroom;
@@ -24,6 +31,7 @@ class LayoutProvider with ChangeNotifier {
   // 바텀 네비 인덱스
   final List<int> _selectedBottomNavIndices = [0, 0, 0, 0, 0, 0, 0];
   List<int> get selectedBottomNavIndices => _selectedBottomNavIndices;
+
   // 바텀 네비 인덱스 명칭
   List<String> dailyBottomIndexNames = [
     '등교시간',

@@ -6,6 +6,7 @@ import 'package:teacherhelper/datamodels/classes.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
+import 'package:teacherhelper/pages/layout_contents/layout_contents.dart';
 import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
@@ -27,6 +28,12 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   // 날짜 통제 변수
   DateTime thisDate = DateTime.now();
 
+  late List<int> selectedIndex;
+  late List<Daily> dailys;
+  late List<Classes> classes;
+
+  late Classroom classroom;
+
   bool dataFetched = false;
 
   @override
@@ -39,8 +46,9 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     final dailyProvider = Provider.of<DailyProvider>(context, listen: false);
     final classesProvider =
         Provider.of<ClassesProvider>(context, listen: false);
-
     final classroomId = classroomProvider.classroom.uid!;
+
+    classroom = classroomProvider.classroom;
     // 데이터들 가져오기
     dailyProvider.getDailyLayout(classroomId, thisDate);
 
@@ -48,27 +56,36 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     studentProvider.getStudentsByClassroomLayout(classroomId);
   }
 
+  // List<Daily> getDailys(String classroomId, DailyProvider dailyProvider) async {
+  //   List<Daily> dailyList =
+  //       await dailyProvider.getDailyLayout(classroomId, thisDate);
+  //   return dailyList;
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer5<ClassroomProvider, StudentProvider, DailyProvider,
-            ClassesProvider, LayoutProvider>(
-        builder: (context, classroomProvider, studentProvider, dailyProvider,
-            classesProvider, layoutProvider, child) {
-      List<int> selectedIndex = layoutProvider.selectedIndices;
-      List<Daily> dailys = dailyProvider.dailys;
-      List<Classes> classes = classesProvider.classes;
-      // 컨텐츠 탭 생성
-      generateTabs(dailys, classes, selectedIndex);
-      String currentDate =
-          DateFormat('yyyy년 MM월 dd일').format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
-      // 메인컨텐츠 탭
-      TabbedView tabbedView = TabbedView(controller: _controller);
-      Widget w = TabbedViewTheme(
-          data: TabbedViewThemeData.classic()..menu.ellipsisOverflowText = true,
-          child: tabbedView);
-      return SafeArea(
+    final dailyProvider = Provider.of<DailyProvider>(context, listen: true);
+    final layoutProvider = Provider.of<LayoutProvider>(context, listen: false);
+    final classesProvider =
+        Provider.of<ClassesProvider>(context, listen: false);
+
+    selectedIndex = layoutProvider.selectedIndices;
+    dailys = dailyProvider.dailys;
+    classes = classesProvider.classes;
+    print('build Dailys is $dailys');
+    generateTabs(dailys, classes, selectedIndex);
+
+    String currentDate =
+        DateFormat('yyyy년 MM월 dd일').format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
+    TabbedView tabbedView = TabbedView(controller: _controller);
+    Widget w = TabbedViewTheme(
+        data: TabbedViewThemeData.classic()..menu.ellipsisOverflowText = true,
+        child: tabbedView);
+    return Scaffold(
+      body: // 컨텐츠 탭 생성
+          SafeArea(
         child: Scaffold(
-          appBar: _myAppBar(currentDate, classroomProvider.classroom),
+          appBar: _myAppBar(currentDate, classroom),
           body: Row(
             children: [
               // 사이드바 컨테이너
@@ -89,8 +106,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   // 앱바
@@ -207,6 +224,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                     child: GestureDetector(
                       child: Image.asset(sidebarImages[2]),
                       onTap: () {
+                        // generateTabs(dailys, classes, selectedIndex);
                         layoutProvider.setSelected(2);
                       },
                     ),
@@ -220,6 +238,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                     child: GestureDetector(
                       child: Image.asset(sidebarImages[3]),
                       onTap: () {
+                        // generateTabs(dailys, classes, selectedIndex);
                         layoutProvider.setSelected(3);
                       },
                     ),
@@ -451,6 +470,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
       tabDatas.add({'data': null, 'name': '추가하기', 'kind': 'noData'});
     }
 
+    print('dailys is $dailys');
+    print('tabDatas is $tabDatas');
     // 컨텐츠 탭 생성
     for (int i = 0; i < tabDatas.length; i++) {
       tabs.add(
@@ -461,6 +482,11 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
               ? contentsWidget('')
               : contentsWidget(tabDatas[i]),
         ),
+        // TabData(
+        //   text: tabDatas[i]['name'],
+        //   leading: (context, status) => const Icon(Icons.star, size: 16),
+        //   content: LayoutContents(data: tabDatas[i], thisDate: thisDate),
+        // ),
       );
     }
     _controller = TabbedViewController(tabs);
@@ -476,8 +502,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
       // List<Daily> dailys = dailyProvider.dailys;
       // List<Classes> classes = classesProvider.classes;
       if (data['kind'] == 'daily' && dataFetched == false) {
-        dailyProvider.getDailyLayout(
-            classroomProvider.classroom.uid!, thisDate);
+        // dailyProvider.getDailyLayout(
+        //     classroomProvider.classroom.uid!, thisDate);
         print('2nowFetched is $dataFetched');
         dataFetched = true;
         print('3nowFetched is $dataFetched');
