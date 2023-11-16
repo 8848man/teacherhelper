@@ -218,18 +218,12 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
                                     context, student.id);
                               },
                               child: Card(
-                                // color: studentNumberList[index] != null ||
-                                //         cardStates[index]
-                                //     ? const Color(0xFFFE886A)
-                                //     : Colors.grey,
                                 color: student.dailyHistoryData == null
                                     ? Colors.grey
                                     : student.dailyHistoryData!.isChecked ==
                                             true
                                         ? const Color(0xFFFE886A)
                                         : Colors.grey,
-                                // ? const Color(0xFFFE886A)
-                                // : Colors.grey,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10000.0),
                                 ),

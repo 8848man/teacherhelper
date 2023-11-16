@@ -6,7 +6,7 @@ import 'package:teacherhelper/datamodels/classes.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
-import 'package:teacherhelper/pages/layout_contents/layout_contents.dart';
+import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
@@ -65,26 +65,32 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   @override
   Widget build(BuildContext context) {
     final dailyProvider = Provider.of<DailyProvider>(context, listen: true);
-    final layoutProvider = Provider.of<LayoutProvider>(context, listen: false);
-    final classesProvider =
-        Provider.of<ClassesProvider>(context, listen: false);
+    final layoutProvider = Provider.of<LayoutProvider>(context, listen: true);
+    final classesProvider = Provider.of<ClassesProvider>(context, listen: true);
+    final studentProvider = Provider.of<StudentProvider>(context, listen: true);
 
     selectedIndex = layoutProvider.selectedIndices;
     dailys = dailyProvider.dailys;
     classes = classesProvider.classes;
     print('build Dailys is $dailys');
-    generateTabs(dailys, classes, selectedIndex);
+    generateTabs(dailys, classes, selectedIndex, studentProvider);
 
     String currentDate =
         DateFormat('yyyy년 MM월 dd일').format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
-    TabbedView tabbedView = TabbedView(controller: _controller);
+    TabbedView tabbedView = TabbedView(
+      controller: _controller,
+      // onTabSelection: _onTabSelection
+    );
     Widget w = TabbedViewTheme(
-        data: TabbedViewThemeData.classic()..menu.ellipsisOverflowText = true,
-        child: tabbedView);
+      data: TabbedViewThemeData.classic()..menu.ellipsisOverflowText = true,
+      child: tabbedView,
+    );
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: // 컨텐츠 탭 생성
           SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: _myAppBar(currentDate, classroom),
           body: Row(
             children: [
@@ -442,10 +448,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     List<Daily> dailys,
     List<Classes> classes,
     List<int> selectedIndex,
+    StudentProvider studentProvider,
   ) {
-    StudentProvider studentProvider =
-        Provider.of<StudentProvider>(context, listen: false);
-
     // 변수 초기화
     List<TabData> tabs = [];
     List<String> tabNames = [];
@@ -454,33 +458,29 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
     // 사이드탭이 일상일 경우의 탭 설정
     if (selectedIndex[2] == 1) {
-      for (Daily daily in dailys) {
+      for (var daily in dailys) {
         tabDatas.add({'data': daily, 'name': daily.name, 'kind': 'daily'});
       }
     }
     // 사이드탭이 수업일 경우의 탭 설정
     else if (selectedIndex[3] == 1) {
-      for (Classes classes in classes) {
+      for (var classes in classes) {
         tabDatas
             .add({'data': classes, 'name': classes.name, 'kind': 'classes'});
       }
-    } else {}
+    }
     // 데이터가 없을 경우 처리
-    if (tabNames.isEmpty) {
+    if (tabDatas.isEmpty) {
       tabDatas.add({'data': null, 'name': '추가하기', 'kind': 'noData'});
     }
 
-    print('dailys is $dailys');
-    print('tabDatas is $tabDatas');
     // 컨텐츠 탭 생성
     for (int i = 0; i < tabDatas.length; i++) {
       tabs.add(
         TabData(
           text: tabDatas[i]['name'],
           leading: (context, status) => const Icon(Icons.star, size: 16),
-          content: tabDatas.isEmpty
-              ? contentsWidget('')
-              : contentsWidget(tabDatas[i]),
+          content: contentsWidget(tabDatas[i]),
         ),
         // TabData(
         //   text: tabDatas[i]['name'],
@@ -493,21 +493,23 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   }
 
   // 컨텐츠박스 내부 위젯
-  Widget contentsWidget(var data) {
+  Widget contentsWidget(Map<String, dynamic> data) {
+    TextEditingController _textController =
+        TextEditingController(text: data['name']);
     return Consumer5<LayoutProvider, DailyProvider, ClassesProvider,
             StudentProvider, ClassroomProvider>(
         builder: (context, layoutProvider, dailyProvider, classesProvider,
             studentProvider, classroomProvider, child) {
-      print('1nowFetched is $dataFetched');
       // List<Daily> dailys = dailyProvider.dailys;
       // List<Classes> classes = classesProvider.classes;
-      if (data['kind'] == 'daily' && dataFetched == false) {
+      if (data['kind'] == 'daily') {
         // dailyProvider.getDailyLayout(
         //     classroomProvider.classroom.uid!, thisDate);
-        print('2nowFetched is $dataFetched');
-        dataFetched = true;
-        print('3nowFetched is $dataFetched');
+        print('data is $data');
       }
+      final List<Student> students = studentProvider.students;
+
+      print('students is $students');
       // dataFetched = false;
       return Column(
         children: [
@@ -533,18 +535,26 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                     padding: const EdgeInsets.all(16.0),
                     child: Stack(
                       children: [
-                        const Align(
+                        Align(
                           alignment: Alignment.center,
-                          child: Text(
-                            '활동지 완료',
-                            style: TextStyle(fontSize: 30),
+                          child: TextField(
+                            textAlign: TextAlign.center,
+                            controller: _textController,
+                            style: const TextStyle(fontSize: 30),
+                            decoration: InputDecoration(
+                              hintText: '수정하고싶은 이름 입력',
+                              border: InputBorder.none, // 밑줄 제거
+                              focusedBorder:
+                                  InputBorder.none, // 포커스된 상태에서 밑줄 제거
+                            ),
                           ),
                         ),
                         //체크박스 넣을 공간
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Container(
-                              height: 50, width: 50, color: Colors.blue),
+                          // child: Container(
+                          //     height: 50, width: 50, color: Colors.blue),
+                          child: Image.asset('assets/buttons/check_button.png'),
                         ),
                       ],
                     ),
@@ -562,6 +572,42 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                 padding: const EdgeInsets.fromLTRB(70, 15, 70, 15),
                 child: Container(
                   color: Colors.blue,
+                  child: SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height * 0.7,
+                        maxHeight: MediaQuery.of(context).size.height * 0.7,
+                      ),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: students.length >= 20 ? 10 : 5,
+                          crossAxisSpacing: students.length >= 20
+                              ? MediaQuery.of(context).size.width * 0.018
+                              : 100,
+                          mainAxisSpacing: students.length >= 20
+                              ? MediaQuery.of(context).size.height * 0.03
+                              : 100,
+                        ),
+                        itemCount: students.length,
+                        itemBuilder: (context, index) {
+                          final student = students[index];
+                          return Card(
+                            color: Colors.grey,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10000.0),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(student.studentNumber!),
+                                Text(student.name),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

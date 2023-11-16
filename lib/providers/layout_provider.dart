@@ -19,17 +19,17 @@ class LayoutProvider with ChangeNotifier {
   List<String> indexNames = ['내 정보', '전체 목록', '생활', '수업', '통계', '옵션', '로그아웃'];
 
   // daily / classes 등의 데이터 선택 리스트
-  List<int> _selectedData = [];
+  final List<int> _selectedData = [];
   List<int> get selectedData => _selectedData;
   // daily / classes 등의 실제 데이터 저장 리스트
-  List<Map<String, dynamic>> _storedData = [];
+  final List<Map<String, dynamic>> _storedData = [];
   List<Map<String, dynamic>> get storedData => _storedData;
 
   // 반 정보 가져오기
   // Classroom get classroom => classroomProvider.classroom;
 
   // 바텀 네비 인덱스
-  final List<int> _selectedBottomNavIndices = [0, 0, 0, 0, 0, 0, 0];
+  final List<int> _selectedBottomNavIndices = [1, 0, 0, 0, 0, 0, 0];
   List<int> get selectedBottomNavIndices => _selectedBottomNavIndices;
 
   // 바텀 네비 인덱스 명칭
@@ -124,13 +124,15 @@ class LayoutProvider with ChangeNotifier {
       startDate: thisDate,
     );
     // 데일리 종류 설정
-    for (var index in selectedBottomNavIndices) {
+    for (int index = 0; index < selectedBottomNavIndices.length; index++) {
       if (selectedBottomNavIndices[index] == 1) {
         daily.name = dailyBottomIndexNames[index];
         daily.kind = dailyBottomIndexNames[index];
       }
     }
     dailyProvider.createDailyLayout(daily, thisDate);
+    getDailyLayout(classroomId, thisDate);
+    notifyListeners();
   }
 
   Future<List<Daily>> getDailyLayout(
