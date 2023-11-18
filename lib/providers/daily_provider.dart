@@ -70,7 +70,6 @@ class DailyProvider with ChangeNotifier {
 
   // layout 컨텐츠에서 사용할 Daily CRUD
   Future<void> createDailyLayout(Daily daily, DateTime thisDate) async {
-    print('dailyProvider complete');
     _dailyService.createDailyLayout(daily, thisDate);
   }
 

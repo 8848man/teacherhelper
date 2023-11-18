@@ -34,11 +34,18 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
   late Classroom classroom;
 
+  bool isLoading = false;
+
   bool dataFetched = false;
 
   @override
   void initState() {
     super.initState();
+    getDatas();
+  }
+
+  void getDatas() async {
+    isLoading = true;
     final classroomProvider =
         Provider.of<ClassroomProvider>(context, listen: false);
     final studentProvider =
@@ -54,8 +61,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
     // classesProvider.getClassesLayout(classroomId, thisDate);
     studentProvider.getStudentsByClassroomLayout(classroomId);
+    isLoading = false;
   }
-
   // List<Daily> getDailys(String classroomId, DailyProvider dailyProvider) async {
   //   List<Daily> dailyList =
   //       await dailyProvider.getDailyLayout(classroomId, thisDate);
@@ -88,30 +95,43 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: // 컨텐츠 탭 생성
+          Stack(
+        children: [
           SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: _myAppBar(currentDate, classroom),
-          body: Row(
-            children: [
-              // 사이드바 컨테이너
-              _myCustomSideBar(),
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: _myAppBar(currentDate, classroom),
+              body: Row(
+                children: [
+                  // 사이드바 컨테이너
+                  _myCustomSideBar(),
 
-              // 우측 메인 박스 및 바텀 네비게이션
-              Expanded(
-                child: Column(
-                  children: [
-                    // 메인 컨텐츠 박스
-                    _myContentsBox(w),
+                  // 우측 메인 박스 및 바텀 네비게이션
+                  Expanded(
+                    child: Column(
+                      children: [
+                        // 메인 컨텐츠 박스
+                        _myContentsBox(w),
 
-                    // 바텀 네비게이션
-                    _myBottomNavigation(),
-                  ],
-                ),
+                        // 바텀 네비게이션
+                        _myBottomNavigation(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Visibility(
+            visible: isLoading,
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -230,7 +250,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                     child: GestureDetector(
                       child: Image.asset(sidebarImages[2]),
                       onTap: () {
-                        // generateTabs(dailys, classes, selectedIndex);
                         layoutProvider.setSelected(2);
                       },
                     ),
@@ -376,11 +395,21 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                 child: GestureDetector(
                   child: Image.asset(
                       'assets/icons_for_bottomnav/dailys/plus_button.png'),
-                  onTap: () {
+                  onTap: () async {
                     if (layoutProvider.selectedIndices[2] == 1) {
-                      layoutProvider.createDailyLayout(
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await layoutProvider.createDailyLayout(
                           thisDate, classroomProvider.classroom.uid!);
+                      setState(() {
+                        isLoading = false;
+                      });
                     } else if (layoutProvider.selectedIndices[3] == 1) {
+                      // setState(() {
+                      //   isLoading = true;
+                      // });
+
                       print('수업 추가');
                     }
                   },
@@ -452,14 +481,20 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   ) {
     // 변수 초기화
     List<TabData> tabs = [];
-    List<String> tabNames = [];
     int tabCounts = 0;
     List<Map<String, dynamic>> tabDatas = [];
+
+    List<Student> students = studentProvider.students;
 
     // 사이드탭이 일상일 경우의 탭 설정
     if (selectedIndex[2] == 1) {
       for (var daily in dailys) {
-        tabDatas.add({'data': daily, 'name': daily.name, 'kind': 'daily'});
+        tabDatas.add({
+          'data': daily,
+          'name': daily.name,
+          'kind': 'daily',
+          'students': students
+        });
       }
     }
     // 사이드탭이 수업일 경우의 탭 설정
@@ -482,11 +517,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
           leading: (context, status) => const Icon(Icons.star, size: 16),
           content: contentsWidget(tabDatas[i]),
         ),
-        // TabData(
-        //   text: tabDatas[i]['name'],
-        //   leading: (context, status) => const Icon(Icons.star, size: 16),
-        //   content: LayoutContents(data: tabDatas[i], thisDate: thisDate),
-        // ),
       );
     }
     _controller = TabbedViewController(tabs);
@@ -494,22 +524,17 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
   // 컨텐츠박스 내부 위젯
   Widget contentsWidget(Map<String, dynamic> data) {
-    TextEditingController _textController =
+    TextEditingController textController =
         TextEditingController(text: data['name']);
     return Consumer5<LayoutProvider, DailyProvider, ClassesProvider,
             StudentProvider, ClassroomProvider>(
         builder: (context, layoutProvider, dailyProvider, classesProvider,
             studentProvider, classroomProvider, child) {
-      // List<Daily> dailys = dailyProvider.dailys;
-      // List<Classes> classes = classesProvider.classes;
       if (data['kind'] == 'daily') {
-        // dailyProvider.getDailyLayout(
-        //     classroomProvider.classroom.uid!, thisDate);
         print('data is $data');
       }
-      final List<Student> students = studentProvider.students;
 
-      print('students is $students');
+      final List<Student> students = data['students'];
       // dataFetched = false;
       return Column(
         children: [
@@ -539,9 +564,9 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                           alignment: Alignment.center,
                           child: TextField(
                             textAlign: TextAlign.center,
-                            controller: _textController,
+                            controller: textController,
                             style: const TextStyle(fontSize: 30),
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: '수정하고싶은 이름 입력',
                               border: InputBorder.none, // 밑줄 제거
                               focusedBorder:

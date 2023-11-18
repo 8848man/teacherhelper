@@ -153,7 +153,7 @@ class _LayoutContentsState extends State<LayoutContents> {
         tabDatas
             .add({'data': classes, 'name': classes.name, 'kind': 'classes'});
       }
-    } else {}
+    }
     // 데이터가 없을 경우 처리
     if (tabNames.isEmpty) {
       tabDatas.add({'data': null, 'name': '추가하기', 'kind': 'noData'});
