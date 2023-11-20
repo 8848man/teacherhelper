@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
+import 'package:teacherhelper/datamodels/student.dart';
+import 'package:teacherhelper/datamodels/student_with_daily.dart';
 import 'package:teacherhelper/services/classroom_service.dart';
 import 'package:teacherhelper/services/daily_service.dart';
 
@@ -11,6 +13,9 @@ class DailyProvider with ChangeNotifier {
 
   List<Daily> _dailys = [];
   List<Daily> get dailys => _dailys;
+
+  List<StudentWithDaily> _studentsWithDaily = [];
+  List<StudentWithDaily> get sudentsWithDaily => _studentsWithDaily;
 
   // 일상 가져오기
   Future<List<Daily>> fetchDailysByClassroomId(String classroomId) async {

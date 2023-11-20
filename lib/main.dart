@@ -12,8 +12,10 @@ import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_history_provider.dart';
 import 'package:teacherhelper/providers/history_provider.dart';
 import 'package:teacherhelper/providers/layout_provider.dart';
+import 'package:teacherhelper/providers/loading_provider.dart';
 import 'package:teacherhelper/providers/student_attitude_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
+import 'package:teacherhelper/widgets/loading_widget.dart';
 
 import './services/auth_service.dart';
 import 'providers/daily_provider.dart';
@@ -40,6 +42,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => LayoutProvider()),
         ChangeNotifierProvider(
             create: (context) => ClassroomContentsWidgetProvider()),
+        ChangeNotifierProvider(create: (context) => LoadingProvider()),
       ],
       child: const MyApp(),
     ),
@@ -51,7 +54,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      builder: (context, child) {
+        return Stack(children: [
+          child!,
+          MyLoadingWidget(),
+        ]);
+      },
       debugShowCheckedModeBanner: false,
       home: CoverPage(),
     );
