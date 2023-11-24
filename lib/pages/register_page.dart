@@ -7,7 +7,6 @@ import 'package:teacherhelper/formatter/password_inpot.dart';
 import 'package:teacherhelper/formatter/phone_number_input.dart';
 import 'package:teacherhelper/pages/main_page.dart';
 import 'package:teacherhelper/providers/auth_provider.dart';
-import 'package:teacherhelper/providers/loading_provider.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {

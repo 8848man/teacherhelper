@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teacherhelper/datamodels/assignment.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
 
 class ClassroomService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _classroomCollection =
       FirebaseFirestore.instance.collection('classrooms');
-
   Future<QuerySnapshot> read(String uid) async {
     return _classroomCollection.where('uid', isEqualTo: uid).get();
   }
@@ -16,6 +16,7 @@ class ClassroomService {
     final documentRef = _firestore.collection('classrooms').doc();
     classroom.id = documentRef.id;
 
+    print(classroom.toJson());
     try {
       await documentRef.set(classroom.toJson());
       print('Document ID: ${documentRef.id}');
@@ -40,7 +41,6 @@ class ClassroomService {
           id: data['id'],
           uid: doc.id,
           name: data['name'],
-          grade: data['grade'],
           teacherUid: data['teacherUid'],
           isDeleted: data['isDeleted'],
         );
@@ -128,4 +128,41 @@ class ClassroomService {
       return false;
     }
   }
+
+  /// 11/22 data 구조 변경 후 코드
+  /// 반 등록
+  Future<void> createNewClassroom(
+    Classroom classroom,
+    List<NewStudent> students,
+  ) async {
+    try {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      // Add classroom to 'classrooms' collection
+      DocumentReference classroomRef = _classroomCollection.doc();
+      batch.set(classroomRef, classroom.toJson());
+
+      // Add students to 'students' subcollection of the created classroom
+      CollectionReference studentsCollection =
+          classroomRef.collection('students');
+      for (NewStudent student in students) {
+        student.classroomId = classroomRef.id;
+        batch.set(studentsCollection.doc(), student.toJson());
+      }
+
+      // Commit the batch
+      await batch.commit();
+
+      // Additional logic if needed...
+    } catch (e) {
+      print('Error creating classroom: $e');
+      // Handle error
+    }
+  }
+
+  // Future<List<Classroom>> getNewClassroom(String teacherUid) async {}
+
+  Future<void> updateNewClassroom() async {}
+
+  Future<void> deleteNewClassroom() async {}
 }

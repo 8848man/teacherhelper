@@ -44,8 +44,8 @@ class _ClassroomDailyPageState extends State<ClassroomDailyPage> {
       await studentProvider.fetchStudentsByClassroom(widget.classroomId);
       await dailyHistoryProvider.fetchDailysByClassroomIdAndDailyOrder(
           widget.classroomId, widget.order);
-      await studentProvider.injectDailyToStudents(
-          widget.classroomId, widget.order!);
+      // await studentProvider.injectDailyToStudents(
+      //     widget.classroomId, widget.order!);
       await studentProvider.injectDailyToStudents2(
           widget.classroomId, widget.order!, DateTime.now());
       // await dailyProvider.fetchDailysByClassroomId(

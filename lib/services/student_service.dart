@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
@@ -374,8 +375,6 @@ class StudentService {
         );
 
         if (matchingStudent == Student(name: '', gender: '')) {
-          print('test006');
-          print(loadedStudent);
           _classroomCollection
               .doc(classroomId)
               .collection('students')
@@ -400,4 +399,35 @@ class StudentService {
       );
     }
   }
+
+  // 11/22 Data 구조 변경 후 코드들
+
+  Future<void> createNewStudent(NewStudent newStudent) async {}
+
+  Future<List<NewStudent>> getNewStudentsByClassroomId(
+      String classroomId) async {
+    try {
+      // Get the collection reference
+      CollectionReference studentsCollection =
+          _classroomCollection.doc(classroomId).collection('students');
+
+      // Get the documents in the collection
+      QuerySnapshot snapshot = await studentsCollection.get();
+
+      // Parse the documents into a list of NewStudents
+      List<NewStudent> newStudents = snapshot.docs
+          .map((doc) => NewStudent.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      return newStudents;
+    } catch (e) {
+      print('Error getting new students: $e');
+      // Handle error
+      return [];
+    }
+  }
+
+  Future<void> updateNewStuden() async {}
+
+  Future<void> deleteNewStuden() async {}
 }

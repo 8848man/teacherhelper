@@ -305,7 +305,7 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                         //   },
                                         // );
                                         classroomProvider
-                                            .setClassroomId(classroom);
+                                            .setClassroom(classroom);
                                         // 반 수정 페이지
                                         // Navigator.push(
                                         //   context,
@@ -333,7 +333,7 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                 ),
                               ),
                               onTap: () {
-                                classroomProvider.setClassroomId(classroom);
+                                classroomProvider.setClassroom(classroom);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

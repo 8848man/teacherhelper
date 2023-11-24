@@ -1,6 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
+import 'package:teacherhelper/datamodels/lesson.dart';
+import 'package:teacherhelper/datamodels/new_daily.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
+import 'package:teacherhelper/datamodels/structured_classroom_data.dart';
+import 'package:teacherhelper/datamodels/structured_history_data.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/services/assignment_service.dart';
@@ -34,13 +39,32 @@ class ClassroomProvider with ChangeNotifier {
   List<Classroom> get classrooms => _classrooms;
 
   Classroom _classroom = Classroom(name: '', teacherUid: '');
-
   Classroom get classroom => _classroom;
 
+  StructuredClassroomData _classroomData = StructuredClassroomData();
+  StructuredClassroomData get classroomData => _classroomData;
+
   // 반 Id 세팅
-  void setClassroomId(Classroom classroom) {
+  void setClassroom(Classroom classroom) {
     _classroom = classroom;
     notifyListeners();
+  }
+
+  void setClassroomData(Map<String, dynamic> classroomData) {
+    Classroom classroom = classroomData['classroom'];
+    List<NewStudent> students = classroomData['students'];
+    List<NewDaily>? dailys = classroomData['dailys'];
+    List<Lesson>? lessons = classroomData['lessons'];
+    List<StructuredHistoryData>? structuredHistoryData =
+        classroomData['historyData'];
+
+    _classroomData = StructuredClassroomData(
+      classroom: classroom,
+      students: students,
+      dailys: dailys,
+      lessons: lessons,
+      structuredHistoryData: structuredHistoryData,
+    );
   }
 
   Future<QuerySnapshot> read(String? uid) async {
@@ -110,8 +134,6 @@ class ClassroomProvider with ChangeNotifier {
     await fetchClassrooms(currentUserUid!);
   }
 
-  getAssignmentsForStudent(String classroomId, String? studentId) {}
-
   // 학생 관련 함수 모음
 
   //Future<void>
@@ -134,4 +156,29 @@ class ClassroomProvider with ChangeNotifier {
       print(e);
     }
   }
+
+  /// 11/22 data 구조 변경 후 코드
+  /// 반 등록
+  Future<void> createNewClassroom(
+    Classroom classroom,
+    List<NewStudent> students,
+  ) async {
+    classroom.createdDate = DateTime.now();
+
+    classroom.name = '${classroom.name} test';
+    // 해당 코드로 생성된 classroom 드러나지 않도록 isDeleted = true
+    classroom.isDeleted = false;
+    try {
+      print('test002');
+      await _classroomService.createNewClassroom(classroom, students);
+    } catch (e) {
+      print('Error creating classroom: $e');
+      // Handle error
+    }
+  }
+  // Future<List<Classroom>> getNewClassroom(String teacherUid) async {}
+
+  Future<void> updateNewClassroom() async {}
+
+  Future<void> deleteNewClassroom() async {}
 }

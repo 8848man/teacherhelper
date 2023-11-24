@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/loading_provider.dart';
@@ -44,7 +45,7 @@ class _ClassroomRegistPage_reformState
   bool isGenderAscending = false;
 
   // 로딩 화면 on/off 기능
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   initState() {
@@ -93,14 +94,15 @@ class _ClassroomRegistPage_reformState
         final classroom = Classroom(
           name: _classNameController.text,
           teacherUid: widget.teacherUid,
-          id: '',
         );
 
         List<Student> students = studentProvider.students;
-        List<Student> checkedStudents =
-            students.where((student) => student.isChecked == true).toList();
+        studentProvider.setNewStudents();
+        List<NewStudent> newStudent = studentProvider.newStudents;
 
         await classroomProvider.createClassroom(classroom, students);
+        print('test001');
+        await classroomProvider.createNewClassroom(classroom, newStudent);
         // 반 등록 후 선생님 id로 반 가져오기
         await classroomProvider.fetchClassrooms(user!.uid);
         Navigator.pop(context);

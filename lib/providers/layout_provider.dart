@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
+import 'package:teacherhelper/datamodels/lesson.dart';
+import 'package:teacherhelper/datamodels/new_daily.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
+import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
+import 'package:teacherhelper/services/daily_service.dart';
+import 'package:teacherhelper/services/student_service.dart';
 
 // 레이아웃 프로바이더
 class LayoutProvider with ChangeNotifier {
+  final StudentService _studentService;
+  final DailyService _dailyService;
+  LayoutProvider()
+      : _studentService = StudentService(),
+        _dailyService = DailyService();
+
   // 생활, 수업 제어를 위한 프로바이더 변수 할당
   DailyProvider dailyProvider = DailyProvider();
   ClassesProvider classesProvider = ClassesProvider();
@@ -51,6 +63,10 @@ class LayoutProvider with ChangeNotifier {
   ];
 
   ImageUrls imageUrls = ImageUrls();
+
+  List<NewStudent> _newStudents = [];
+  List<NewStudent> get newStudents => _newStudents;
+
   // 사이드바 버튼 인덱스 선택 함수
   void setSelected(int index) {
     for (var i = 0; i < imageUrls.unselectedSidebar.length; i++) {
@@ -116,7 +132,8 @@ class LayoutProvider with ChangeNotifier {
   }
 
   // Daily CRUD
-  Future<void> createDailyLayout(DateTime thisDate, String classroomId) async {
+  Future<void> createDailyLayout(
+      DateTime thisDate, String classroomId, List<Student> students) async {
     Daily daily = Daily(
       name: '',
       isComplete: false,
@@ -130,7 +147,7 @@ class LayoutProvider with ChangeNotifier {
         daily.kind = dailyBottomIndexNames[index];
       }
     }
-    dailyProvider.createDailyLayout(daily, thisDate);
+    dailyProvider.createDailyLayout(daily, thisDate, students);
     getDailyLayout(classroomId, thisDate);
     notifyListeners();
   }
@@ -147,4 +164,17 @@ class LayoutProvider with ChangeNotifier {
   Future<void> deleteDailyLayout() async {
     dailyProvider.deleteDailyLayout();
   }
+
+  // 학생 데이터 가져오기
+  Future<List<NewStudent>> getNewStudentsByClassroomId(
+      String classroomId) async {
+    _newStudents =
+        await _studentService.getNewStudentsByClassroomId(classroomId);
+    return _newStudents;
+  }
+
+  // Future<List<NewDaily>> getNewDailysbyClassroomId(String )
+
+  // 수업 데이터 가져오기
+  // Future<List<NewDaily>> getLessonByClassroomId(String classroomId){}
 }

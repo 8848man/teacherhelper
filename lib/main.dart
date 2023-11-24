@@ -58,11 +58,11 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return Stack(children: [
           child!,
-          MyLoadingWidget(),
+          const MyLoadingWidget(),
         ]);
       },
       debugShowCheckedModeBanner: false,
-      home: CoverPage(),
+      home: const CoverPage(),
     );
   }
 }

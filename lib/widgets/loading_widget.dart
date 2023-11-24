@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:teacherhelper/providers/loading_provider.dart';
 
 class MyLoadingWidget extends StatelessWidget {
-  const MyLoadingWidget();
+  const MyLoadingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

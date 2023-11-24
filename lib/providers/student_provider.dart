@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/datamodels/attitude.dart';
-import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/daily_history.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/services/attitude_service.dart';
 import 'package:teacherhelper/services/auth_service.dart';
@@ -27,15 +27,44 @@ class StudentProvider with ChangeNotifier {
   List<Student> _studentsWithAttitude = [];
   List<Student> get studentsWithAttitude => _studentsWithAttitude;
 
-  List<Student> _studentsWithDaily = [];
-  List<Student> get studentsWithDaily => _studentsWithDaily;
+  // List<Student> _studentsWithDaily = [];
+  // List<Student> get studentsWithDaily => _studentsWithDaily;
 
   // 테스트 dataSet
   List<Student> _studentsWithDaily2 = [];
   List<Student> get studentsWithDaily2 => _studentsWithDaily2;
 
-  set students(List<Student> students) {
-    _students = students;
+  // 생활 데이터를 담은 Students 데이터. 사용페이지 : Layout_Classroom
+  Map<String, dynamic> _studentsWithDatas = {};
+  Map<String, dynamic> get studentWithDatas => _studentsWithDatas;
+
+  // db 구조 변경 이후의 학생들
+  final List<NewStudent> _newStudents = [];
+  List<NewStudent> get newStudents => _newStudents;
+
+  // set students(List<Student> students) {
+  //   _students = students;
+  //   notifyListeners();
+  // }
+
+  void setNewStudents() {
+    _newStudents.clear();
+    for (Student student in students) {
+      NewStudent newStudent = NewStudent(
+        classroomId: '',
+        id: '',
+        name: student.name,
+        number: int.parse(student.studentNumber!),
+        gender: student.gender,
+        createdDate: DateTime.now(),
+      );
+      _newStudents.add(newStudent);
+    }
+  }
+
+  // provider에 저장된 학생들 리셋
+  void resetStudents() {
+    _students = [];
     notifyListeners();
   }
 
@@ -117,12 +146,6 @@ class StudentProvider with ChangeNotifier {
     } catch (e) {
       throw Exception('Failed to fetch students: $e');
     }
-  }
-
-  // provider에 저장된 학생들 리셋
-  void resetStudents() {
-    _students = [];
-    notifyListeners();
   }
 
   // classroom regist / modify 페이지에서 provider students에 학생 추가(DB에 저장 X)
@@ -230,6 +253,17 @@ class StudentProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// studentsWithData
+  void setStudentsWithData(
+    List<Student> students,
+    Map<String, dynamic> dailys,
+    Map<String, dynamic> classes,
+  ) {
+    Map<String, dynamic> studentWithData = {};
+    for (var student in students) {}
+    _studentsWithDatas = {'daily': dailys};
+  }
+
   // 학생 데이터에 태도 데이터 입력
   Future<void> injectAttitudeToStudents(String classroomId, int order) async {
     _studentsWithAttitude = [];
@@ -255,28 +289,28 @@ class StudentProvider with ChangeNotifier {
   }
 
   // 학생 데이터에 일상 데이터 입력
-  Future<void> injectDailyToStudents(String classroomId, int order) async {
-    _studentsWithDaily = [];
-    final studentData = students;
-    final dailyData =
-        await _dailyService.getDailysByClassroomAndOrder(classroomId);
-    // studentsData를 사용하여 원하는 가공 작업 수행
+  // Future<void> injectDailyToStudents(String classroomId, int order) async {
+  //   _studentsWithDaily = [];
+  //   final studentData = students;
+  //   final dailyData =
+  //       await _dailyService.getDailysByClassroomAndOrder(classroomId);
+  //   // studentsData를 사용하여 원하는 가공 작업 수행
 
-    Iterable<Daily> filteredData =
-        dailyData.where((data) => data.order == order);
+  //   Iterable<Daily> filteredData =
+  //       dailyData.where((data) => data.order == order);
 
-    for (Student student in studentData) {
-      for (Daily daily in filteredData) {
-        if (daily.studentId == student.id) {
-          student.dailyData = daily;
-          _studentsWithDaily.add(student);
-        }
-      }
-    }
+  //   for (Student student in studentData) {
+  //     for (Daily daily in filteredData) {
+  //       if (daily.studentId == student.id) {
+  //         student.dailyData = daily;
+  //         _studentsWithDaily.add(student);
+  //       }
+  //     }
+  //   }
 
-    // 가공한 결과를 필요한 상태로 업데이트
-    notifyListeners();
-  }
+  //   // 가공한 결과를 필요한 상태로 업데이트
+  //   notifyListeners();
+  // }
 
   // 테스트
   Future<void> injectDailyToStudents2(
@@ -344,4 +378,6 @@ class StudentProvider with ChangeNotifier {
       throw Exception('Failed to fetch students: $e');
     }
   }
+
+  // 11/22 Data 구조 변경 후 Student 코드
 }

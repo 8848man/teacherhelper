@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/daily_history.dart';
+import 'package:teacherhelper/datamodels/student.dart';
 
 class DailyService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -230,6 +231,7 @@ class DailyService {
   Future<void> createDailyLayout(
     Daily daily,
     DateTime thisDate,
+    List<Student> students,
   ) async {
     try {
       _classroomsCollection

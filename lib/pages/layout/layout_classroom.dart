@@ -6,11 +6,13 @@ import 'package:teacherhelper/datamodels/classes.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/daily_provider.dart';
 import 'package:teacherhelper/providers/layout_provider.dart';
+import 'package:teacherhelper/providers/loading_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomLayout extends StatefulWidget {
@@ -34,8 +36,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
   late Classroom classroom;
 
-  bool isLoading = false;
-
   bool dataFetched = false;
 
   @override
@@ -45,7 +45,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   }
 
   void getDatas() async {
-    isLoading = true;
+    Provider.of<LoadingProvider>(context, listen: false).setLoading(true);
     final classroomProvider =
         Provider.of<ClassroomProvider>(context, listen: false);
     final studentProvider =
@@ -53,6 +53,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     final dailyProvider = Provider.of<DailyProvider>(context, listen: false);
     final classesProvider =
         Provider.of<ClassesProvider>(context, listen: false);
+
+    final layoutProvider = Provider.of<LayoutProvider>(context, listen: false);
     final classroomId = classroomProvider.classroom.uid!;
 
     classroom = classroomProvider.classroom;
@@ -60,8 +62,13 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     dailyProvider.getDailyLayout(classroomId, thisDate);
 
     // classesProvider.getClassesLayout(classroomId, thisDate);
+
+    // layoutProvider 데이터들 가져오기
+    layoutProvider.getNewStudentsByClassroomId(classroomId);
+
     studentProvider.getStudentsByClassroomLayout(classroomId);
-    isLoading = false;
+
+    Provider.of<LoadingProvider>(context, listen: false).setLoading(false);
   }
   // List<Daily> getDailys(String classroomId, DailyProvider dailyProvider) async {
   //   List<Daily> dailyList =
@@ -80,12 +87,56 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     dailys = dailyProvider.dailys;
     classes = classesProvider.classes;
     print('build Dailys is $dailys');
-    generateTabs(dailys, classes, selectedIndex, studentProvider);
+    generateTabs(
+        dailys, classes, selectedIndex, studentProvider, layoutProvider);
+
+    Future<bool> myDialog() async {
+      bool returnValue = false;
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('생활/수업 삭제'),
+            content: const Text('생활 또는 수업을 삭제하시겠습니까?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  returnValue = true;
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return returnValue;
+    }
+
+    bool _tabCloseInterceptor(int tabIndex) {
+      bool isDelete = false;
+      myDialog().then((result) {
+        isDelete = result;
+
+        if (isDelete == true) {
+          print('The tab $tabIndex is busy and cannot be closed.');
+
+          print('$tabIndex가 삭제됨');
+          return isDelete;
+        } else {
+          print('삭제되지 않음');
+          return isDelete;
+        }
+      });
+      print('final isDelete is $isDelete');
+      return isDelete;
+    }
 
     String currentDate =
         DateFormat('yyyy년 MM월 dd일').format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
     TabbedView tabbedView = TabbedView(
       controller: _controller,
+      tabCloseInterceptor: _tabCloseInterceptor,
       // onTabSelection: _onTabSelection
     );
     Widget w = TabbedViewTheme(
@@ -122,15 +173,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
               ),
             ),
           ),
-          Visibility(
-            visible: isLoading,
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -139,6 +181,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
   // 앱바
   AppBar _myAppBar(String currentDate, Classroom classroom) {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       title: Row(
         children: [
@@ -330,10 +373,10 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
 
   // 바텀 네비게이션
   Widget _myBottomNavigation() {
-    return Consumer4<LayoutProvider, DailyProvider, ClassesProvider,
-            ClassroomProvider>(
+    return Consumer5<LayoutProvider, DailyProvider, ClassesProvider,
+            ClassroomProvider, StudentProvider>(
         builder: (context, layoutProvider, dailyProvider, classesProvider,
-            classroomProvider, child) {
+            classroomProvider, studentProvider, child) {
       List<String> navbarImages = layoutProvider.getNavbarImages();
       return Container(
         width: double.infinity,
@@ -398,12 +441,16 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                   onTap: () async {
                     if (layoutProvider.selectedIndices[2] == 1) {
                       setState(() {
-                        isLoading = true;
+                        Provider.of<LoadingProvider>(context, listen: false)
+                            .setLoading(true);
                       });
                       await layoutProvider.createDailyLayout(
-                          thisDate, classroomProvider.classroom.uid!);
+                          thisDate,
+                          classroomProvider.classroom.uid!,
+                          studentProvider.students);
                       setState(() {
-                        isLoading = false;
+                        Provider.of<LoadingProvider>(context, listen: false)
+                            .setLoading(false);
                       });
                     } else if (layoutProvider.selectedIndices[3] == 1) {
                       // setState(() {
@@ -478,6 +525,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     List<Classes> classes,
     List<int> selectedIndex,
     StudentProvider studentProvider,
+    LayoutProvider layoutProvider,
   ) {
     // 변수 초기화
     List<TabData> tabs = [];
@@ -485,6 +533,8 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     List<Map<String, dynamic>> tabDatas = [];
 
     List<Student> students = studentProvider.students;
+    List<NewStudent> newStudents = layoutProvider.newStudents;
+    // List<StudentWithDaily> studentWithDaily =
 
     // 사이드탭이 일상일 경우의 탭 설정
     if (selectedIndex[2] == 1) {
@@ -500,13 +550,22 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     // 사이드탭이 수업일 경우의 탭 설정
     else if (selectedIndex[3] == 1) {
       for (var classes in classes) {
-        tabDatas
-            .add({'data': classes, 'name': classes.name, 'kind': 'classes'});
+        tabDatas.add({
+          'data': classes,
+          'name': classes.name,
+          'kind': 'classes',
+          'students': students
+        });
       }
     }
     // 데이터가 없을 경우 처리
     if (tabDatas.isEmpty) {
-      tabDatas.add({'data': null, 'name': '추가하기', 'kind': 'noData'});
+      tabDatas.add({
+        'data': null,
+        'name': '추가하기',
+        'kind': 'noData',
+        'students': students
+      });
     }
 
     // 컨텐츠 탭 생성
@@ -530,10 +589,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
             StudentProvider, ClassroomProvider>(
         builder: (context, layoutProvider, dailyProvider, classesProvider,
             studentProvider, classroomProvider, child) {
-      if (data['kind'] == 'daily') {
-        print('data is $data');
-      }
-
       final List<Student> students = data['students'];
       // dataFetched = false;
       return Column(
