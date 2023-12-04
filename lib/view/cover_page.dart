@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:teacherhelper/pages/login_page.dart';
 import 'package:teacherhelper/pages/register_page.dart';
+import 'package:teacherhelper/veiw_model/cover_page_view_model.dart';
 
 class CoverPage extends StatelessWidget {
-  const CoverPage({super.key});
+  CoverPage({super.key});
+
+  var data = CoverPageViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class CoverPage extends StatelessWidget {
                   ),
                   // 앱 이름 텍스트
                   Text(
-                    'SCHOOL CHECK',
+                    data.appName,
                     style: TextStyle(
                       fontFamily: 'Mplus 1p Bold', // 폰트 패밀리
                       fontSize:
@@ -68,7 +71,7 @@ class CoverPage extends StatelessWidget {
                             Positioned.fill(
                               child: Center(
                                 child: Text(
-                                  '회원가입',
+                                  data.signIn,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Montserrat',

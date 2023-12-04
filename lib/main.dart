@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/firebase_options.dart';
-import 'package:teacherhelper/pages/cover_page.dart';
+import 'package:teacherhelper/view/cover_page.dart';
 import 'package:teacherhelper/providers/assignment_provider.dart';
 import 'package:teacherhelper/providers/attitude_provider.dart';
 import 'package:teacherhelper/providers/auth_provider.dart';
@@ -13,12 +13,17 @@ import 'package:teacherhelper/providers/daily_history_provider.dart';
 import 'package:teacherhelper/providers/history_provider.dart';
 import 'package:teacherhelper/providers/layout_provider.dart';
 import 'package:teacherhelper/providers/loading_provider.dart';
+import 'package:teacherhelper/providers/new_daily_provider.dart';
+import 'package:teacherhelper/providers/new_lesson_provider.dart';
+import 'package:teacherhelper/providers/new_student_provider.dart';
 import 'package:teacherhelper/providers/student_attitude_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 import 'package:teacherhelper/widgets/loading_widget.dart';
 
 import './services/auth_service.dart';
 import 'providers/daily_provider.dart';
+import 'providers/new_classroom_provider.dart';
+import 'providers/new_layout_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // main 함수에서 async 사용하기 위함
@@ -43,6 +48,17 @@ void main() async {
         ChangeNotifierProvider(
             create: (context) => ClassroomContentsWidgetProvider()),
         ChangeNotifierProvider(create: (context) => LoadingProvider()),
+        ChangeNotifierProvider(create: (context) => NewClassroomProvider()),
+        ChangeNotifierProvider(create: (context) => NewStudentProvider()),
+        ChangeNotifierProvider(
+            create: (context) => NewLayoutProvider(
+                  dailyProvider: NewDailyProvider(),
+                  lessonProvider: NewLessonProvider(),
+                  classroomProvider: NewClassroomProvider(),
+                  studentProvider: NewStudentProvider(),
+                )),
+        ChangeNotifierProvider(create: (context) => NewLessonProvider()),
+        ChangeNotifierProvider(create: (context) => NewDailyProvider()),
       ],
       child: const MyApp(),
     ),
@@ -62,7 +78,7 @@ class MyApp extends StatelessWidget {
         ]);
       },
       debugShowCheckedModeBanner: false,
-      home: const CoverPage(),
+      home: CoverPage(),
     );
   }
 }

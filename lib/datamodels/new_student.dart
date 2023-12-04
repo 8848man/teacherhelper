@@ -7,6 +7,7 @@ class NewStudent {
   DateTime createdDate;
   bool? isDeleted;
   DateTime? deletedDate;
+  bool? isCheked = false;
 
   NewStudent({
     required this.classroomId,

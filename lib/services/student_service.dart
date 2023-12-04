@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student.dart';
-import 'package:teacherhelper/services/auth_service.dart';
 
 class StudentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,9 +12,6 @@ class StudentService {
   // 학생 컬랙션
   final CollectionReference _studentsCollection =
       FirebaseFirestore.instance.collection('students');
-
-  // 현재 사용자의 uid 가져오기
-  final String? currentUserUid = AuthService().currentUser()?.uid.toString();
 
   // StudentService(this._studentProvider);
 
@@ -56,15 +52,6 @@ class StudentService {
           // .orderBy('studentNumber')
           .get();
 
-      // final querySnapshot = await _classroomCollection
-      //     .doc(classroomId)
-      //     .collection('Students')
-      //     .orderBy('studentNumber') // 'studentNumber' 필드를 기준으로 정렬
-      //     .where('isDeleted',
-      //         isNotEqualTo: true) // 'isDeleted' 필드가 true가 아닌 데이터만 필터링
-      //     .get();
-
-      // studentNumber가 String으로 들어가있는데 다른 코드들이 String으로 작성되어있어 Int를 기준으로 정렬. 추후 수정 필요
       final studentList = querySnapshot.docs.map((doc) {
         final data = doc.data();
         final studentNumber =

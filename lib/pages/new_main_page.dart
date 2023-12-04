@@ -2,54 +2,40 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
-import 'package:teacherhelper/pages/classes/classroom_daily_page.dart/classroom_daily_page_tapbar.dart';
-// import 'package:teacherhelper/pages/classes/create_classroom_page.dart';
 import 'package:teacherhelper/pages/classes/classroom_create_page.dart';
-import 'package:teacherhelper/pages/layout/layout_classroom.dart';
-import 'package:teacherhelper/providers/classroom_provider.dart';
+import 'package:teacherhelper/pages/classes/classroom_modify_page.dart';
+import 'package:teacherhelper/providers/new_classroom_provider.dart';
 import 'package:teacherhelper/services/auth_service.dart';
 
-class MainPage_reform extends StatefulWidget {
-  const MainPage_reform({super.key});
+import 'layout/new_layout_classroom.dart';
+
+class NewMainPageReform extends StatefulWidget {
+  const NewMainPageReform({super.key});
 
   @override
-  State<MainPage_reform> createState() => _MainPage_reformState();
+  State<NewMainPageReform> createState() => _NewMainPageReformState();
 }
 
-class _MainPage_reformState extends State<MainPage_reform> {
+class _NewMainPageReformState extends State<NewMainPageReform> {
   User? user = FirebaseAuth.instance.currentUser;
 
   // 데이터를 가져왔는지에 대한 여부.
   @override
   void initState() {
     super.initState();
-    fetchData();
-    // 여기에서 초기화 작업 수행
   }
 
   final currentUserUid = AuthService().currentUser()?.uid.toString();
 
-  Future<void> fetchData() async {
-    try {
-      final classroomProvider =
-          Provider.of<ClassroomProvider>(context, listen: false);
-
-      classroomProvider.fetchClassrooms(currentUserUid!);
-    } catch (e) {}
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthService>(
-      builder: (context, authService, child) {
-        return Scaffold(
-          body: Consumer<ClassroomProvider>(
-            builder: (context, classroomProvider, child) {
-              final List<Classroom> allClassrooms =
-                  classroomProvider.classrooms;
-              List<Classroom> classrooms = allClassrooms
-                  .where((classroom) => classroom.isDeleted != true)
-                  .toList();
+    return Scaffold(
+      body: Consumer<NewClassroomProvider>(
+          builder: (context, classroomProvider, child) {
+        List<Classroom> newClassrooms = classroomProvider.classrooms;
+        return FutureBuilder(
+            future: classroomProvider.getClassroomsByTeacherId(currentUserUid!),
+            builder: (context, snapshot) {
               return Column(
                 children: [
                   Container(
@@ -98,19 +84,19 @@ class _MainPage_reformState extends State<MainPage_reform> {
                           crossAxisSpacing: 10.0,
                           mainAxisSpacing: 10,
                         ),
-                        itemCount: classrooms.length + 1,
+                        itemCount: newClassrooms.length + 1,
                         itemBuilder: ((context, index) {
                           // 인덱스 에러 방지 삼항연산자
-                          final classroom = classrooms.isEmpty
+                          final classroom = newClassrooms.isEmpty
                               // classrooms가 비어있을 때 에러 방지를 위한 더미데이터
                               ? Classroom(
                                   name: '',
                                   teacherUid: '',
                                 )
-                              : index == classrooms.length
-                                  ? classrooms[index - 1]
-                                  : classrooms[index];
-                          if (index == classrooms.length) {
+                              : index == newClassrooms.length
+                                  ? newClassrooms[index - 1]
+                                  : newClassrooms[index];
+                          if (index == newClassrooms.length) {
                             return GestureDetector(
                               child: Container(
                                 decoration: BoxDecoration(
@@ -187,63 +173,37 @@ class _MainPage_reformState extends State<MainPage_reform> {
                                       child: Image.asset(
                                           'assets/buttons/modify_button.jpg'),
                                       onTap: () {
-                                        // Todo
-                                        // showDialog(
-                                        //   context: context,
-                                        //   builder: (BuildContext context) {
-                                        //     return AlertDialog(
-                                        //       title: const Text('기능 미구현'),
-                                        //       content:
-                                        //           const Text('해당 기능은 추가중입니다.'),
-                                        //       actions: <Widget>[
-                                        //         TextButton(
-                                        //           onPressed: () {
-                                        //             // 출석 체크 해제 로직 추가
-                                        //             Navigator.of(context)
-                                        //                 .pop(); // 다이얼로그 닫기
-                                        //           },
-                                        //           child: const Text('OK'),
-                                        //         ),
-                                        //       ],
-                                        //     );
-                                        //   },
-                                        // );
-                                        classroomProvider
-                                            .setClassroom(classroom);
+                                        // classroomProvider.setClassroom(classroom);
                                         // 반 수정 페이지
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) =>
-                                        //         ClassroomModifyPage(
-                                        //       teacherUid: user!.uid,
-                                        //       isModify: true,
-                                        //       classroomId: classroom.uid!,
-                                        //     ),
-                                        //   ),
-                                        // );
-                                        // 레이아웃 페이지(임시)
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const ClassroomLayout(),
+                                                ClassroomModifyPage(
+                                              teacherUid: user!.uid,
+                                              isModify: true,
+                                              classroomId: classroom.uid!,
+                                            ),
                                           ),
                                         );
-                                        // ClassroomLayout
                                       },
                                     )
                                   ],
                                 ),
                               ),
-                              onTap: () {
-                                classroomProvider.setClassroom(classroom);
+                              onTap: () async {
+                                // classroomProvider.setClassroom(classroom);
+                                if (classroom.uid != null) {
+                                  classroomProvider.fetchClassroomByClassroomId(
+                                      classroom.uid!);
+                                } else {
+                                  print('classroomUid is null');
+                                }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        ClassroomDailyPageTapBar(
-                                            classroomId: classroom.uid!),
+                                        const NewLayoutClassroom(),
                                   ),
                                 );
                               },
@@ -255,37 +215,8 @@ class _MainPage_reformState extends State<MainPage_reform> {
                   ),
                 ],
               );
-            },
-          ),
-          // floatingActionButton: Column(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: [
-          //     FloatingActionButton(
-          //       onPressed: () {
-          //         // Handle first button's action
-          //         Navigator.push(
-
-          //           context,
-          //           MaterialPageRoute(
-          //             builder: (context) =>
-          //                 ClassroomRegistPage_reform(teacherUid: user!.uid),
-          //           ),
-          //         );
-          //       },
-          //       child: Icon(Icons.add),
-          //       tooltip: '반 추가하기', // Tooltip에 표시할 텍스트
-          //     ),
-          //     SizedBox(height: 16),
-          //     FloatingActionButton(
-          //       onPressed: () {
-          //         // Handle second button's action
-          //       },
-          //       child: Icon(Icons.delete),
-          //     ),
-          //   ],
-          // ),
-        );
-      },
+            });
+      }),
     );
   }
 }

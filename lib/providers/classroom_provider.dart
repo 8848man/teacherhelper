@@ -159,25 +159,6 @@ class ClassroomProvider with ChangeNotifier {
 
   /// 11/22 data 구조 변경 후 코드
   /// 반 등록
-  Future<void> createNewClassroom(
-    Classroom classroom,
-    List<NewStudent> students,
-  ) async {
-    classroom.createdDate = DateTime.now();
-
-    classroom.name = '${classroom.name} test';
-    // 해당 코드로 생성된 classroom 드러나지 않도록 isDeleted = true
-    classroom.isDeleted = false;
-    try {
-      print('test002');
-      await _classroomService.createNewClassroom(classroom, students);
-    } catch (e) {
-      print('Error creating classroom: $e');
-      // Handle error
-    }
-  }
-  // Future<List<Classroom>> getNewClassroom(String teacherUid) async {}
-
   Future<void> updateNewClassroom() async {}
 
   Future<void> deleteNewClassroom() async {}

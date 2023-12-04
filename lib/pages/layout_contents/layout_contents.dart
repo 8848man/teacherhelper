@@ -40,11 +40,7 @@ class _LayoutContentsState extends State<LayoutContents> {
     if (widget.dataFetched != true) {
       dailyProvider.getDailyLayout(
           classroomProvider.classroom.uid!, DateTime.now());
-      print('2nowFetched is ${widget.dataFetched}');
       widget.dataFetched = true;
-      print('3nowFetched is ${widget.dataFetched}');
-
-      print('Layout Rendered');
     }
   }
 

@@ -6,7 +6,6 @@ import 'package:teacherhelper/datamodels/classes.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
 import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/image_urls.dart';
-import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classes_provider.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
@@ -62,9 +61,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     dailyProvider.getDailyLayout(classroomId, thisDate);
 
     // classesProvider.getClassesLayout(classroomId, thisDate);
-
-    // layoutProvider 데이터들 가져오기
-    layoutProvider.getNewStudentsByClassroomId(classroomId);
 
     studentProvider.getStudentsByClassroomLayout(classroomId);
 
@@ -446,7 +442,7 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
                       });
                       await layoutProvider.createDailyLayout(
                           thisDate,
-                          classroomProvider.classroom.uid!,
+                          classroomProvider.classroom,
                           studentProvider.students);
                       setState(() {
                         Provider.of<LoadingProvider>(context, listen: false)
@@ -533,9 +529,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
     List<Map<String, dynamic>> tabDatas = [];
 
     List<Student> students = studentProvider.students;
-    List<NewStudent> newStudents = layoutProvider.newStudents;
-    // List<StudentWithDaily> studentWithDaily =
-
     // 사이드탭이 일상일 경우의 탭 설정
     if (selectedIndex[2] == 1) {
       for (var daily in dailys) {
@@ -590,7 +583,6 @@ class _ClassroomLayoutState extends State<ClassroomLayout> {
         builder: (context, layoutProvider, dailyProvider, classesProvider,
             studentProvider, classroomProvider, child) {
       final List<Student> students = data['students'];
-      // dataFetched = false;
       return Column(
         children: [
           Expanded(

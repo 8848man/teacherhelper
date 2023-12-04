@@ -7,6 +7,7 @@ import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student.dart';
 import 'package:teacherhelper/providers/classroom_provider.dart';
 import 'package:teacherhelper/providers/loading_provider.dart';
+import 'package:teacherhelper/providers/new_classroom_provider.dart';
 import 'package:teacherhelper/providers/student_provider.dart';
 
 class ClassroomRegistPage_reform extends StatefulWidget {
@@ -87,6 +88,8 @@ class _ClassroomRegistPage_reformState
         Provider.of<ClassroomProvider>(context, listen: false);
     final studentProvider =
         Provider.of<StudentProvider>(context, listen: false);
+    final newClassroomProvider =
+        Provider.of<NewClassroomProvider>(context, listen: false);
 
     User? user = FirebaseAuth.instance.currentUser;
     try {
@@ -101,8 +104,7 @@ class _ClassroomRegistPage_reformState
         List<NewStudent> newStudent = studentProvider.newStudents;
 
         await classroomProvider.createClassroom(classroom, students);
-        print('test001');
-        await classroomProvider.createNewClassroom(classroom, newStudent);
+        await newClassroomProvider.createClassroom(classroom, newStudent);
         // 반 등록 후 선생님 id로 반 가져오기
         await classroomProvider.fetchClassrooms(user!.uid);
         Navigator.pop(context);
