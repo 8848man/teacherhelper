@@ -20,6 +20,8 @@ class NewStudent {
     this.deletedDate,
   });
 
+  get student => null;
+
   Map<String, dynamic> toJson() {
     return {
       'classroomId': classroomId,

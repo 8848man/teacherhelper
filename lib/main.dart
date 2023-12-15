@@ -50,13 +50,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => LoadingProvider()),
         ChangeNotifierProvider(create: (context) => NewClassroomProvider()),
         ChangeNotifierProvider(create: (context) => NewStudentProvider()),
-        ChangeNotifierProvider(
-            create: (context) => NewLayoutProvider(
-                  dailyProvider: NewDailyProvider(),
-                  lessonProvider: NewLessonProvider(),
-                  classroomProvider: NewClassroomProvider(),
-                  studentProvider: NewStudentProvider(),
-                )),
+        ChangeNotifierProvider(create: (context) => NewLayoutProvider()),
         ChangeNotifierProvider(create: (context) => NewLessonProvider()),
         ChangeNotifierProvider(create: (context) => NewDailyProvider()),
       ],

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
-import 'package:teacherhelper/datamodels/classes.dart';
 import 'package:teacherhelper/datamodels/classroom.dart';
-import 'package:teacherhelper/datamodels/daily.dart';
 import 'package:teacherhelper/datamodels/student_with_data.dart';
 import 'package:teacherhelper/widgets/layout_app_bar.dart';
 import 'package:teacherhelper/providers/loading_provider.dart';
@@ -39,11 +37,11 @@ class _NewLayoutClassroomState extends State<NewLayoutClassroom> {
 
   late List<int> selectedIndex;
   late List<int> selectedBottomNavIndices;
-  late List<StudentWithData> studentsWithData;
-
+  List<StudentWithData> studentsWithData = [];
+  late List<NewDaily> dailys;
   late Classroom classroom;
 
-  String classroomId = '';
+  late String classroomId;
   bool dataFetched = false;
 
   @override
@@ -58,8 +56,8 @@ class _NewLayoutClassroomState extends State<NewLayoutClassroom> {
   //   getDatas();
   // }
 
-  Future<void> getDatas() async {
-    // Provider.of<LoadingProvider>(context, listen: false).setLoading(true);
+  Future<void> getDatasFromDB() async {
+    DateTime thisDate = DateTime.now();
     final newLayoutProvider =
         Provider.of<NewLayoutProvider>(context, listen: false);
     final classroomProvider =
@@ -70,33 +68,38 @@ class _NewLayoutClassroomState extends State<NewLayoutClassroom> {
     final lessonProvider =
         Provider.of<NewLessonProvider>(context, listen: false);
 
-    classroomId = classroomProvider.classroom.uid!;
-
     await studentProvider.getStudentsByClassroomId(classroomId);
+    await dailyProvider.getDailysByClassroomId(classroomId, thisDate);
+  }
 
-    List<NewDaily> newDailys = dailyProvider.dailys;
-    List<Lesson> lessons = lessonProvider.lessons;
+  Future<void> getDatas() async {
+    // 서버에서 데이터 프로바이더로 할당
+
+    // Provider.of<LoadingProvider>(context, listen: false).setLoading(true);
+    final newLayoutProvider =
+        Provider.of<NewLayoutProvider>(context, listen: false);
+    final classroomProvider =
+        Provider.of<NewClassroomProvider>(context, listen: false);
+    final studentProvider =
+        Provider.of<NewStudentProvider>(context, listen: false);
+
+    classroomId = classroomProvider.classroom.uid!;
+    try {
+      await getDatasFromDB();
+    } catch (e) {
+      print('Error : $e');
+    }
+    final dailyProvider = Provider.of<NewDailyProvider>(context, listen: false);
+    final lessonProvider =
+        Provider.of<NewLessonProvider>(context, listen: false);
+
+    // studentProvider에 students 가져오기
+
+    // List<NewDaily> newDailys = dailyProvider.dailys;
+    // List<Lesson> lessons = lessonProvider.lessons;
     List<NewStudent> newStudents = studentProvider.students;
-    studentsWithData = [];
 
-    List<NewDaily> dummyDailys = [
-      NewDaily(
-        classroomId: '',
-        studentId: '',
-        id: '1',
-        name: '테스트 데일리',
-        kind: 'daily',
-        isChecked: false,
-      ),
-      NewDaily(
-        classroomId: '',
-        studentId: '',
-        id: '2',
-        name: '테스트 데일리2',
-        kind: 'daily',
-        isChecked: false,
-      ),
-    ];
+    List<NewDaily> dailys = dailyProvider.dailys;
 
     List<Lesson> dummyLessons = [
       Lesson(
@@ -116,20 +119,20 @@ class _NewLayoutClassroomState extends State<NewLayoutClassroom> {
         isChecked: false,
       ),
     ];
-
+    // 학생 정보에 데이터 넣기
     for (NewStudent student in newStudents) {
       studentsWithData.add(
         StudentWithData(
           student: student,
           // dailys: newDailys,
-          dailys: dummyDailys,
-          // .where((daily) => daily.studentId == student.id)
-          // .toList(),
+          dailys:
+              dailys.where((daily) => daily.studentId == student.id).toList(),
           lessons: dummyLessons,
         ),
       );
     }
 
+    // 학생 정렬
     studentsWithData
         .sort((a, b) => a.student.number.compareTo(b.student.number));
 
@@ -146,7 +149,7 @@ class _NewLayoutClassroomState extends State<NewLayoutClassroom> {
       ) async {
     // 변수 초기화
     List<TabData> tabs = [];
-    int tabCounts = 0;
+    int tabCount = 0;
     List<Map<String, dynamic>> tabDatas = [];
     // 사이드탭이 일상일 경우의 탭 설정
     if (selectedIndex[2] == 1) {
@@ -154,27 +157,33 @@ class _NewLayoutClassroomState extends State<NewLayoutClassroom> {
         tabDatas.add({
           'data': daily,
           'name': daily.name,
+          'index': layoutProvider.nowIndex,
           'kind': 'daily',
           'students': studentsWithData,
+          'tabCount': tabCount++,
         });
       }
     }
+
     // 사이드탭이 수업일 경우의 탭 설정
     else if (selectedIndex[3] == 1) {
       for (var lessons in studentsWithData[0].lessons!) {
         tabDatas.add({
           'data': lessons,
           'name': lessons.name,
+          'index': layoutProvider.nowIndex,
           'kind': 'classes',
           'students': studentsWithData,
         });
       }
     }
+
     // 데이터가 없을 경우 처리
     if (tabDatas.isEmpty) {
       tabDatas.add({
         'data': null,
         'name': '추가하기',
+        'index': layoutProvider.nowIndex,
         'kind': 'noData',
         'students': studentsWithData,
       });
@@ -186,157 +195,100 @@ class _NewLayoutClassroomState extends State<NewLayoutClassroom> {
         TabData(
           text: tabDatas[i]['name'],
           leading: (context, status) => const Icon(Icons.star, size: 16),
-          content: contentsWidget(tabDatas[i]),
+          // content: contentsWidget(tabDatas[i], context),
+          content: ContentsWidget(
+            data: tabDatas[i],
+          ),
         ),
       );
     }
     _controller = TabbedViewController(tabs);
   }
 
-  // List<Daily> getDailys(String classroomId, DailyProvider dailyProvider) async {
-  //   List<Daily> dailyList =
-  //       await dailyProvider.getDailyLayout(classroomId, thisDate);
-  //   return dailyList;
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // 메인 컨텐츠 박스
-    Widget _myContentsBox(Widget w) {
-      return Expanded(
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: w,
-        ),
-      );
-    }
-
     // 바텀 네비게이션
 
     // 컨텐츠 탭 생성 함수(컨텐츠 박스 위젯을 위해 필요함)
-
     Future<void> futureDataSet() async {
       await getDatas();
       // await Future.delayed(Duration(seconds: 2));
     }
 
-    // 학생이 없을 때 에러 처리 로직
-    void showCustomDialog(BuildContext context) {
-      Navigator.of(context).pop();
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('학생이 등록되지 않은 반입니다'),
-            content: const Text('학생이 등록되지 않은 반입니다'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dialog 닫기
-                  // 이전 페이지로 이동
-                },
-                child: const Text('Close'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    Future<bool> myDialog() async {
-      bool returnValue = false;
-      await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('생활/수업 삭제'),
-            content: const Text('생활 또는 수업을 삭제하시겠습니까?'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  returnValue = true;
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      return returnValue;
-    }
-
     return FutureBuilder(
       future: futureDataSet(), // 비동기 데이터 로딩 함수
       builder: (context, snapshot) {
+        final layoutProvider =
+            Provider.of<NewLayoutProvider>(context, listen: true);
+        final newStudentProvider =
+            Provider.of<NewStudentProvider>(context, listen: false);
+
+        selectedIndex = layoutProvider.selectedIndices;
+        selectedBottomNavIndices = layoutProvider.selectedBottomNavIndices;
+
+        generateTabs(
+          selectedIndex,
+          selectedBottomNavIndices,
+          newStudentProvider,
+          layoutProvider,
+          context,
+          // studentsWithData,
+        );
+
         // 데이터 로딩 중
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
 
         // 데이터 로딩 완료 후, Scaffold 렌더링
         if (snapshot.hasData) {
           // 여기서 snapshot.data를 사용하여 필요한 데이터를 처리할 수 있습니다.
         }
-        return Consumer<NewLayoutProvider>(
-          builder: ((context, layoutProvider, child) {
-            final layoutProvider =
-                Provider.of<NewLayoutProvider>(context, listen: false);
-            final newStudentProvider =
-                Provider.of<NewStudentProvider>(context, listen: false);
+        String currentDate =
+            DateFormat('yyyy년 MM월 dd일').format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
 
-            selectedIndex = layoutProvider.selectedIndices;
-            selectedBottomNavIndices = layoutProvider.selectedBottomNavIndices;
+        // 탭뷰 생성
+        TabbedView tabbedView = TabbedView(
+          controller: _controller,
+        );
+        // 탭뷰 생성
+        Widget w = TabbedViewTheme(
+          data: TabbedViewThemeData.classic()..menu.ellipsisOverflowText = true,
+          child: tabbedView,
+        );
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: layoutAppBar(currentDate, context),
+          body: Stack(
+            children: [
+              SafeArea(
+                child: Row(
+                  children: [
+                    // 사이드바 컨테이너
+                    layoutSideBar(),
 
-            generateTabs(
-              selectedIndex,
-              selectedBottomNavIndices,
-              newStudentProvider,
-              layoutProvider,
-              context,
-              // studentsWithData,
-            );
-
-            String currentDate = DateFormat('yyyy년 MM월 dd일')
-                .format(thisDate); // 현재 날짜를 원하는 형식으로 포맷
-            TabbedView tabbedView = TabbedView(
-              controller: _controller,
-            );
-            Widget w = TabbedViewTheme(
-              data: TabbedViewThemeData.classic()
-                ..menu.ellipsisOverflowText = true,
-              child: tabbedView,
-            );
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: layoutAppBar(currentDate, context),
-              body: Stack(
-                children: [
-                  SafeArea(
-                    child: Row(
-                      children: [
-                        // 사이드바 컨테이너
-                        layoutSideBar(),
-
-                        // 우측 메인 박스 및 바텀 네비게이션
-                        Expanded(
-                          child: Column(
-                            children: [
-                              // 메인 컨텐츠 박스
-                              _myContentsBox(w),
-
-                              // 바텀 네비게이션
-                              const LayoutBottomNavigation(),
-                            ],
+                    // 우측 메인 박스 및 바텀 네비게이션
+                    Expanded(
+                      child: Column(
+                        children: [
+                          // 메인 컨텐츠 박스
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              child: w,
+                            ),
                           ),
-                        ),
-                      ],
+
+                          // 바텀 네비게이션
+                          layoutBottomNavigation(context, classroomId),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            );
-          }),
+            ],
+          ),
         );
 
         // 에러 발생 시

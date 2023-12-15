@@ -1,7 +1,7 @@
 class NewDaily {
   String classroomId;
   String studentId;
-  String id;
+  String? id;
   String name;
   String kind;
   bool isChecked;
@@ -11,7 +11,7 @@ class NewDaily {
   NewDaily({
     required this.classroomId,
     required this.studentId,
-    required this.id,
+    this.id,
     required this.name,
     required this.kind,
     required this.isChecked,
@@ -38,7 +38,7 @@ class NewDaily {
     return NewDaily(
       classroomId: json['classroomId'],
       studentId: json['studentId'],
-      id: json['id'],
+      id: json['id'] ?? '',
       name: json['name'],
       kind: json['kind'],
       isChecked: json['isChecked'],

@@ -12,12 +12,10 @@ class NewStudentProvider extends ChangeNotifier {
   List<NewStudent> get students => _students;
 
   // classroomId로 학생들 가져오기
-  Future<List<NewStudent>> getStudentsByClassroomId(String classroomId) async {
-    print(getStudentsByClassroomId);
+  Future<void> getStudentsByClassroomId(String classroomId) async {
+    print('getStudentsByClassroomId');
     _students = [];
     _students = await _studentService.getStudentsByClassroomId(classroomId);
-    return _students;
-    notifyListeners();
   }
 
   Future<void> updateStudents() async {}

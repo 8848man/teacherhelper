@@ -1,21 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:teacherhelper/datamodels/new_student.dart';
 import 'package:teacherhelper/datamodels/student_with_data.dart';
 
-import '../providers/new_classroom_provider.dart';
 import '../providers/new_daily_provider.dart';
-import '../providers/new_layout_provider.dart';
-import '../providers/new_lesson_provider.dart';
 import '../providers/new_student_provider.dart';
 
-Widget contentsWidget(Map<String, dynamic> data) {
-  TextEditingController textController =
-      TextEditingController(text: data['name']);
-  return Consumer5<NewLayoutProvider, NewDailyProvider, NewLessonProvider,
-          NewStudentProvider, NewClassroomProvider>(
-      builder: (context, layoutProvider, dailyProvider, classesProvider,
-          studentProvider, classroomProvider, child) {
-    final List<StudentWithData> students = data['students'];
+class ContentsWidget extends StatefulWidget {
+  final Map<String, dynamic> data;
+
+  const ContentsWidget({Key? key, required this.data}) : super(key: key);
+
+  @override
+  _ContentsWidgetState createState() => _ContentsWidgetState();
+}
+
+class _ContentsWidgetState extends State<ContentsWidget> {
+  late TextEditingController textController;
+  late List<StudentWithData> students;
+  late int tabCount;
+
+  @override
+  void initState() {
+    super.initState();
+    textController = TextEditingController(text: widget.data['name']);
+  }
+
+  Future<void> fetchData() async {}
+
+  @override
+  Widget build(BuildContext context) {
+    final students = widget.data['students'];
+    final tabCount = widget.data['tabCount'];
+    final index = widget.data['index'];
+    final tabName = widget.data['name'];
+    // TODO: implement build
     return Column(
       children: [
         Expanded(
@@ -24,19 +43,18 @@ Widget contentsWidget(Map<String, dynamic> data) {
             // color: Colors.amber,
             child: Row(children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 width: 300,
                 height: 200,
-                // color: Colors.red,
                 child: Text(
-                  '${layoutProvider.nowIndex}  >  ${data['name']}',
-                  style: TextStyle(
+                  '$index  >  $tabName',
+                  style: const TextStyle(
                     color: Color(0xFF667085),
                   ),
                 ),
               ),
-              Spacer(),
-              Container(
+              const Spacer(),
+              SizedBox(
                 width: 300,
                 height: 200,
                 // color: Colors.blue,
@@ -44,7 +62,7 @@ Widget contentsWidget(Map<String, dynamic> data) {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Image.asset('assets/buttons/button_whole_off.png'),
-                    SizedBox(width: 15),
+                    const SizedBox(width: 15),
                     Image.asset('assets/buttons/button_whole_on.png'),
                     Image.asset('assets/buttons/button_option.png'),
                   ],
@@ -123,10 +141,12 @@ Widget contentsWidget(Map<String, dynamic> data) {
                       ),
                       itemCount: students.length,
                       itemBuilder: (context, index) {
-                        final student = students[index];
+                        final StudentWithData student = students[index];
                         return GestureDetector(
+                          // ignore: unnecessary_null_comparison
+
                           child: Card(
-                            color: student.student.isCheked == true
+                            color: student.dailys![tabCount].isChecked == true
                                 ? const Color(0xFFD5EC48)
                                 : const Color(0xFFEAECF0),
                             shape: RoundedRectangleBorder(
@@ -137,13 +157,19 @@ Widget contentsWidget(Map<String, dynamic> data) {
                               children: [
                                 Text(student.student.number.toString()),
                                 Text(student.student.name),
-                                // Text(student.student.isCheked as String),
+                                // Text(student.dailys![tabCount].id!),
                               ],
                             ),
                           ),
                           onTap: () {
-                            student.student.isCheked =
-                                !student.student.isCheked!;
+                            setState(() {
+                              final newDailyProvider =
+                                  Provider.of<NewDailyProvider>(context,
+                                      listen: false);
+
+                              newDailyProvider
+                                  .checkDailys(student.dailys![tabCount]);
+                            });
                           },
                         );
                       },
@@ -156,5 +182,5 @@ Widget contentsWidget(Map<String, dynamic> data) {
         ),
       ],
     );
-  });
+  }
 }

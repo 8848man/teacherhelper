@@ -9,25 +9,41 @@ class NewStudentService {
 
   // classroom에 등록되어있는 Students 가져오기
   Future<List<NewStudent>> getStudentsByClassroomId(String classroomId) async {
-    final querySnapshot = await _classroomCollection
-        .doc(classroomId)
-        .collection('students')
-        .get();
+    try {
+      print('getStudentsByClassroomId_service');
+      final querySnapshot = await _classroomCollection
+          .doc(classroomId)
+          .collection('students')
+          .get();
+      print('test005');
 
-    return querySnapshot.docs.map((doc) {
-      final data = doc.data();
+      if (querySnapshot.docs.isNotEmpty) {
+        // 데이터가 있는 경우 처리
+        print('doc isNotEmpty');
+        print(querySnapshot.docs[0]);
+      } else {
+        // 데이터가 없는 경우 처리
+        print('doc isEmpty');
+      }
 
-      DateTime createdDate = DateTime.parse(data['createdDate']);
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
 
-      return NewStudent(
-        classroomId: classroomId,
-        id: doc.id,
-        name: data['name'],
-        number: data['number'],
-        gender: data['gender'],
-        createdDate: createdDate,
-      );
-    }).toList();
+        DateTime createdDate = DateTime.parse(data['createdDate']);
+
+        return NewStudent(
+          classroomId: classroomId,
+          id: doc.id,
+          name: data['name'],
+          number: data['number'],
+          gender: data['gender'],
+          createdDate: createdDate,
+        );
+      }).toList();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
   Future<void> updateStudents() async {}
